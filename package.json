@@ -1,0 +1,74 @@
+{
+  "name": "portalcliente",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://weglineduardo.github.io/appreact/",
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.11.58",
+    "@types/react": "^18.0.20",
+    "@types/react-dom": "^18.0.6",
+    "axios": "^0.27.2",
+    "axios-cookiejar-support": "^4.0.3",
+    "boostrap": "^2.0.0",
+    "bootstrap": "^5.2.1",
+    "bootswatch": "^5.2.0",
+    "curl": "^0.1.4",
+    "date-fns": "^2.29.3",
+    "es-cookie": "^1.4.0",
+    "fs": "^0.0.1-security",
+    "glpi-api": "^1.6.1",
+    "glpi-client": "^2.0.0",
+    "json-api-serializer": "^2.6.6",
+    "moment": "^2.29.4",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.5.0",
+    "react-cookie": "^4.1.1",
+    "react-datepicker": "^4.8.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.39.4",
+    "react-nav-bar": "^0.6.5",
+    "react-redux": "^8.0.5",
+    "react-router": "^6.4.2",
+    "react-router-dom": "^6.4.2",
+    "react-scripts": "^5.0.1",
+    "redux": "^4.2.0",
+    "typescript": "^4.8.3",
+    "universal-cookie": "^4.0.4",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/react-datepicker": "^4.8.0",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/tough-cookie": "^4.0.2",
+    "dotenv": "^16.0.2"
+  }
+}
