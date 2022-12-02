@@ -7,7 +7,7 @@
     "main.65ecd6c6.js.map": "/SynchroTechnologies/portalReactClientes.git/static/js/main.65ecd6c6.js.map"
   },
   "entrypoints": [
-    "static/css/main.b42d5960.css",
-    "static/js/main.65ecd6c6.js"
+    "./static/css/main.b42d5960.css",
+    "./static/js/main.65ecd6c6.js"
   ]
 }
