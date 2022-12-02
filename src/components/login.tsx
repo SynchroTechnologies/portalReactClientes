@@ -9,8 +9,10 @@ import React, {
 import { IGlpilogin } from "../interfaces/gLpi/login";
 import { useNavigate, Link } from "react-router-dom";
 import { iUsuario } from "../interfaces/usuario";
-import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
-import "bootswatch/dist/js/bootstrap";
+//import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
+//import "bootswatch/dist/js/bootstrap";
+import "../../src/style/bootswatch/dist/journal/bootstrapDev.css";
+import "../../src/style/bootswatch/dist/js/bootstrap";
 import { UsuarioContext } from "../context/usuarioContext";
 import AlertDanger from "../screean/alertDanger";
 import store, { AppStore } from "../redux/store";

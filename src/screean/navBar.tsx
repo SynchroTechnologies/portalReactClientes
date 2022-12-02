@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import axios, { AxiosResponse } from "axios";
 import React, { useState, useEffect } from "react";
 
-import { iUsuario } from "../interfaces/usuario";
-import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
-import "bootswatch/dist/js/bootstrap";
+//import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
+//import "bootswatch/dist/js/bootstrap";
+import "../../src/style/bootswatch/dist/journal/bootstrapDev.css";
+import "../../src/style/bootswatch/dist/js/bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { AppStore } from "../redux/store";
 import { createUser, resetUser } from "../redux/states/usuarioActivo.state";
