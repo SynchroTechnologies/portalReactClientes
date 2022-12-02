@@ -1,19 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from "react";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { iUsuario } from "../../interfaces/usuario";
-import { createUser, resetUser } from "../../redux/states/usuarioActivo.state";
-import { useDispatch, useSelector } from "react-redux";
 import { iCreateRequest } from "../../interfaces/createRequest";
-import { iCase } from "../../interfaces/case";
-import { AppStore } from "../../redux/store";
 
 const { Cookies: kks } = require("react-cookie");
 const cok = new kks();
 
 export const BonitaLogOut = async () => {
   console.log("BonitaLogOut BonitaLogOut");
-  const endpoint = "http://localhost:8080/bonita/logoutservice?redirect=false";
 
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
   axios.defaults.headers.post["Content-Type"] =
@@ -64,7 +59,6 @@ export const BonitaGetProcessName = async (processName: string) => {
   }
 };
 export const BonitaUsuarioActivo = async () => {
-  let data = {};
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
   axios.defaults.headers.post["Content-Type"] =
     "application/json;charset=utf-8";
@@ -76,7 +70,6 @@ export const BonitaUsuarioActivo = async () => {
       //setUsuario(resp.data);
       window.localStorage.setItem("usuario", JSON.stringify(resp.data));
       window.localStorage.setItem("usuariousuario", JSON.stringify(resp.data));
-      data = JSON.stringify(resp.data);
     })
     .catch((error) => {
       window.localStorage.removeItem("usuario");
@@ -148,7 +141,6 @@ export const BonitaCreateCaseBonitaFechOk = async (Props: iCreateRequest) => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("X-Bonita-API-Token", X_Bonita_API_Token);
-  var urlencoded = new URLSearchParams();
 
   const raw = JSON.stringify({
     serviceRequestInput: {
@@ -156,14 +148,6 @@ export const BonitaCreateCaseBonitaFechOk = async (Props: iCreateRequest) => {
       categoria: "DBA",
       ci: "altaicare_4_0_0_OP1108",
       fechaEsperada: "2022-11-03T11:55:00",
-      descripcion: Props.descripcion,
-      prioridad: Props.prioridad,
-      estado: "",
-    },
-  });
-  const rawbkp = JSON.stringify({
-    serviceRequestInput: {
-      alarma: Props.alarma,
       descripcion: Props.descripcion,
       prioridad: Props.prioridad,
       estado: "",
@@ -453,7 +437,6 @@ export const BonitaAddCommentFetch = async (
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("X-Bonita-API-Token", X_Bonita_API_Token);
-  var urlencoded = new URLSearchParams();
 
   const raw = JSON.stringify({
     processInstanceId: caseId,
@@ -468,8 +451,6 @@ export const BonitaAddCommentFetch = async (
     credentials: "include",
   };
   RequestInit.method = "POST";
-  let url: string | undefined = process.env.REACT_APP_BASE_URL_API;
-  let a: string | undefined = process.env.REACT_APP_ADD_COMMENT;
   const BASE_URL =
     process.env.REACT_APP_BASE_URL_API + "" + process.env.REACT_APP_ADD_COMMENT;
   /*console.log("RequestInit", RequestInit);
@@ -616,11 +597,8 @@ const loginFetch = async (username: string, password: string) => {
   loginFechToBonita(username, password);
 
   async function loginFechToBonita(username: string, password: string) {
-    const [inputUsuario, setInputUsuario] = useState("");
-    const [inputPass, setInputPass] = useState("");
     type iUarioActivo = iUsuario;
     const [serviceLogin, setServiceLogin] = useState("");
-    const [usuario, setUsuario] = useState<iUarioActivo>();
     const [show, setShow] = useState(false);
     const BASE_URL = process.env.REACT_APP_BASE_URL_API;
     let urlapi = process.env.REACT_APP_API_LOGINSERVICE;
@@ -665,78 +643,4 @@ const loginFetch = async (username: string, password: string) => {
         return;
       });
   }
-};
-const getUsuarioActivo = async () => {
-  type iUarioActivo = iUsuario;
-  let iUarioActivo: iUsuario = {
-    copyright: "",
-    is_guest_user: "",
-    branding_version: "",
-    branding_version_with_date: "",
-    user_id: "",
-    user_name: "",
-    session_id: "",
-    conf: "",
-    is_technical_user: "",
-    version: "",
-  };
-  const [usuario, setUsuario] = useState<iUarioActivo>();
-
-  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-
-  axios.defaults.headers.post["Content-Type"] =
-    "application/json;charset=utf-8";
-  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-  axios.defaults.withCredentials = true;
-
-  await axios
-    .get("" + process.env.REACT_APP_API_USERACTIVE)
-    .then((resp) => {
-      let result = resp;
-      setUsuario(result.data);
-
-      console.log(result.data);
-      window.localStorage.setItem("usuario", JSON.stringify(result.data));
-      let storrageUser = JSON.stringify(window.localStorage.getItem("usuario"));
-      console.log({ storrageUser });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return;
-};
-
-const getListHumanTask = async (user_id: string) => {
-  let [cantHumanTassk, setCantHumanTassk] = useState("0");
-  if (user_id !== "") {
-    let X_Bonita_API_Token = cok.get("X-Bonita-API-Token");
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    axios.defaults.headers.get["X-Bonita-API-Token"] = X_Bonita_API_Token;
-    await axios
-      .get(
-        "" + process.env.REACT_APP_LISTHUMANTASK + user_id + "&f=caseId=28001"
-      )
-      .then((resp) => {
-        console.log(resp.data.length);
-        console.log(resp.data);
-        setCantHumanTassk(resp.data.length);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-    return cantHumanTassk;
-  } else {
-    return cantHumanTassk;
-  }
-};
-
-export default {
-  loginFetch,
-  getUsuarioActivo,
-  getListHumanTask,
 };

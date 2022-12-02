@@ -1,16 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import React, { useState, useEffect, useLayoutEffect } from "react";
-import axios, { AxiosResponse } from "axios";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { iCase } from "../interfaces/case";
 import { formatearFecha } from "../components/formatoFecha";
 import Icons from "../components/icons";
 import AlertDanger from "./alertDanger";
 import { iUsuario } from "../interfaces/usuario";
-import ApiBonita from "../apis/bonita/ApiBonita";
 import { iListTackHumanUserId } from "../interfaces/listTackHumanUserId";
 import { iListTaskHumanCompleteUser } from "../interfaces/listTaskHumanCompleteUser";
 import { iListTaskHumanMyUser } from "../interfaces/listTaskHumanMyUser";
-import apiGlpi from "../apis/glpi/ApiGlpi";
+//import apiGlpi from "../apis/glpi/ApiGlpi";
 
 const ListaTareas = () => {
   let iUarioActivo: iUsuario = {
@@ -41,11 +40,8 @@ const ListaTareas = () => {
     _iListTaskHumanCompleteUser[]
   >([]);
 
-  type caseId = iCase;
-  const [caseid, setCaseid] = useState<caseId[]>([]);
   const [show, setShow] = useState(false);
   const [usuario, setUsuario] = useState<iUsuario>(iUarioActivo);
-  const [serviceLogin, setServiceLogin] = useState("");
   const navigate = useNavigate();
 
   const navigateTo = (routeUrl: string) => {
@@ -68,7 +64,7 @@ const ListaTareas = () => {
       .then((resp) => {
         SetlistTackHumanUserId(resp.data);
         console.log(resp.data);
-        if (resp.data.length == 0) {
+        if (resp.data.length === 0) {
           console.log("lista vacia");
           setShow(true);
         } else {
@@ -93,7 +89,7 @@ const ListaTareas = () => {
       .then((resp) => {
         setListTaskHumanCompleteUser(resp.data);
         console.log("getTaskHumanCompleteUser", resp.data);
-        if (resp.data.length == 0) {
+        if (resp.data.length === 0) {
           console.log("lista vacia");
           setShow(true);
         } else {
@@ -118,7 +114,7 @@ const ListaTareas = () => {
       .then((resp) => {
         setListTaskHumanMyUser(resp.data);
         console.log("getTaskHumanMyUser", resp.data);
-        if (resp.data.length == 0) {
+        if (resp.data.length === 0) {
           console.log("lista vacia");
           setShow(true);
         } else {
@@ -132,24 +128,6 @@ const ListaTareas = () => {
     return;
   };
   //#region usuario activo
-  const usuarioActivo = async () => {
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get("" + process.env.REACT_APP_API_USERACTIVE)
-      .then((resp) => {
-        let result = resp;
-        setUsuario(result.data);
-        console.log(result.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return;
-  };
 
   useEffect(() => {
     //let apiglpis = new apiGlpi();
