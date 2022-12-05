@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { iCase } from "../interfaces/case";
 import { formatearFecha } from "../components/formatoFecha";
 import Icons from "../components/icons";
 import AlertDanger from "./alertDanger";
