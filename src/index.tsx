@@ -11,9 +11,11 @@ const root = ReactDOM.createRoot(
 
 root.render(
   /*<Glpi />*/
-  <BrowserRouter>
-    <AppRouterV1 />
-  </BrowserRouter>
+  <React.StrictMode>
+    <BrowserRouter>
+      <AppRouterV1 />
+    </BrowserRouter>
+  </React.StrictMode>
   /*<React.StrictMode>
     <App />
   </React.StrictMode>*/
