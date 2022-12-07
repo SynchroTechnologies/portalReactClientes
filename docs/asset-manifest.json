@@ -1,13 +1,21 @@
 {
   "files": {
+<<<<<<< HEAD
     "main.css": "/static/css/main.b42d5960.css",
     "main.js": "/static/js/main.65ecd6c6.js",
     "index.html": "/index.html",
     "main.b42d5960.css.map": "/static/css/main.b42d5960.css.map",
     "main.65ecd6c6.js.map": "/static/js/main.65ecd6c6.js.map"
+=======
+    "main.css": "/portalReactClientes/static/css/main.b42d5960.css",
+    "main.js": "/portalReactClientes/static/js/main.83d67e7a.js",
+    "index.html": "/portalReactClientes/index.html",
+    "main.b42d5960.css.map": "/portalReactClientes/static/css/main.b42d5960.css.map",
+    "main.83d67e7a.js.map": "/portalReactClientes/static/js/main.83d67e7a.js.map"
+>>>>>>> release_gitpage
   },
   "entrypoints": [
-    "./static/css/main.b42d5960.css",
-    "./static/js/main.65ecd6c6.js"
+    "static/css/main.b42d5960.css",
+    "static/js/main.83d67e7a.js"
   ]
 }

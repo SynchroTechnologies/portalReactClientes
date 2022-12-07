@@ -2,19 +2,30 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { BrowserRouter } from "react-router-dom";
-import AppRouterV1 from "./AppRouterV1";
+import AppRouter from "./AppRouter";
 import Glpi from "./glpi";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
-
+const pathname = window.location;
+console.log(pathname.origin);
 root.render(
   /*<Glpi />*/
-  <BrowserRouter>
-    <AppRouterV1 />
-  </BrowserRouter>
-  /*<React.StrictMode>
+  <React.StrictMode>
+    <BrowserRouter>
+      <AppRouter />
+    </BrowserRouter>
+  </React.StrictMode>
+  /*
+    <React.StrictMode>
+    <BrowserRouter>
+      <AppRouter />
+    </BrowserRouter>
+  </React.StrictMode>
+
+  
+  <React.StrictMode>
     <App />
   </React.StrictMode>*/
 );

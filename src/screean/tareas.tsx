@@ -1,19 +1,5 @@
-import Accordion from "./acordion";
 import NavBar from "./navBar";
-import fetchBonitaLogin from "../components/fetchBonitaLogin";
-import fetchCase from "../components/fetchCase";
-import unusedIdFetch from "../components/unusedIdFetch";
-import React, { useState, useContext } from "react";
-import bonitaCase from "../components/bonitaCase";
-import Cookies from "universal-cookie";
-import { Cookies as kks } from "react-cookie";
-import axios from "axios";
-import Lista from "./lista";
-import "../App.css";
-import NavBarMaster from "./NavBarMaster";
-import AccordionComponent from "../components/acordionComponent";
-import { PruebaAcordion } from "../hooks/PruebaAcordion";
-import ListaTareas from "./lista-tareas";
+import React from "react";
 import AccordionTarea from "./acordionTareas";
 
 function Tareas() {
@@ -22,9 +8,6 @@ function Tareas() {
       <div className="App">
         <NavBar />
         <AccordionTarea />
-        {/*<PruebaAcordion>
-          <ListaTareas />
-        </PruebaAcordion>*/}
       </div>
     </>
   );
