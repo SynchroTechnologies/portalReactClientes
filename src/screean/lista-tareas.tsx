@@ -1,16 +1,28 @@
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import axios, { AxiosResponse } from "axios";
 import { iCase } from "../interfaces/case";
+=======
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+>>>>>>> release
 import { formatearFecha } from "../components/formatoFecha";
 import Icons from "../components/icons";
 import AlertDanger from "./alertDanger";
 import { iUsuario } from "../interfaces/usuario";
+<<<<<<< HEAD
 import ApiBonita from "../apis/bonita/ApiBonita";
 import { iListTackHumanUserId } from "../interfaces/listTackHumanUserId";
 import { iListTaskHumanCompleteUser } from "../interfaces/listTaskHumanCompleteUser";
 import { iListTaskHumanMyUser } from "../interfaces/listTaskHumanMyUser";
 import apiGlpi from "../apis/glpi/ApiGlpi";
+=======
+import { iListTackHumanUserId } from "../interfaces/listTackHumanUserId";
+import { iListTaskHumanCompleteUser } from "../interfaces/listTaskHumanCompleteUser";
+import { iListTaskHumanMyUser } from "../interfaces/listTaskHumanMyUser";
+//import apiGlpi from "../apis/glpi/ApiGlpi";
+>>>>>>> release
 
 const ListaTareas = () => {
   let iUarioActivo: iUsuario = {
@@ -41,11 +53,16 @@ const ListaTareas = () => {
     _iListTaskHumanCompleteUser[]
   >([]);
 
+<<<<<<< HEAD
   type caseId = iCase;
   const [caseid, setCaseid] = useState<caseId[]>([]);
   const [show, setShow] = useState(false);
   const [usuario, setUsuario] = useState<iUsuario>(iUarioActivo);
   const [serviceLogin, setServiceLogin] = useState("");
+=======
+  const [show, setShow] = useState(false);
+  const [usuario, setUsuario] = useState<iUsuario>(iUarioActivo);
+>>>>>>> release
   const navigate = useNavigate();
 
   const navigateTo = (routeUrl: string) => {
@@ -68,7 +85,11 @@ const ListaTareas = () => {
       .then((resp) => {
         SetlistTackHumanUserId(resp.data);
         console.log(resp.data);
+<<<<<<< HEAD
         if (resp.data.length == 0) {
+=======
+        if (resp.data.length === 0) {
+>>>>>>> release
           console.log("lista vacia");
           setShow(true);
         } else {
@@ -93,7 +114,11 @@ const ListaTareas = () => {
       .then((resp) => {
         setListTaskHumanCompleteUser(resp.data);
         console.log("getTaskHumanCompleteUser", resp.data);
+<<<<<<< HEAD
         if (resp.data.length == 0) {
+=======
+        if (resp.data.length === 0) {
+>>>>>>> release
           console.log("lista vacia");
           setShow(true);
         } else {
@@ -118,7 +143,11 @@ const ListaTareas = () => {
       .then((resp) => {
         setListTaskHumanMyUser(resp.data);
         console.log("getTaskHumanMyUser", resp.data);
+<<<<<<< HEAD
         if (resp.data.length == 0) {
+=======
+        if (resp.data.length === 0) {
+>>>>>>> release
           console.log("lista vacia");
           setShow(true);
         } else {
@@ -132,6 +161,7 @@ const ListaTareas = () => {
     return;
   };
   //#region usuario activo
+<<<<<<< HEAD
   const usuarioActivo = async () => {
     axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
     axios.defaults.headers.post["Content-Type"] =
@@ -150,6 +180,8 @@ const ListaTareas = () => {
       });
     return;
   };
+=======
+>>>>>>> release
 
   useEffect(() => {
     //let apiglpis = new apiGlpi();

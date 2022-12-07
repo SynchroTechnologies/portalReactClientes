@@ -1,5 +1,6 @@
 import Cookies from "universal-cookie";
 import axios, { AxiosResponse } from "axios";
+<<<<<<< HEAD
 import fetchCase from "../components/fetchCase";
 import unusedIdFetch from "../components/unusedIdFetch";
 import React, { useState, useEffect } from "react";
@@ -7,6 +8,16 @@ import React, { useState, useEffect } from "react";
 import { iUsuario } from "../interfaces/usuario";
 import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
 import "bootswatch/dist/js/bootstrap";
+=======
+
+import React, { useState, useEffect } from "react";
+
+import { iUsuario } from "../interfaces/usuario";
+//import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
+//import "bootswatch/dist/js/bootstrap";
+import "../../src/style/bootswatch/dist/journal/bootstrapDev.css";
+import "../../src/style/bootswatch/dist/js/bootstrap";
+>>>>>>> release
 //import "../App.css";
 
 function NavBarMaster() {

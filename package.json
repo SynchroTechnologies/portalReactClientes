@@ -20,6 +20,10 @@
     "date-fns": "^2.29.3",
     "es-cookie": "^1.4.0",
     "fs": "^0.0.1-security",
+<<<<<<< HEAD
+=======
+    "gh-pages": "^4.0.0",
+>>>>>>> release
     "glpi-api": "^1.6.1",
     "glpi-client": "^2.0.0",
     "json-api-serializer": "^2.6.6",
@@ -41,6 +45,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "deployinmaster": "gh-pages -b master -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

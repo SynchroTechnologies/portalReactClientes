@@ -1,5 +1,6 @@
 {
   "files": {
+<<<<<<< HEAD
     "main.css": "./static/css/main.b42d5960.css",
     "main.js": "./static/js/main.cd13b298.js",
     "index.html": "./index.html",
@@ -11,3 +12,16 @@
     "./static/js/main.cd13b298.js"
   ]
 }
+=======
+    "main.css": "/static/css/main.b42d5960.css",
+    "main.js": "/static/js/main.83d67e7a.js",
+    "index.html": "/index.html",
+    "main.b42d5960.css.map": "/static/css/main.b42d5960.css.map",
+    "main.83d67e7a.js.map": "/static/js/main.83d67e7a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b42d5960.css",
+    "static/js/main.83d67e7a.js"
+  ]
+}
+>>>>>>> release

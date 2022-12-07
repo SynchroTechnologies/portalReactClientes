@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "short_name": "React App",
+=======
+  "short_name": "Portal Cliente",
+>>>>>>> release
   "name": "Create React App Sample",
   "icons": [
     {

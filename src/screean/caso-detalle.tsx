@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState, useContext, useEffect } from "react";
+=======
+import React, { useState, useEffect } from "react";
+>>>>>>> release
 import NavBar from "./navBar";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
@@ -6,6 +10,7 @@ import ChildFormCasoDetalle from "../components/childFormCasoDetalle";
 import { iCase } from "../interfaces/case";
 import { iListCaseForClient } from "../interfaces/listCaseClient";
 import CasoConDetalle from "./casoConDetalle";
+<<<<<<< HEAD
 import apiBonita, {
   BonitaCaseForId,
   BonitaGetHumeanTaskUserCase,
@@ -14,6 +19,10 @@ import apiBonita, {
 import { iUsuario } from "../interfaces/usuario";
 const { Cookies: kks } = require("react-cookie");
 const cok = new kks();
+=======
+import { BonitaCaseForId, BonitaUsuarioActivo } from "../apis/bonita/ApiBonita";
+import { iUsuario } from "../interfaces/usuario";
+>>>>>>> release
 
 const CasoDetalle = () => {
   let iUarioActivo: iUsuario = {
@@ -42,6 +51,7 @@ const CasoDetalle = () => {
     console.log("caso en null");
   }
   const [show, setShow] = useState(false);
+<<<<<<< HEAD
   let [cantHumanTassk, setCantHumanTassk] = useState();
   const showModal = (view: boolean) => {
     setShow(view);
@@ -104,6 +114,11 @@ const CasoDetalle = () => {
       });
     return;*/
   };
+=======
+
+  //#region caseForId
+
+>>>>>>> release
   const caseForIdNew = async (id: string) => {
     //setCaseList([]);
     setShow(false);
@@ -164,6 +179,7 @@ const CasoDetalle = () => {
       });
     return;
   };
+<<<<<<< HEAD
   const getHumanTask = async (user_id: string) => {
     if (user_id !== "") {
       let X_Bonita_API_Token = cok.get("X-Bonita-API-Token");
@@ -225,6 +241,8 @@ const CasoDetalle = () => {
       });
     return;*/
   };
+=======
+>>>>>>> release
   const usuarioActivo = async () => {
     await BonitaUsuarioActivo()
       .then((resp) => {

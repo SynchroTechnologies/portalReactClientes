@@ -5,6 +5,7 @@ import { Cookies as kks } from "react-cookie";
 import axios, { AxiosResponse } from "axios";
 import fetchBonitaLogin from "../components/fetchBonitaLogin";
 import fetchCase from "../components/fetchCase";
+<<<<<<< HEAD
 import unusedIdFetch from "../components/unusedIdFetch";
 
 import { useNavigate } from "react-router-dom";
@@ -12,6 +13,15 @@ import { iUsuario } from "../interfaces/usuario";
 import bonitaCase from "../components/bonitaCase";
 import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
 import "bootswatch/dist/js/bootstrap";
+=======
+
+import { useNavigate } from "react-router-dom";
+import { iUsuario } from "../interfaces/usuario";
+//import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
+//import "bootswatch/dist/js/bootstrap";
+import "../../src/style/bootswatch/dist/journal/bootstrapDev.css";
+import "../../src/style/bootswatch/dist/js/bootstrap";
+>>>>>>> release
 
 import { idText } from "typescript";
 

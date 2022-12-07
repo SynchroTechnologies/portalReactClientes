@@ -1,7 +1,17 @@
+<<<<<<< HEAD
 import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
 import "bootswatch/dist/js/bootstrap";
 import React, { useState, useEffect } from "react";
 import Lista from "../screean/lista";
+=======
+//import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
+//import "bootswatch/dist/js/bootstrap";
+import "../../src/style/bootswatch/dist/journal/bootstrapDev.css";
+import "../../src/style/bootswatch/dist/js/bootstrap";
+import "bootswatch/dist/js/bootstrap";
+
+import React from "react";
+>>>>>>> release
 
 //JSXElement: JSX.Element,
 const AccordionComponent = (): JSX.Element => {

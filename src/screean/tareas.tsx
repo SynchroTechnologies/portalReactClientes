@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Accordion from "./acordion";
 import NavBar from "./navBar";
 import fetchBonitaLogin from "../components/fetchBonitaLogin";
@@ -14,6 +15,10 @@ import NavBarMaster from "./NavBarMaster";
 import AccordionComponent from "../components/acordionComponent";
 import { PruebaAcordion } from "../hooks/PruebaAcordion";
 import ListaTareas from "./lista-tareas";
+=======
+import NavBar from "./navBar";
+import React from "react";
+>>>>>>> release
 import AccordionTarea from "./acordionTareas";
 
 function Tareas() {
@@ -22,9 +27,12 @@ function Tareas() {
       <div className="App">
         <NavBar />
         <AccordionTarea />
+<<<<<<< HEAD
         {/*<PruebaAcordion>
           <ListaTareas />
         </PruebaAcordion>*/}
+=======
+>>>>>>> release
       </div>
     </>
   );
