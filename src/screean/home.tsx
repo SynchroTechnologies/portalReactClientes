@@ -26,15 +26,8 @@ const Home = () => {
   };
   const { user_name } = { ...SelectorUsuarioActivo };
 
-  console.log("SelectorUsuarioActivo: ", SelectorUsuarioActivo.user_name);
-  console.log("SelectorUsuarioActivo::: ", user_name);
-
-  console.log("SelectorUsuarioActivo::: ", SelectorUsuarioActivo);
+  console.log({ user_name });
   const dss = JSON.parse(JSON.stringify(SelectorUsuarioActivo));
-  user = dss;
-  console.log("SelectorUsuarioActivo dss ", dss);
-  console.log("SelectorUsuarioActivo dss user_id", user.user_id);
-  console.log("SelectorUsuarioActivo dss user", user.user_name);
   const dispatch = useDispatch();
   const usuarioActivo = async () => {
     console.log("await BonitaUsuarioActivo");

@@ -33,8 +33,8 @@ function NavBar() {
       const bonitaUsuarioActivo = await BonitaUsuarioActivo();
       if (bonitaUsuarioActivo.status === 200) {
         console.log({ bonitaLoginAxios });
-        await dispatch(createUser(bonitaUsuarioActivo.data));
-        await managenUsuarioState(bonitaUsuarioActivo.data);
+        //await dispatch(createUser(bonitaUsuarioActivo.data));
+        //await managenUsuarioState(bonitaUsuarioActivo.data);
       } else {
         console.log({ bonitaLoginAxios });
         bonitaLoginAxios = false;
@@ -58,7 +58,7 @@ function NavBar() {
     console.log("await BonitaUsuarioActivo");
     if (bonitaUsuarioActivo.status === 200) {
       await dispatch(createUser(bonitaUsuarioActivo.data));
-      await managenUsuarioState(bonitaUsuarioActivo.data);
+      //await managenUsuarioState(bonitaUsuarioActivo.data);
       setUsuario(bonitaUsuarioActivo.data);
       setServiceLogin("Login Success " + bonitaUsuarioActivo.data.status);
     } else {
@@ -132,7 +132,7 @@ function NavBar() {
                             <li>
                               <a
                                 className="dropdown-item"
-                                href="/case-nombre-proceso"
+                                href="/caso-nombre-proceso"
                               >
                                 Por proceso
                               </a>
@@ -147,7 +147,7 @@ function NavBar() {
                             <li>
                               <a
                                 className="dropdown-item"
-                                href="/casearchivedbyid"
+                                href="/caso-archivado-por-id"
                               >
                                 Por id
                               </a>
@@ -206,7 +206,7 @@ function NavBar() {
                             <li>
                               <a
                                 className="dropdown-item"
-                                href="/case-nombre-proceso"
+                                href="/caso-nombre-proceso"
                               >
                                 Por proceso
                               </a>
@@ -221,7 +221,7 @@ function NavBar() {
                             <li>
                               <a
                                 className="dropdown-item"
-                                href="/casearchivedbyid"
+                                href="/caso-archivado-por-id"
                               >
                                 Por id
                               </a>

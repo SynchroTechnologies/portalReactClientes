@@ -117,7 +117,7 @@ const CasoConDetalle = () => {
   };
 
   const LimpiarUseState = () => {
-    const [caseid, setCaseid] = useState<listCaseForClient>();
+    // const [caseid, setCaseid] = useState<listCaseForClient>();
   };
   const [caseid, setCaseid] = useState<listCaseForClient>(elcase);
 
@@ -150,7 +150,7 @@ const CasoConDetalle = () => {
       })
       .catch((error: any) => {
         console.log(error);
-        LimpiarUseState();
+        //LimpiarUseState();
         setisVisible(false);
         return;
       });
@@ -174,7 +174,7 @@ const CasoConDetalle = () => {
       })
       .catch((error: any) => {
         console.log(error);
-        LimpiarUseState();
+        //LimpiarUseState();
         setisVisible(false);
         return;
       });
@@ -208,7 +208,7 @@ const CasoConDetalle = () => {
       })
       .catch((error: any) => {
         console.log(error);
-        LimpiarUseState();
+        //LimpiarUseState();
         setisVisible(false);
         return;
       });

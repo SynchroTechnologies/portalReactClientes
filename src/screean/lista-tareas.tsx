@@ -5,9 +5,18 @@ import { formatearFecha } from "../components/formatoFecha";
 import Icons from "../components/icons";
 import AlertDanger from "./alertDanger";
 import { iUsuario } from "../interfaces/usuario";
-import { iListTackHumanUserId } from "../interfaces/listTackHumanUserId";
+import { iListTaskHumanUserId } from "../interfaces/listTaskHumanUserId";
 import { iListTaskHumanCompleteUser } from "../interfaces/listTaskHumanCompleteUser";
 import { iListTaskHumanMyUser } from "../interfaces/listTaskHumanMyUser";
+import {
+  BonitaGetTaskHumanCompleteUser,
+  BonitaGetTaskHumanMyUser,
+  BonitaGetTaskHumanOpen,
+  BonitaUsuarioActivo,
+} from "../apis/bonita/ApiBonita";
+import { useDispatch } from "react-redux";
+import { createUser } from "../redux/states/usuarioActivo.state";
+import { managenUsuarioState } from "../apis/bonita/persist.data.service";
 //import apiGlpi from "../apis/glpi/ApiGlpi";
 
 const ListaTareas = () => {
@@ -26,10 +35,10 @@ const ListaTareas = () => {
 
   type _iListTaskHumanMyUser = iListTaskHumanMyUser;
   type _iListTaskHumanCompleteUser = iListTaskHumanCompleteUser;
-  type _listTackHumanUserId = iListTackHumanUserId;
+  type _listTaskHumanUserId = iListTaskHumanUserId;
 
   const [listTackHumanUserId, SetlistTackHumanUserId] = useState<
-    _listTackHumanUserId[]
+    _listTaskHumanUserId[]
   >([]);
   const [listTaskHumanMyUser, setListTaskHumanMyUser] = useState<
     _iListTaskHumanMyUser[]
@@ -42,24 +51,19 @@ const ListaTareas = () => {
   const [show, setShow] = useState(false);
   const [usuario, setUsuario] = useState<iUsuario>(iUarioActivo);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [serviceLogin, setServiceLogin] = useState("");
 
   const navigateTo = (routeUrl: string) => {
-    const url = `/caso-detalle/?id=${routeUrl}`;
+    const url = `/tarea-detalle/?id=${routeUrl}`;
     navigate(url);
   };
+
+  //#region getTaskHumanOpen
   const getTaskHumanOpen = async (user_id: string) => {
     let userId = usuario.user_id;
     console.log({ userId });
-    console.log("usuario", usuario);
-
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get("" + process.env.REACT_APP_LISTHUMANTASK + user_id)
+    await BonitaGetTaskHumanOpen(user_id)
       .then((resp) => {
         SetlistTackHumanUserId(resp.data);
         console.log(resp.data);
@@ -75,16 +79,12 @@ const ListaTareas = () => {
       });
     return;
   };
+  //#endregion
+
+  //#region getTaskHumanCompleteUser
   const getTaskHumanCompleteUser = async (user_id: string) => {
     console.log({ user_id });
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get("" + process.env.REACT_APP_HUMANTASK_COMPLETE_USER + user_id)
-      //.get("" + user_id)
+    await BonitaGetTaskHumanCompleteUser(user_id)
       .then((resp) => {
         setListTaskHumanCompleteUser(resp.data);
         console.log("getTaskHumanCompleteUser", resp.data);
@@ -101,9 +101,29 @@ const ListaTareas = () => {
       });
     return;
   };
+  //#endregion
+
+  //#region getTaskHumanMyUser
   const getTaskHumanMyUser = async (user_id: string) => {
     console.log({ user_id });
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+    await BonitaGetTaskHumanMyUser(user_id)
+      .then((resp) => {
+        setListTaskHumanMyUser(resp.data);
+        console.log("getTaskHumanMyUser", resp.data);
+        if (resp.data.length === 0) {
+          console.log("lista vacia");
+          setShow(true);
+        } else {
+          setShow(false);
+        }
+      })
+      .catch((error: any) => {
+        setShow(true);
+        console.log(error);
+      });
+    return;
+
+    /*axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
     axios.defaults.headers.post["Content-Type"] =
       "application/json;charset=utf-8";
     axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
@@ -124,22 +144,33 @@ const ListaTareas = () => {
         setShow(true);
         console.log(error);
       });
+    return;*/
+  };
+
+  //#region usuarioActivo
+  const usuarioActivo = async () => {
+    console.log("await BonitaUsuarioActivo");
+    const bonitaUsuarioActivo = await BonitaUsuarioActivo();
+    console.log("await BonitaUsuarioActivo");
+    if (bonitaUsuarioActivo.status === 200) {
+      console.log(bonitaUsuarioActivo.status);
+      setUsuario(bonitaUsuarioActivo.data);
+      setServiceLogin("Login Success " + bonitaUsuarioActivo.data.status);
+      //await dispatch(createUser(bonitaUsuarioActivo.data));
+      //await managenUsuarioState(bonitaUsuarioActivo.data);
+    } else {
+      setServiceLogin("Login No Success");
+      console.log("await BonitaUsuarioActivo");
+    }
     return;
   };
-  //#region usuario activo
 
+  //#endregion
+
+  //#region useEffect
   useEffect(() => {
-    //let apiglpis = new apiGlpi();
-    //apiglpis.loginGlpi();
-    //usuarioActivo();
-    //getTaskHumanMyUser(usuario.user_id);
-    //getTaskHumanOpen(usuario.user_id);
+    usuarioActivo();
   }, []);
-  //#endregion
-
-  //#endregion
-  //#region ini
-
   //#endregion
 
   //#region alert
@@ -150,7 +181,9 @@ const ListaTareas = () => {
       return <p>{msj}</p>;
     }
   };
+  //#endregion
 
+  //#region renderizacion
   const tabTaskActive = (
     <div>
       <div
@@ -384,7 +417,6 @@ const ListaTareas = () => {
       Tareas realizadas <Icons />
     </a>
   );
-  //endregion
 
   return (
     <>
@@ -412,6 +444,7 @@ const ListaTareas = () => {
       </div>
     </>
   );
+  //#endregion
 };
 
 export default ListaTareas;

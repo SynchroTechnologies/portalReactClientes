@@ -14,6 +14,7 @@ import NuevoServiceRequest from "./screean/nuevo-Service-Request";
 import Tareas from "./screean/tareas";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import TareaDetalle from "./screean/tarea-detalle";
 
 export const AppContext = React.createContext({});
 
@@ -76,7 +77,7 @@ export default function AppRouter() {
             errorElement={<ErrorPage />}
           />
           <Route
-            path="/case-nombre-proceso"
+            path="/caso-nombre-proceso"
             element={
               <ProtectedRoute>
                 <CaseByNameProcess />
@@ -85,7 +86,7 @@ export default function AppRouter() {
             errorElement={<ErrorPage />}
           />
           <Route
-            path="/caseArchivedById"
+            path="/caso-archivado-por-id"
             element={
               <ProtectedRoute>
                 <CaseArchivedById />
@@ -116,6 +117,15 @@ export default function AppRouter() {
             element={
               <ProtectedRoute>
                 <CasoDetalle />
+              </ProtectedRoute>
+            }
+            errorElement={<ErrorPage />}
+          />
+          <Route
+            path="/tarea-detalle"
+            element={
+              <ProtectedRoute>
+                <TareaDetalle />
               </ProtectedRoute>
             }
             errorElement={<ErrorPage />}

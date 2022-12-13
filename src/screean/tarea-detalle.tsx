@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "./navBar";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
-import ChildFormCasoDetalle from "../components/childFormCasoDetalle";
 import { iCase } from "../interfaces/case";
 import { iListCaseForClient } from "../interfaces/listCaseClient";
-import CasoConDetalle from "./casoConDetalle";
-import { BonitaCaseForId, BonitaUsuarioActivo } from "../apis/bonita/ApiBonita";
+import { BonitaTaskById, BonitaUsuarioActivo } from "../apis/bonita/ApiBonita";
 import { iUsuario } from "../interfaces/usuario";
+import ChildFormTareaDetalle from "../components/childFormTareaDetalle";
+import TareaConDetalle from "./tareaConDetalle";
+import { iListTaskHumanUserId } from "../interfaces/listTaskHumanUserId";
 
-const CasoDetalle = () => {
+const TareaDetalle = () => {
   let iUarioActivo: iUsuario = {
     copyright: "",
     is_guest_user: "",
@@ -23,51 +23,48 @@ const CasoDetalle = () => {
     version: "",
   };
   const query = new URLSearchParams(useLocation().search);
-  const idCaso = query.get("id");
+  const idTask = query.get("id");
   type caseId = iCase;
-  const [caseid, setCaseid] = useState<caseId>();
+  const [taskId, setTaskId] = useState<caseId>();
   const [usuario, setUsuario] = useState<iUsuario>(iUarioActivo);
-  const [caseList, setCaseList] = useState<iListCaseForClient[]>([]);
-  //const [caseList, setCaseList] = useState([]);
+  const [taskList, setTaskList] = useState<iListTaskHumanUserId[]>([]);
 
   const [cantTask, setCantTask] = useState(0);
   //setCaseid(data);
-  if (idCaso == null) {
+  if (idTask == null) {
     console.log("caso en null");
   }
   const [show, setShow] = useState(false);
 
   //#region caseForId
 
-  const caseForIdNew = async (id: string) => {
+  const taskById = async (id: string) => {
     //setCaseList([]);
     setShow(false);
     let idint = parseInt(id);
     if (idint <= 0) {
       console.log("no es mayor a cero");
       setShow(false);
-      return;
     }
 
-    await BonitaCaseForId(id)
+    await BonitaTaskById(id)
       .then((resp) => {
         let result = resp;
-        setCaseid(result.data[0]);
-        setCaseList(result.data);
-
+        setTaskId(result.data[0]);
+        setTaskList(result.data);
         console.log(result.data);
         setShow(true);
-        //return;
       })
       .catch((error: any) => {
         console.log(error);
         setShow(false);
-        //return;
       });
     return;
   };
+
   //#endregion
 
+  //#region usuario activo
   const usuarioActivo = async () => {
     await BonitaUsuarioActivo()
       .then((resp) => {
@@ -105,20 +102,33 @@ const CasoDetalle = () => {
 
   //#region useEffect
   useEffect(() => {
-    usuarioActivo();
+    console.log("useEffect(()useEffect(()useEffect(()");
+    const usuario = async () => {
+      console.log("useEffect(()useEffect(()useEffect(()");
+      await BonitaUsuarioActivo()
+        .then((resp) => {
+          let result = resp;
+          setUsuario(result.data);
+          console.log(result.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      usuario();
+    };
   }, []);
   //#endregion
 
   //#region renderizacion
-  const leerCaso = () => {
-    if (idCaso == null || idCaso.length <= 0) {
+  const renderizarTarea = () => {
+    if (idTask == null || idTask.length <= 0) {
       return (
         <>
           <div className="App">
             <div>
               <div className="container ">
                 <div className="row shadow p-2 mb-3 bg-white rounded">
-                  <div className="row">No encontramos el caso buscado</div>
+                  <div className="row">No encontramos la tarea buscada</div>
                 </div>
               </div>
             </div>
@@ -130,10 +140,7 @@ const CasoDetalle = () => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
           usuarioActivo();
-          //caseForId(idCaso);
-          caseForIdNew(idCaso);
-          //getHumeanTaskUserCase(usuario.user_id, idCaso);
-          //getHumanTadk("18");
+          taskById(idTask);
         }, []);
         return (
           <>
@@ -145,7 +152,7 @@ const CasoDetalle = () => {
                       <div className="col">
                         {" "}
                         <div></div>
-                        <CasoConDetalle />
+                        <TareaConDetalle />
                       </div>
                     </div>
                   </div>
@@ -159,13 +166,13 @@ const CasoDetalle = () => {
         useEffect(() => {
           usuarioActivo();
           //caseForId(idCaso);
-          caseForIdNew(idCaso);
+          taskById(idTask);
           //getHumeanTaskUserCase(usuario.user_id, idCaso);
           //getHumanTadk("18");
         }, []);
         //caseForId(idCaso);
         if (show) {
-          if (caseList.length >= 0) {
+          if (taskList.length >= 0) {
             return (
               <>
                 <div className="App">
@@ -178,18 +185,18 @@ const CasoDetalle = () => {
                             <div></div>
                             <div>
                               {" "}
-                              <ChildFormCasoDetalle
-                                idAcordion={"Incidente"}
-                                titleAcordion={"Incidentes"}
-                                cardHeader={"ID del Caso : " + caseList[0].id}
+                              <ChildFormTareaDetalle
+                                idAcordion={"Tarea"}
+                                titleAcordion={"Tareas"}
+                                cardHeader={"ID tarea : " + taskList[0].id}
                                 cardTitle={""}
                                 textButton={"A"}
                                 body={""}
                                 routeUrl="routeUrl"
                                 style={"danger"}
                                 data={"danger"}
-                                casoId={idCaso}
-                                caseData={caseList[0]}
+                                taskId={idTask}
+                                taskData={taskList[0]}
                                 cantTask={cantTask}
                               />
                             </div>
@@ -222,10 +229,10 @@ const CasoDetalle = () => {
   return (
     <>
       <NavBar />
-      {leerCaso()}
+      {renderizarTarea()}
     </>
   );
   //#endregion
 };
 
-export default CasoDetalle;
+export default TareaDetalle;

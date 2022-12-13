@@ -5,7 +5,7 @@ import React, {
   useContext,
   useReducer,
 } from "react";
-
+import axios from "axios";
 import { IGlpilogin } from "../interfaces/gLpi/login";
 import { useNavigate, Link } from "react-router-dom";
 import { iUsuario } from "../interfaces/usuario";
@@ -29,7 +29,7 @@ import {
   Glpi_GetTicket,
   Glpi_GetMyEnties,
   Glpi_Login2,
-} from "../apis/glpi/public.service";
+} from "../apis/glpi/publicservice";
 import { UseLocalStorage } from "../auth/useLocalStorage";
 import {
   createSessionToken,
@@ -167,11 +167,40 @@ function Login() {
     return login;
   };
 
+  const loginAxiosGlpi = async () => {
+    await Glpi_Login()
+      .then((resp) => {
+        if (resp.status === 200) {
+          console.log(resp.data);
+        } else {
+          console.log(resp.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return;
+    const config = {
+      method: "get",
+      url: "https://glpi.apps.synchro.com.ar/apirest.php/initSession",
+      headers: {
+        Authorization: "'user_token' Qb8ETzMRCBj8E5mV8e83mIpZnbBjssxvsZ7HCyuJ",
+        "App-Token": "JPgp2P6F38ZyWbjM1u8OyCEtXCd8Fj8Cl5KWhtiA",
+      },
+    };
+    console.log(JSON.stringify(config));
+    await axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    return;
+  };
   const loginFetchGlpi = async () => {
-    // const lglpi = await loginGlpi;
     await glpiloginfech();
-    //console.log(lglpi);
-    //loginFechToBonita(username, password);
     async function glpiloginfech() {
       const appToken = process.env.REACT_APP_GLPI_TOKEN;
       const authorization = process.env.REACT_APP_GLPI_AUTHORIZATION;
@@ -255,6 +284,12 @@ function Login() {
                     <form>
                       <fieldset>
                         <div className="form-group">
+                          <a
+                            className="btn btn-succes"
+                            onClick={() => loginAxiosGlpi()}
+                          >
+                            login glpi
+                          </a>
                           <label className="form-label mt-4">Usuario</label>
                           <input
                             type="text"

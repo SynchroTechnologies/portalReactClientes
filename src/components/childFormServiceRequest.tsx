@@ -104,7 +104,7 @@ const ChildFormServiceRequest: React.FC<Props> = ({
 
     setTimeout(function () {
       navigateTo("/app");
-    }, 7000);
+    }, 4000);
   };
 
   const createCaseBonitaFechOk = async (processId: string) => {

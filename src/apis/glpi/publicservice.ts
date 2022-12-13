@@ -38,12 +38,6 @@ const callDispatchs = async (data: any, action: string) => {
 export const Glpi_Login = async () => {
   console.log("export const Glpi_Login = ");
 
-  //const sessionTokenGlpiSlice = useSelector(
-  //  (store: AppStore) => store.sessionTokenGlpiSlice
-  //);
-  //const dispatch = useDispatch();
-  //const [glpiSssion_token, SetGlpiSssion_token] = useState("");
-
   console.log("ingreso a export const loginGlpi = ");
   axios.defaults.baseURL = "https://glpi.apps.synchro.com.ar";
   axios.defaults.headers.post["Content-Type"] =
@@ -55,15 +49,25 @@ export const Glpi_Login = async () => {
   //axios.defaults.headers.post["App-Token"] =
   //  "Pgp2P6F38ZyWbjM1u8OyCEtXCd8Fj8Cl5KWhtiA";
 
-  /* axios.defaults.headers.get["Content-Type"] = "application/json;charset=utf-8";
+  axios.defaults.headers.get["Content-Type"] = "application/json;charset=utf-8";
   axios.defaults.headers.get["Access-Control-Allow-Origin"] = "*";
   axios.defaults.headers.get["Authorization"] =
     "" + process.env.REACT_APP_GLPI_AUTHORIZATION;
   axios.defaults.headers.get["App-Token"] =
-    "" + process.env.REACT_APP_GLPI_TOKEN; */
+    "" + process.env.REACT_APP_GLPI_TOKEN;
 
-  console.log(" axios.defaults.headers", { axios });
-  console.log(" axios", JSON.stringify(axios));
+  console.log(" axios.defaults.headers", axios);
+  console.log(" axios", JSON.stringify(axios.defaults.headers.get));
+
+  console.log(
+    " process.env.REACT_APP_GLPI_AUTHORIZATION",
+    process.env.REACT_APP_GLPI_AUTHORIZATION
+  );
+
+  console.log(
+    " process.env.REACT_APP_GLPI_TOKEN",
+    process.env.REACT_APP_GLPI_TOKEN
+  );
 
   /* await axios
     .get("/apirest.php/initSession")
@@ -127,7 +131,6 @@ Promise<AxiosResponse<Response>> => {
         console.log("export const loginGlpi = ", result.status);
         return;
       }
-      //dispatch(resetSessionToken());
       window.localStorage.removeItem("glpiSssion_token");
       console.log("export const loginGlpi = ", result.status);
       return;

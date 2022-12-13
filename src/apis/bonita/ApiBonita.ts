@@ -3,10 +3,121 @@ import { useState } from "react";
 import axios from "axios";
 import { iUsuario } from "../../interfaces/usuario";
 import { iCreateRequest } from "../../interfaces/createRequest";
+import { createUser } from "../../redux/states/usuarioActivo.state";
+import { useDispatch } from "react-redux";
 
 const { Cookies: kks } = require("react-cookie");
 const cok = new kks();
 
+export const BonitaTaskById = async (id: string) => {
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  /*await axios
+      .get(process.env.REACT_APP_TASK_BY_ID + id)
+      .then((resp) => {
+        let result = resp;
+        setCaseid(result.data);
+        console.log("setCaseId", caseid);
+        if (result.data.length == 0) {
+          console.log("lista vacia");
+          setShow(true);
+        } else {
+          setShow(false);
+        }
+        setCaseid(result.data);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });*/
+  return await axios.get(process.env.REACT_APP_TASK_BY_ID + id);
+};
+export const BonitaGetTaskHumanOpen = async (user_id: string) => {
+  console.log({ user_id });
+  console.log("usuario", user_id);
+
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  /* await axios
+      .get("" + process.env.REACT_APP_LISTHUMANTASK + user_id)
+      .then((resp) => {
+        SetlistTackHumanUserId(resp.data);
+        console.log(resp.data);
+        if (resp.data.length === 0) {
+          console.log("lista vacia");
+          setShow(true);
+        } else {
+          setShow(false);
+        }
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });*/
+
+  return await axios.get("" + process.env.REACT_APP_LISTHUMANTASK + user_id);
+};
+export const BonitaGetTaskHumanCompleteUser = async (user_id: string) => {
+  console.log({ user_id });
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  /*await axios
+    .get("" + process.env.REACT_APP_HUMANTASK_COMPLETE_USER + user_id)
+    //.get("" + user_id)
+    .then((resp) => {
+      setListTaskHumanCompleteUser(resp.data);
+      console.log("getTaskHumanCompleteUser", resp.data);
+      if (resp.data.length === 0) {
+        console.log("lista vacia");
+        setShow(true);
+      } else {
+        setShow(false);
+      }
+    })
+    .catch((error: any) => {
+      setShow(true);
+      console.log(error);
+    });
+*/
+  return await axios.get(
+    "" + process.env.REACT_APP_HUMANTASK_COMPLETE_USER + user_id
+  );
+};
+export const BonitaGetTaskHumanMyUser = async (user_id: string) => {
+  console.log({ user_id });
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  /*await axios
+    .get("" + process.env.REACT_APP_HUMANTASK_MY_USER + user_id)
+    .then((resp) => {
+      setListTaskHumanMyUser(resp.data);
+      console.log("getTaskHumanMyUser", resp.data);
+      if (resp.data.length === 0) {
+        console.log("lista vacia");
+        setShow(true);
+      } else {
+        setShow(false);
+      }
+    })
+    .catch((error: any) => {
+      setShow(true);
+      console.log(error);
+    });*/
+  return await axios.get(
+    "" + process.env.REACT_APP_HUMANTASK_MY_USER + user_id
+  );
+};
+//#reg
 export const BonitaLogOut = async () => {
   console.log("BonitaLogOut BonitaLogOut");
 
@@ -68,8 +179,13 @@ export const BonitaUsuarioActivo = async () => {
     .get("" + process.env.REACT_APP_API_USERACTIVE)
     .then((resp) => {
       //setUsuario(resp.data);
-      window.localStorage.setItem("usuario", JSON.stringify(resp.data));
-      window.localStorage.setItem("usuariousuario", JSON.stringify(resp.data));
+      if (resp.status === 200) {
+        window.localStorage.setItem("usuario", JSON.stringify(resp.data));
+        window.localStorage.setItem(
+          "usuariousuario",
+          JSON.stringify(resp.data)
+        );
+      }
     })
     .catch((error) => {
       window.localStorage.removeItem("usuario");

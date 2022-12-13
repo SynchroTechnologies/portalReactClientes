@@ -13,7 +13,7 @@ export interface RootContainerId {
   actorinitiatorid: string;
 }
 
-export interface iListTackHumanUserId {
+export interface iListTaskHumanUserId {
   displayDescription: string;
   executedBy: string;
   rootContainerId: RootContainerId;
