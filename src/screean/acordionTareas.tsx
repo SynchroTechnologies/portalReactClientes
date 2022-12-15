@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
-import "bootswatch/dist/js/bootstrap";
-=======
 //import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
 //import "bootswatch/dist/js/bootstrap";
 import "../../src/style/bootswatch/dist/journal/bootstrapDev.css";
 import "../../src/style/bootswatch/dist/js/bootstrap";
->>>>>>> release
 import React from "react";
 import ListaTareas from "./lista-tareas";
 

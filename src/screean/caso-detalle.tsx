@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useState, useContext, useEffect } from "react";
-=======
 import React, { useState, useEffect } from "react";
->>>>>>> release
 import NavBar from "./navBar";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
@@ -10,19 +6,8 @@ import ChildFormCasoDetalle from "../components/childFormCasoDetalle";
 import { iCase } from "../interfaces/case";
 import { iListCaseForClient } from "../interfaces/listCaseClient";
 import CasoConDetalle from "./casoConDetalle";
-<<<<<<< HEAD
-import apiBonita, {
-  BonitaCaseForId,
-  BonitaGetHumeanTaskUserCase,
-  BonitaUsuarioActivo,
-} from "../apis/bonita/ApiBonita";
-import { iUsuario } from "../interfaces/usuario";
-const { Cookies: kks } = require("react-cookie");
-const cok = new kks();
-=======
 import { BonitaCaseForId, BonitaUsuarioActivo } from "../apis/bonita/ApiBonita";
 import { iUsuario } from "../interfaces/usuario";
->>>>>>> release
 
 const CasoDetalle = () => {
   let iUarioActivo: iUsuario = {
@@ -51,74 +36,9 @@ const CasoDetalle = () => {
     console.log("caso en null");
   }
   const [show, setShow] = useState(false);
-<<<<<<< HEAD
-  let [cantHumanTassk, setCantHumanTassk] = useState();
-  const showModal = (view: boolean) => {
-    setShow(view);
-  };
-
-  //#region caseForId
-  const caseForIdb = async (id: string) => {
-    setCaseList([]);
-    setShow(false);
-    let idint = parseInt(id);
-    if (idint <= 0) {
-      console.log("no es mayor a cero");
-      setShow(false);
-      return;
-    }
-
-    await BonitaCaseForId(id)
-      .then((resp) => {
-        let result = resp;
-        setCaseid(result.data);
-        setCaseList(result.data);
-        console.log(result.data);
-        setShow(true);
-        //return;
-      })
-      .catch((error: any) => {
-        console.log(error);
-        setShow(false);
-        //return;
-      });
-    return;
-    /*
-    setShow(true);
-    return;
-    //setCaseid(result);
-
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get(
-        process.env.REACT_APP_GET_CASEFORID +
-          id +
-          "?d=processDefinitionId&d=started_by&d=startedBySubstitute"
-      )
-      .then((resp) => {
-        let result = resp;
-        setCaseid(result.data);
-
-        setShow(true);
-        return;
-      })
-      .catch((error: any) => {
-        console.log(error);
-        setShow(false);
-        return;
-      });
-    return;*/
-  };
-=======
 
   //#region caseForId
 
->>>>>>> release
   const caseForIdNew = async (id: string) => {
     //setCaseList([]);
     setShow(false);
@@ -179,70 +99,6 @@ const CasoDetalle = () => {
       });
     return;
   };
-<<<<<<< HEAD
-  const getHumanTask = async (user_id: string) => {
-    if (user_id !== "") {
-      let X_Bonita_API_Token = cok.get("X-Bonita-API-Token");
-      axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-
-      axios.defaults.headers.post["Content-Type"] =
-        "application/json;charset=utf-8";
-      axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-      axios.defaults.withCredentials = true;
-      axios.defaults.headers.get["X-Bonita-API-Token"] = X_Bonita_API_Token;
-
-      await axios
-        .get("" + process.env.REACT_APP_LISTHUMANTASK + user_id)
-        .then((resp) => {
-          console.log("getHumanTadk", resp.data.length);
-          //setCantHumanTassk(resp.data.length);
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-      return;
-    } else {
-      return;
-    }
-  };
-  const getHumeanTaskUserCase = async (user_id: string, caso_id: string) => {
-    /* await usuarioActivo();
-    let userId = usuario.user_id;
-    console.log({ userId });
-    console.log(usuario);
-    userId = usuario.user_id;
-    console.log({ userId });*/
-    let cet = await BonitaGetHumeanTaskUserCase(usuario.user_id, caso_id);
-    console.log(usuario, caso_id);
-    setCantTask(cet);
-    return;
-    /*axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get(
-        "/bonita/API/bpm/humanTask?p=0&c=50&f=state=ready&f=user_id=" +
-          userId +
-          "&f=caseId=" +
-          idCaso
-      )
-      .then((resp) => {
-        setCantTask(resp.data.length);
-        console.log("result.data.length :", resp.data.length);
-        if (resp.data.length == 0) {
-          console.log("lista vacia");
-        } else {
-        }
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-    return;*/
-  };
-=======
->>>>>>> release
   const usuarioActivo = async () => {
     await BonitaUsuarioActivo()
       .then((resp) => {
