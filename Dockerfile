@@ -9,4 +9,6 @@ RUN npm install
 
 COPY . /opt/app
 
+EXPOSE 4200
+
 CMD [ "npm","start" ]
