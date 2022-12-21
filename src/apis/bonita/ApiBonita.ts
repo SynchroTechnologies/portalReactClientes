@@ -1,14 +1,32 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from "react";
 import axios from "axios";
-import { iUsuario } from "../../interfaces/usuario";
-import { iCreateRequest } from "../../interfaces/createRequest";
-import { createUser } from "../../redux/states/usuarioActivo.state";
-import { useDispatch } from "react-redux";
+import { iUsuario } from "../../interfaces/bonita/usuario";
+import { iCreateRequest } from "../../interfaces/bonita/createRequest";
 
 const { Cookies: kks } = require("react-cookie");
 const cok = new kks();
 
+export const BonitaGetSetServiceRequest = async (storageId: string) => {
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  return await axios.get(
+    "" + process.env.REACT_APP_GET_SET_SERVICES + storageId
+  );
+};
+export const BonitaGetSetParametros = async (storageId: string) => {
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  return await axios.get(
+    "" + process.env.REACT_APP_GET_SET_PARAMETROS + storageId
+  );
+};
 export const BonitaTaskById = async (id: string) => {
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
   axios.defaults.headers.post["Content-Type"] =
@@ -34,32 +52,52 @@ export const BonitaTaskById = async (id: string) => {
       });*/
   return await axios.get(process.env.REACT_APP_TASK_BY_ID + id);
 };
-export const BonitaGetTaskHumanOpen = async (user_id: string) => {
-  console.log({ user_id });
-  console.log("usuario", user_id);
 
+export const BonitaGetTaskHumanOpen = async (user_id: string) => {
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
   axios.defaults.headers.post["Content-Type"] =
     "application/json;charset=utf-8";
   axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
   axios.defaults.withCredentials = true;
-  /* await axios
-      .get("" + process.env.REACT_APP_LISTHUMANTASK + user_id)
-      .then((resp) => {
-        SetlistTackHumanUserId(resp.data);
-        console.log(resp.data);
-        if (resp.data.length === 0) {
-          console.log("lista vacia");
-          setShow(true);
-        } else {
-          setShow(false);
-        }
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });*/
-
   return await axios.get("" + process.env.REACT_APP_LISTHUMANTASK + user_id);
+};
+export const BonitaGetTaskHumanOpenByCase = async (
+  user_id: string,
+  case_id: string
+) => {
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+
+  return await axios.get(
+    "" +
+      process.env.REACT_APP_LISTHUMANTASK_BY_CASE +
+      user_id +
+      "&f=rootCaseId=" +
+      case_id
+  );
+};
+
+export const BonitaGetTaskHumanCompleteUserByCase = async (
+  user_id: string,
+  case_id: string
+) => {
+  console.log({ user_id });
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+
+  return await axios.get(
+    "" +
+      process.env.REACT_APP_HUMANTASK_COMPLETE_USER +
+      user_id +
+      "&f=rootCaseId=" +
+      case_id
+  );
 };
 export const BonitaGetTaskHumanCompleteUser = async (user_id: string) => {
   console.log({ user_id });
@@ -68,28 +106,11 @@ export const BonitaGetTaskHumanCompleteUser = async (user_id: string) => {
     "application/json;charset=utf-8";
   axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
   axios.defaults.withCredentials = true;
-  /*await axios
-    .get("" + process.env.REACT_APP_HUMANTASK_COMPLETE_USER + user_id)
-    //.get("" + user_id)
-    .then((resp) => {
-      setListTaskHumanCompleteUser(resp.data);
-      console.log("getTaskHumanCompleteUser", resp.data);
-      if (resp.data.length === 0) {
-        console.log("lista vacia");
-        setShow(true);
-      } else {
-        setShow(false);
-      }
-    })
-    .catch((error: any) => {
-      setShow(true);
-      console.log(error);
-    });
-*/
   return await axios.get(
     "" + process.env.REACT_APP_HUMANTASK_COMPLETE_USER + user_id
   );
 };
+
 export const BonitaGetTaskHumanMyUser = async (user_id: string) => {
   console.log({ user_id });
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
@@ -97,24 +118,26 @@ export const BonitaGetTaskHumanMyUser = async (user_id: string) => {
     "application/json;charset=utf-8";
   axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
   axios.defaults.withCredentials = true;
-  /*await axios
-    .get("" + process.env.REACT_APP_HUMANTASK_MY_USER + user_id)
-    .then((resp) => {
-      setListTaskHumanMyUser(resp.data);
-      console.log("getTaskHumanMyUser", resp.data);
-      if (resp.data.length === 0) {
-        console.log("lista vacia");
-        setShow(true);
-      } else {
-        setShow(false);
-      }
-    })
-    .catch((error: any) => {
-      setShow(true);
-      console.log(error);
-    });*/
   return await axios.get(
-    "" + process.env.REACT_APP_HUMANTASK_MY_USER + user_id
+    "" + process.env.REACT_APP_HUMANTASK_MY_USER_BY_CASE + user_id
+  );
+};
+export const BonitaGetTaskHumanMyUserByCase = async (
+  user_id: string,
+  case_id: string
+) => {
+  console.log({ user_id });
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  return await axios.get(
+    "" +
+      process.env.REACT_APP_HUMANTASK_MY_USER_BY_CASE +
+      user_id +
+      "&f=rootCaseId=" +
+      case_id
   );
 };
 //#reg
@@ -260,13 +283,13 @@ export const BonitaCreateCaseBonitaFechOk = async (Props: iCreateRequest) => {
 
   const raw = JSON.stringify({
     serviceRequestInput: {
-      alarma: Props.alarma,
+      alarma: "Props.alarma",
       categoria: "DBA",
       ci: "altaicare_4_0_0_OP1108",
       fechaEsperada: "2022-11-03T11:55:00",
-      descripcion: Props.descripcion,
-      prioridad: Props.prioridad,
-      estado: "",
+      descripcion: "Props.descripcion",
+      prioridad: "Media",
+      estado: "Props.estado",
     },
   });
 
@@ -601,26 +624,18 @@ export const BonitaGetListComment = async (caseId: string) => {
     "application/json;charset=utf-8";
   axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
   axios.defaults.withCredentials = true;
-  /*await axios
-    .get(process.env.REACT_APP_LISTCOMMENT + caseId + "&d=userId&t=0")
-    .then((resp) => {
-      let result = resp;
-      setListComments(result.data);
-      console.log("setListComments", result.data);
-      if (result.data.length === 0) {
-        console.log("lista vacia");
-        //setShow(true);
-      } else {
-        //setShow(false);
-      }
-    })
-    .catch((error: any) => {
-      setShow(true);
-      setListComments([]);
-      console.log(error);
-    });*/
   return await axios.get(
     process.env.REACT_APP_LISTCOMMENT + caseId + "&d=userId&t=0"
+  );
+};
+export const BonitaGetTaskAndContext = async (taskId: string) => {
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  return await axios.get(
+    process.env.REACT_APP_TASK_BY_ID_AND_CONTEXT + taskId + "/context"
   );
 };
 export const BonitaGetCaseByProcessNameList = async (
@@ -632,31 +647,6 @@ export const BonitaGetCaseByProcessNameList = async (
     "application/json;charset=utf-8";
   axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
   axios.defaults.withCredentials = true;
-  /*await axios
-    .get(
-      "" +
-        process.env.REACT_APP_LISTCASEACTIVED +
-        usuario.user_id +
-        "&n=activeFlowNodes&n=failedFlowNodes&t=0&s=" +
-        name +
-        "&o=startDate+DESC"
-    )
-    .then((resp) => {
-      let result = resp;
-      console.log(result.data);
-      if (result.data.length > 0) {
-        setisVisible(true);
-        setCaseList(result.data);
-      } else {
-        setisVisible(false);
-        setCaseList([]);
-      }
-    })
-    .catch((error: any) => {
-      setCaseList([]);
-      setisVisible(false);
-      console.log(error);
-    });*/
   return await axios.get(
     "" +
       process.env.REACT_APP_CASES_BY_NAME_PROCES +
@@ -676,29 +666,6 @@ export const BonitaGetCaseArchivedByProcessNameList = async (
     "application/json;charset=utf-8";
   axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
   axios.defaults.withCredentials = true;
-  /*await axios
-      .get(
-        "" +
-          process.env.REACT_APP_CASES_ARCHIVED_BY_NAME_PROCES +
-          name +
-          "&o=startDate+DESC"
-      )
-      .then((resp) => {
-        let result = resp;
-        console.log(result.data);
-        if (result.data.length > 0) {
-          setisVisible(true);
-          setCaseList(result.data);
-        } else {
-          setisVisible(false);
-          setCaseList([]);
-        }
-      })
-      .catch((error: any) => {
-        setCaseList([]);
-        setisVisible(false);
-        console.log(error);
-      });*/
   return await axios.get(
     "" +
       process.env.REACT_APP_CASES_ARCHIVED_BY_NAME_PROCES +

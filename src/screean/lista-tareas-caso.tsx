@@ -10,16 +10,20 @@ import { iListTaskHumanCompleteUser } from "../interfaces/bonita/listTaskHumanCo
 import { iListTaskHumanMyUser } from "../interfaces/bonita/listTaskHumanMyUser";
 import {
   BonitaGetTaskHumanCompleteUser,
+  BonitaGetTaskHumanCompleteUserByCase,
   BonitaGetTaskHumanMyUser,
-  BonitaGetTaskHumanOpen,
+  BonitaGetTaskHumanMyUserByCase,
+  BonitaGetTaskHumanOpenByCase,
   BonitaUsuarioActivo,
 } from "../apis/bonita/ApiBonita";
 import { useDispatch } from "react-redux";
 import { createUser } from "../redux/states/usuarioActivo.state";
 import { managenUsuarioState } from "../apis/bonita/persist.data.service";
 //import apiGlpi from "../apis/glpi/ApiGlpi";
-
-const ListaTareas = () => {
+interface Props {
+  casoId: string;
+}
+const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
   let iUarioActivo: iUsuario = {
     copyright: "",
     is_guest_user: "",
@@ -37,7 +41,7 @@ const ListaTareas = () => {
   type _iListTaskHumanCompleteUser = iListTaskHumanCompleteUser;
   type _listTaskHumanUserId = iListTaskHumanUserId;
 
-  const [listTackHumanUserId, SetlistTackHumanUserId] = useState<
+  let [listTackHumanUserId, SetlistTackHumanUserId] = useState<
     _listTaskHumanUserId[]
   >([]);
   const [listTaskHumanMyUser, setListTaskHumanMyUser] = useState<
@@ -47,6 +51,8 @@ const ListaTareas = () => {
   const [listTaskHumanCompleteUser, setListTaskHumanCompleteUser] = useState<
     _iListTaskHumanCompleteUser[]
   >([]);
+
+  let allTask: _iListTaskHumanCompleteUser[] = [];
 
   const [show, setShow] = useState(false);
   const [usuario, setUsuario] = useState<iUsuario>(iUarioActivo);
@@ -60,12 +66,16 @@ const ListaTareas = () => {
   };
 
   //#region getTaskHumanOpen
-  const getTaskHumanOpen = async (user_id: string) => {
+  const getTaskHumanOpenByCase = async (user_id: string, casoId: string) => {
     let userId = usuario.user_id;
     console.log({ userId });
-    await BonitaGetTaskHumanOpen(user_id)
+    await BonitaGetTaskHumanOpenByCase(user_id, casoId)
       .then((resp) => {
+        SetlistTackHumanUserId([]);
         SetlistTackHumanUserId(resp.data);
+        allTask.push(resp.data);
+
+        console.log({ allTask });
         console.log(resp.data);
         if (resp.data.length === 0) {
           console.log("lista vacia");
@@ -82,11 +92,16 @@ const ListaTareas = () => {
   //#endregion
 
   //#region getTaskHumanCompleteUser
-  const getTaskHumanCompleteUser = async (user_id: string) => {
+  const getTaskHumanCompleteUserByCase = async (
+    user_id: string,
+    casoId: string
+  ) => {
     console.log({ user_id });
-    await BonitaGetTaskHumanCompleteUser(user_id)
+    await BonitaGetTaskHumanCompleteUserByCase(user_id, casoId)
       .then((resp) => {
+        setListTaskHumanCompleteUser([]);
         setListTaskHumanCompleteUser(resp.data);
+        allTask.push(resp.data);
         console.log("getTaskHumanCompleteUser", resp.data);
         if (resp.data.length === 0) {
           console.log("lista vacia");
@@ -104,11 +119,12 @@ const ListaTareas = () => {
   //#endregion
 
   //#region getTaskHumanMyUser
-  const getTaskHumanMyUser = async (user_id: string) => {
-    console.log({ user_id });
-    await BonitaGetTaskHumanMyUser(user_id)
+  const getTaskHumanMyUserByCase = async (user_id: string, case_id: string) => {
+    await BonitaGetTaskHumanMyUserByCase(user_id, case_id)
       .then((resp) => {
+        setListTaskHumanMyUser([]);
         setListTaskHumanMyUser(resp.data);
+        allTask.push(resp.data);
         console.log("getTaskHumanMyUser", resp.data);
         if (resp.data.length === 0) {
           console.log("lista vacia");
@@ -122,29 +138,6 @@ const ListaTareas = () => {
         console.log(error);
       });
     return;
-
-    /*axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get("" + process.env.REACT_APP_HUMANTASK_MY_USER + user_id)
-      .then((resp) => {
-        setListTaskHumanMyUser(resp.data);
-        console.log("getTaskHumanMyUser", resp.data);
-        if (resp.data.length === 0) {
-          console.log("lista vacia");
-          setShow(true);
-        } else {
-          setShow(false);
-        }
-      })
-      .catch((error: any) => {
-        setShow(true);
-        console.log(error);
-      });
-    return;*/
   };
 
   //#region usuarioActivo
@@ -170,6 +163,13 @@ const ListaTareas = () => {
   //#region useEffect
   useEffect(() => {
     usuarioActivo();
+
+    const a4 = async () => {
+      await getTaskHumanMyUserByCase(usuario.user_id, casoId);
+      await getTaskHumanOpenByCase(usuario.user_id, casoId);
+      await getTaskHumanCompleteUserByCase(usuario.user_id, casoId);
+    };
+    a4();
   }, []);
   //#endregion
 
@@ -386,7 +386,7 @@ const ListaTareas = () => {
       href="#uno"
       aria-selected="true"
       role="tab"
-      onClick={() => getTaskHumanOpen(usuario.user_id)}
+      onClick={() => getTaskHumanOpenByCase(usuario.user_id, casoId)}
     >
       Tareas por Hacer {listTackHumanUserId.length}
       {"  "} <Icons />
@@ -399,7 +399,7 @@ const ListaTareas = () => {
       href="#dos"
       aria-selected="false"
       role="tab"
-      onClick={() => getTaskHumanMyUser(usuario.user_id)}
+      onClick={() => getTaskHumanMyUserByCase(usuario.user_id, casoId)}
     >
       Mis tareas {listTaskHumanMyUser.length} <Icons />
     </a>
@@ -411,7 +411,7 @@ const ListaTareas = () => {
       href="#tres"
       aria-selected="false"
       role="tab"
-      onClick={() => getTaskHumanCompleteUser(usuario.user_id)}
+      onClick={() => getTaskHumanCompleteUserByCase(usuario.user_id, casoId)}
       tabIndex={-1}
     >
       Tareas realizadas <Icons />
@@ -447,4 +447,4 @@ const ListaTareas = () => {
   //#endregion
 };
 
-export default ListaTareas;
+export default ListaTareasCaso;

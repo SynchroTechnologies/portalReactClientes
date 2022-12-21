@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BonitaUsuarioActivo } from "../apis/bonita/ApiBonita";
 import { managenUsuarioState } from "../apis/bonita/persist.data.service";
 import AcordionCards from "../components/acordionCards";
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 import { createUser } from "../redux/states/usuarioActivo.state";
 import { AppStore } from "../redux/store";
 import NavBar from "./navBar";

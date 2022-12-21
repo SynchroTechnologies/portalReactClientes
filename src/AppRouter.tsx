@@ -15,6 +15,7 @@ import Tareas from "./screean/tareas";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import TareaDetalle from "./screean/tarea-detalle";
+import CasoDetalleTest from "./screean/caso-detalle-test";
 
 export const AppContext = React.createContext({});
 
@@ -126,6 +127,15 @@ export default function AppRouter() {
             element={
               <ProtectedRoute>
                 <TareaDetalle />
+              </ProtectedRoute>
+            }
+            errorElement={<ErrorPage />}
+          />
+          <Route
+            path="/caso-detalle-test"
+            element={
+              <ProtectedRoute>
+                <CasoDetalleTest />
               </ProtectedRoute>
             }
             errorElement={<ErrorPage />}

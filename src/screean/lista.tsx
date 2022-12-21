@@ -1,12 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import React, { useState, useEffect, useLayoutEffect } from "react";
-import axios, { AxiosResponse } from "axios";
-import { iListCaseForClient } from "../interfaces/listCaseClient";
-import { iCase } from "../interfaces/case";
+import React, { useState, useEffect } from "react";
+import { iListCaseForClient } from "../interfaces/bonita/listCaseClient";
+import { iCase } from "../interfaces/bonita/case";
 import { formatearFecha } from "../components/formatoFecha";
 import Icons from "../components/icons";
 import AlertDanger from "./alertDanger";
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 import {
   BonitaCaseList,
   BonitaUsuarioActivo,
@@ -127,33 +126,6 @@ const Lista = () => {
         console.log(error);
       });
     return;
-    /* axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get("" + process.env.REACT_APP_API_USERACTIVE)
-      .then((resp) => {
-        let result = resp;
-        setUsuario(result.data);
-        ////let rr = jsonConvert.deserializeObject(result.data, rs);
-        console.log(
-          "usuario.user_id"
-          //usuario ? usuario.user_id : "sin usuario.user_id"
-        );
-        setServiceLogin(
-          "Login Success "
-          //+ (usuario ? usuario.user_name : "sin datos")
-        );
-
-        console.log(result.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return;*/
   };
   const cantTasks = (user_id: string, caso_id: string) => {
     getHumeanTaskUserCase(user_id, caso_id);
@@ -170,37 +142,6 @@ const Lista = () => {
     console.log(usuario);
     setCantTask(cet);
     return cet;
-  };
-
-  const tareaPorCase = async (user_id: string, caso_id: string) => {
-    //await usuarioActivo();
-    let userId = usuario.user_id;
-    console.log({ userId });
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get(
-        "/bonita/API/bpm/humanTask?p=0&c=50&f=state=ready&f=user_id=" +
-          userId +
-          "&f=caseId=31005"
-      )
-      .then((resp) => {
-        let result = resp;
-        console.log("result.data :", result.data);
-        console.log("result.data.length :", result.data.length);
-        if (result.data.length === 0) {
-          console.log("lista vacia");
-        } else {
-        }
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-    return;
   };
   useEffect(() => {
     usuarioActivo();
@@ -252,30 +193,6 @@ const Lista = () => {
         console.log(error);
       });
     return;
-    /*axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get(process.env.REACT_APP_GET_CASEFORID + id)
-      .then((resp) => {
-        let result = resp;
-        setCaseid(result.data);
-        console.log("setCaseId", caseid);
-        if (result.data.length == 0) {
-          console.log("lista vacia");
-          setShow(true);
-        } else {
-          setShow(false);
-        }
-        setCaseid(result.data);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-    return;*/
   };
   //#endregion
 

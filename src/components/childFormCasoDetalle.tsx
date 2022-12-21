@@ -2,10 +2,10 @@ import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import AlertDanger from "../screean/alertDanger";
 import AlertSuccess from "../screean/alertSuccess";
-import { iCase } from "../interfaces/case";
-import { iListCaseForClient } from "../interfaces/listCaseClient";
+import { iCase } from "../interfaces/bonita/case";
+import { iListCaseForClient } from "../interfaces/bonita/listCaseClient";
 import { formatearFecha } from "./formatoFecha";
-import { iComment } from "../interfaces/comment";
+import { iComment } from "../interfaces/bonita/comment";
 import Icons from "./icons";
 import {
   BonitaAddCommentFetch,
@@ -96,12 +96,17 @@ const ChildFormCasoDetalle: React.FC<Props> = ({
     return;
   };
   const getListComment = async (caseId: string) => {
+    //setListComments([]);
     await BonitaGetListComment(caseId)
       .then((resp) => {
-        let result = resp;
-        setListComments(result.data);
-        console.log("setListComments", result.data);
-        if (result.data.length === 0) {
+        const respData = resp.data;
+        const listCommentsFilter = respData.filter(
+          (comment: iComment) => comment.userId.userName !== "System"
+        );
+        setListComments([]);
+        setListComments(listCommentsFilter);
+        console.log("setListComments", resp.data);
+        if (resp.data.length === 0) {
           console.log("lista vacia");
         } else {
           //setShow(false);
@@ -113,42 +118,11 @@ const ChildFormCasoDetalle: React.FC<Props> = ({
         console.log(error);
       });
   };
-  const caseForIdb = async (id: string) => {
-    //setCaseList([]);
-    setShow(false);
-    let idint = parseInt(id);
-    if (idint <= 0) {
-      console.log("no es mayor a cero");
-      setShow(false);
-      return;
-    }
 
-    await BonitaCaseForId(id)
-      .then((resp) => {
-        let result = resp;
-        setCaseid(result.data);
-        setCaseList(result.data);
-
-        console.log(result.data);
-        setShow(true);
-        //return;
-      })
-      .catch((error: any) => {
-        console.log(error);
-        setShow(false);
-        //return;
-      });
-    return;
-  };
   //llamaos al listado de comentaros en el load page
   useEffect(() => {
     getListComment(casoId);
-    //caseForIdb(casoId);
   }, [casoId]);
-  useEffect(() => {
-    //caseForIdb(casoId);
-    //console.log("caseList, caseData ", { caseList, caseData });
-  }, [casoId, listComments]);
 
   const showAlert = () => {
     if (creado) {
@@ -200,6 +174,7 @@ const ChildFormCasoDetalle: React.FC<Props> = ({
             data-bs-toggle="tab"
             aria-selected="true"
             role="tab"
+            href="#uno"
             onClick={() => getComments(casoId)}
           >
             Refrescar <Icons />

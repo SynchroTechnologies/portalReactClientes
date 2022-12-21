@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import Cookies from "universal-cookie";
 import axios, { AxiosResponse } from "axios";
-import { iCase } from "../interfaces/case";
+import { iCase } from "../interfaces/bonita/case";
 import { formatearFecha } from "../components/formatoFecha";
 import {
   iArchivedCase,
   ProcessDefinitionId,
   StartedBy,
   StartedBySubstitute,
-} from "../interfaces/archivedCase";
+} from "../interfaces/bonita/archivedCase";
 import { BonitaUsuarioActivo } from "../apis/bonita/ApiBonita";
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 
 function CasoArchivadoId() {
   type archivedCase = iArchivedCase;

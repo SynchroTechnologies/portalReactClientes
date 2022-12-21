@@ -11,7 +11,7 @@ import {
   BonitaCreateCaseBonitaFechOk,
   BonitaGetProcessName,
 } from "../apis/bonita/ApiBonita";
-import { iCreateRequest } from "../interfaces/createRequest";
+import { iCreateRequest } from "../interfaces/bonita/createRequest";
 const { Cookies: kks } = require("react-cookie");
 const cok = new kks();
 
@@ -72,6 +72,15 @@ const ChildFormServiceRequest: React.FC<Props> = ({
     ci: string,
     fechaEsperada: string
   ) => {
+    const prop: iCreateRequest = {
+      processId: sprocessId,
+      alarma: alarma,
+      descripcion: descripcion,
+      prioridad: prioridad,
+      torre: torre,
+      ci: ci,
+      fechaEsperada: fechaEsperada,
+    };
     //await getProcessName("ServiceRequest");
     await BonitaGetProcessName("ServiceRequest");
     const LsetProcessId = window.localStorage.getItem("setProcessId")
@@ -90,11 +99,13 @@ const ChildFormServiceRequest: React.FC<Props> = ({
       const rsp = await createCaseBonitaFechOk(
         LsetProcessId ? LsetProcessId : ""
       );
+      //const rsp = await createCaseBonitaFechOk(prop);
       setCreado(rsp ? rsp : false);
     } else {
       const rsp = await createCaseBonitaFechOk(
         LsetProcessId ? LsetProcessId : ""
       );
+      //const rsp = await createCaseBonitaFechOk(prop);
       setCreado(rsp ? rsp : false);
     }
     if (creado) {
@@ -132,104 +143,33 @@ const ChildFormServiceRequest: React.FC<Props> = ({
     console.log({ creadoes });
     setCreado(creadoes);
     return creadoes;
-    /*const X_Bonita_API_Token = cok.get("X-Bonita-API-Token");
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("X-Bonita-API-Token", X_Bonita_API_Token);
-    var urlencoded = new URLSearchParams();
-
-    const raw = JSON.stringify({
-      serviceRequestInput: {
-        alarma: alarma,
-        categoria: "DBA",
-        ci: "altaicare_4_0_0_OP1108",
-        fechaEsperada: "2022-11-03T11:55:00",
-        descripcion: descripcion,
-        prioridad: prioridad,
-        estado: "",
-      },
-    });
-    const rawbkp = JSON.stringify({
-      serviceRequestInput: {
-        alarma: alarma,
-        descripcion: descripcion,
-        prioridad: prioridad,
-        estado: "",
-      },
-    });
-
-    const RequestInit: RequestInit = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-      credentials: "include",
-    };
-    RequestInit.method = "POST";
-
-    let BASE_URL =
-      "" +
-      process.env.REACT_APP_BASE_URL_API +
-      process.env.REACT_APP_POST_CASE +
-      processId +
-      "/instantiation";
-    BASE_URL = BASE_URL.replace("%22", "");
-    console.log("BASE_URL : ", BASE_URL);
-    console.log("BASE_URL : ", { RequestInit });
-    await fetch(BASE_URL, RequestInit)
-      .then((response) => {
-        if (!response.ok) {
-          console.log("!result.ok", response);
-          setCreado(false);
-          return;
-        }
-
-        readCreateCase(response);
-        console.log("readCreateCase", JSON.stringify(response));
-        console.log("readCreateCase", JSON.stringify(response.status));
-        console.log("readCreateCase", response);
-        window.localStorage.setItem(
-          "createCaseBonitaFechOk",
-          JSON.stringify({ response })
-        );
-        setCreado(true);
-        console.log(response.body);
-
-        return;
-      })
-      .catch((error) => {
-        console.log("error fetch ------", error);
-        setCreado(false);
-        return;
-      });
-    return;*/
   };
-
+  const createCaseBonitaFechOkProp = async (props: iCreateRequest) => {
+    const prop: iCreateRequest = {
+      processId: props.processId,
+      alarma: props.alarma,
+      descripcion: props.descripcion,
+      prioridad: props.prioridad,
+      torre: props.torre,
+      ci: props.ci,
+      fechaEsperada: props.fechaEsperada,
+    };
+    if (prop.processId === "") {
+      console.log("llego vacio el processID : ", processId);
+      return false;
+    }
+    if (processId === "") {
+      console.log("llego vacio el processID : ", processId);
+      return false;
+    }
+    let creadoes = await BonitaCreateCaseBonitaFechOk(prop);
+    console.log({ creadoes });
+    setCreado(creadoes);
+    return creadoes;
+  };
   //const apiglpi = new apiGlpi();
   //const respo = apiglpi.loginGlpi();
-  const getHumanTadk = async (user_id: string) => {
-    if (user_id !== "") {
-      let X_Bonita_API_Token = cok.get("X-Bonita-API-Token");
-      axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
 
-      axios.defaults.headers.post["Content-Type"] =
-        "application/json;charset=utf-8";
-      axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-      axios.defaults.withCredentials = true;
-      axios.defaults.headers.get["X-Bonita-API-Token"] = X_Bonita_API_Token;
-      await axios
-        .get("" + process.env.REACT_APP_LISTHUMANTASK + user_id)
-        .then((resp) => {
-          setProcessId(resp.data[0].id);
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-      return;
-    } else {
-      return;
-    }
-  };
   const showAlert = () => {
     if (creado) {
       return (

@@ -7,7 +7,7 @@ import fetchBonitaLogin from "../components/fetchBonitaLogin";
 import fetchCase from "../components/fetchCase";
 
 import { useNavigate } from "react-router-dom";
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 //import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
 //import "bootswatch/dist/js/bootstrap";
 import "../../src/style/bootswatch/dist/journal/bootstrapDev.css";

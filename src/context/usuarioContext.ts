@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 
 export interface usuario {
   copyright: string;

@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
 import AlertDanger from "../screean/alertDanger";
 import AlertSuccess from "../screean/alertSuccess";
-import { iCase } from "../interfaces/case";
-import { iListCaseForClient } from "../interfaces/listCaseClient";
 import { formatearFecha } from "./formatoFecha";
-import { iComment } from "../interfaces/comment";
+import { iComment } from "../interfaces/bonita/comment";
 import Icons from "./icons";
 import {
   BonitaAddCommentFetch,
-  BonitaCaseForId,
   BonitaGetListComment,
+  BonitaGetSetParametros,
+  BonitaGetSetServiceRequest,
+  BonitaGetTaskAndContext,
 } from "../apis/bonita/ApiBonita";
-import { iListTaskHumanUserId } from "../interfaces/listTaskHumanUserId";
-
+import { iListTaskHumanUserId } from "../interfaces/bonita/listTaskHumanUserId";
+import { iTaskContext } from "../interfaces/bonita/taskContext";
+import { iServiceRequestTask } from "../interfaces/bonita/serviceRequestTask";
+import { iParametrosTask } from "../interfaces/bonita/parametrosTask";
 interface Props {
   idAcordion: string;
   titleAcordion: string;
@@ -42,24 +44,30 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   taskId,
   cantTask,
 }) => {
-  type comment = iComment;
-  type listCaseForClient = iListCaseForClient;
-  const [listComments, setListComments] = useState<comment[]>([]);
-
-  const [caseid, setCaseid] = useState<iListCaseForClient>();
-  const [caseList, setCaseList] = useState<iListCaseForClient[]>([]);
+  type comment_ = iComment;
+  const [listComments, setListComments] = useState<comment_[]>([]);
   const [comments, setComments] = useState("");
   const [creado, setCreado] = useState(false);
   const [show, setShow] = useState(false);
+  type taskContexts = iTaskContext;
+  const [taskContext, setTaskContext] = useState<taskContexts>();
+  type parametrosTask_ = iParametrosTask;
+  const [parametrosTask, setParametrosTask] = useState<parametrosTask_>();
+  type serviceRequestTask_ = iServiceRequestTask;
+  const [serviceRequestTask, setServiceRequestTask] =
+    useState<serviceRequestTask_>();
+  const [parametros_refStorageId, setParametros_refStorageId] = useState("");
+  const [serviceRequest_refStorageId, setServiceRequest_refStorageId] =
+    useState("");
   const Style = `card border-primary mb-${style}`;
 
   const addComment = async (caseId: string, comment: string) => {
-    await addCommentFetch(taskId, comment);
-    await getListComment(taskId);
+    await addCommentFetch(caseId, comment);
+    await getListComment(caseId);
   };
 
   const getComments = async (caseId: string) => {
-    getListComment(taskId);
+    getListComment(caseId);
   };
 
   const addCommentFetch = async (caseId: string, comments: string) => {
@@ -89,10 +97,12 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const getListComment = async (caseId: string) => {
     await BonitaGetListComment(caseId)
       .then((resp) => {
-        let result = resp;
-        setListComments(result.data);
-        console.log("setListComments", result.data);
-        if (result.data.length === 0) {
+        const respData = resp.data;
+        const listCommentsFilter = respData.filter(
+          (comment: iComment) => comment.userId.userName !== "System"
+        );
+        setListComments(listCommentsFilter);
+        if (resp.data.length === 0) {
           console.log("lista vacia");
         } else {
           //setShow(false);
@@ -104,42 +114,104 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         console.log(error);
       });
   };
-  const caseForIdb = async (id: string) => {
-    //setCaseList([]);
-    setShow(false);
-    let idint = parseInt(id);
-    if (idint <= 0) {
-      console.log("no es mayor a cero");
-      setShow(false);
-      return;
-    }
 
-    await BonitaCaseForId(id)
+  const getTaskContext = async (taskId: string) => {
+    await BonitaGetTaskAndContext(taskId)
       .then((resp) => {
-        let result = resp;
-        setCaseid(result.data);
-        setCaseList(result.data);
+        if (resp.status === 200) {
+          setTaskContext(resp.data);
+          window.localStorage.setItem(
+            "getTaskContext",
+            JSON.stringify(resp.data)
+          );
+          window.localStorage.setItem(
+            "setServiceRequest_refStorageId",
+            JSON.stringify(resp.data.serviceRequest_ref.storageId)
+          );
+          window.localStorage.setItem(
+            "setParametros_refStorageId",
+            JSON.stringify(resp.data.parametros_ref.storageId)
+          );
+          //setParametros_refStorageId(resp.data.estimar22_ref.storageId_string);
+          //setServiceRequest_refStorageId(
+          //  resp.data.parametros22_ref.storageId_string
+          //);
+        }
 
-        console.log(result.data);
-        setShow(true);
-        //return;
+        //getSetParametros(resp.data.parametros22_ref.storageId_string);
+        //getSetServiceRequest(resp.data.estimar22_ref.storageId_string);
       })
       .catch((error: any) => {
+        setShow(true);
         console.log(error);
-        setShow(false);
-        //return;
       });
-    return;
+  };
+
+  const getSetServiceRequest = async (storageId: string) => {
+    await BonitaGetSetServiceRequest("2986") //2964
+      .then((resp) => {
+        if (resp.status === 200) {
+          setServiceRequestTask(resp.data);
+          window.localStorage.setItem(
+            "getSetServiceRequest",
+            JSON.stringify(resp.data)
+          );
+          //setParametros_refStorageId(resp.data.parametros_ref.storageId);
+          //setServiceRequest_refStorageId(
+          //  resp.data.serviceRequest_ref.storageId
+          //);
+        }
+        //console.log("getSetServiceRequest", resp.data);
+      })
+      .catch((error: any) => {
+        setShow(true);
+        console.log(error);
+      });
+  };
+
+  const getSetParametros = async (storageId: string) => {
+    await BonitaGetSetParametros(storageId) //("2987")
+      .then((resp) => {
+        if (resp.status === 200) {
+          setParametrosTask(resp.data);
+          window.localStorage.setItem(
+            "getSetParametros",
+            JSON.stringify(resp.data)
+          );
+        }
+        console.log("getSetParametros", resp.data);
+      })
+      .catch((error: any) => {
+        setShow(true);
+        console.log(error);
+      });
   };
   //llamaos al listado de comentaros en el load page
   useEffect(() => {
-    getListComment(taskId);
-    //caseForIdb(casoId);
-  }, [taskId]);
-  useEffect(() => {
-    //caseForIdb(casoId);
-    //console.log("caseList, caseData ", { caseList, caseData });
-  }, [taskId, listComments]);
+    const a1 = async () => {
+      await getListComment(taskData.caseId);
+    };
+    a1();
+    const a2 = async () => {
+      await getTaskContext(taskId);
+    };
+    a2();
+
+    const a3 = async () => {
+      await getSetParametros(
+        window.localStorage.getItem("setParametros_refStorageId") + ""
+      );
+    };
+    a3();
+    const a4 = async () => {
+      await getSetServiceRequest(
+        window.localStorage.getItem("setServiceRequest_refStorageId") + ""
+      );
+    };
+    a4();
+  }, [taskData.caseId]);
+
+  useEffect(() => {}, [taskData.caseId]);
 
   const showAlert = () => {
     if (creado) {
@@ -148,6 +220,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       return <AlertDanger msj={"NO pudimos crear el incidente"} />;
     }
   };
+
   const listCommentsMap = (
     <div className="">
       <div className="row">
@@ -191,7 +264,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
             data-bs-toggle="tab"
             aria-selected="true"
             role="tab"
-            onClick={() => getComments(taskId)}
+            onClick={() => getComments(taskData.caseId)}
           >
             Refrescar <Icons />
           </a>
@@ -212,12 +285,16 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       ></textarea>
     </div>
   );
+
   const formData = (
     <form>
       <fieldset>
         <div className="form-group">
-          <div className="btn-group d-flex justify-content-between col-2">
-            <h5 className="form-label mt-1 text-start">General</h5>
+          <div className="btn-group d-flex justify-content-between col-4">
+            <h5 className="form-label mt-1 text-start">
+              {taskData.displayName}
+            </h5>
+
             <p className="form-label mt-1 text-start"></p>
           </div>
         </div>
@@ -233,57 +310,77 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         </div>
         <div className="d-flex col">
           <div className="col">
-            <p className="form-label mt-1 text-start">Iniciado por</p>
+            <p className="form-label mt-1 text-start">Cliente</p>
+          </div>
+          <div className="col">
+            <p className="form-label mt-1 text-start">{`${parametrosTask?.nombre_cliente}`}</p>
+          </div>
+        </div>
+        <div className="d-flex col">
+          <div className="col">
+            <p className="form-label mt-1 text-start">Titulo</p>
           </div>
           <div className="col">
             {" "}
             <p className="form-label mt-1 text-start">
-              {`${taskData.executedBySubstitute} ${taskData.executedBySubstitute}`}
+              {`${serviceRequestTask?.alarma}`}
+            </p>
+          </div>
+        </div>
+        <div className="d-flex col">
+          <div className="col">
+            <p className="form-label mt-1 text-start">Descripcion</p>
+          </div>
+          <div className="col">
+            {" "}
+            <p className="form-label mt-1 text-start">
+              {`${serviceRequestTask?.descripcion}`}
+            </p>
+          </div>
+        </div>
+        <div className="d-flex col">
+          <div className="col">
+            <p className="form-label mt-1 text-start">Prioridad</p>
+          </div>
+          <div className="col">
+            {" "}
+            <p className="form-label mt-1 text-start">
+              {`${serviceRequestTask?.prioridad}`}
+            </p>
+          </div>
+        </div>
+        <div className="d-flex col">
+          <div className="col">
+            <p className="form-label mt-1 text-start">Categoria</p>
+          </div>
+          <div className="col">
+            {" "}
+            <p className="form-label mt-1 text-start">
+              {`${serviceRequestTask?.categoria}`}
             </p>
           </div>
         </div>
         <div className="d-flex col">
           <div className="col">
             {" "}
-            <p className="form-label mt-1 text-start">Iniciado el</p>
+            <p className="form-label mt-1 text-start">Estado</p>
           </div>
           <div className="col">
             {" "}
             <p className="form-label mt-1 text-start">
-              {formatearFecha(taskData.assigned_date)}
+              {serviceRequestTask?.estado}
             </p>
           </div>
         </div>
         <div className="d-flex col">
           <div className="col">
             {" "}
-            <p className="form-label mt-1 text-start">Status</p>
-          </div>
-          <div className="col">
-            {" "}
-            <p className="form-label mt-1 text-start">{taskData.state}</p>
-          </div>
-        </div>
-        <div className="d-flex col">
-          <div className="col">
-            {" "}
-            <p className="form-label mt-1 text-start">Última actualización</p>
+            <p className="form-label mt-1 text-start">Fecha esperada</p>
           </div>
           <div className="col">
             {" "}
             <p className="form-label mt-1 text-start">
-              {formatearFecha(taskData.last_update_date)}
-            </p>
-          </div>
-        </div>
-        <div className="d-flex col">
-          <div className="col">
-            {" "}
-            <p className="form-label mt-1 text-start">Tareas disponibles</p>
-          </div>
-          <div className="col">
-            <p className="form-label mt-1 text-start">
-              <a href="/tareas">{cantTask}</a>
+              {formatearFecha("" + serviceRequestTask?.fechaEsperada)}
             </p>
           </div>
         </div>
@@ -303,7 +400,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       </div>
 
       <button
-        onClick={() => addComment(taskId, comments)}
+        onClick={() => addComment(taskData.caseId, comments)}
         className="btn btn-primary btn-sm"
       >
         {textButton}

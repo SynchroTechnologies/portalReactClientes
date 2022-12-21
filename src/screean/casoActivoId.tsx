@@ -11,15 +11,15 @@ import {
   ProcessDefinitionId,
   StartedBy,
   StartedBySubstitute,
-} from "../interfaces/listCaseClient";
-import { iCase } from "../interfaces/case";
+} from "../interfaces/bonita/listCaseClient";
+import { iCase } from "../interfaces/bonita/case";
 import { formatearFecha } from "../components/formatoFecha";
 import {
   BonitaCaseForIdSubstitute,
   BonitaGetHumanTaskUserCase,
   BonitaUsuarioActivo,
 } from "../apis/bonita/ApiBonita";
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 
 function casoActivoId() {
   let iUarioActivo: iUsuario = {

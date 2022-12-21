@@ -1,8 +1,8 @@
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 import { createSlice } from "@reduxjs/toolkit";
 import { configureStore } from "@reduxjs/toolkit";
-import { iCase } from "../interfaces/case";
-import { iComment } from "../interfaces/comment";
+import { iCase } from "../interfaces/bonita/case";
+import { iComment } from "../interfaces/bonita/comment";
 import { userSlice } from "./states/usuarioActivo.state";
 import { IGlpilogin } from "../interfaces/gLpi/login";
 import { sessionTokenGlpiSlice } from "./states/sessionTokenGlpi.state";

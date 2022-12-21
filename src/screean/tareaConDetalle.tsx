@@ -4,16 +4,16 @@ import {
   ProcessDefinitionId,
   StartedBy,
   StartedBySubstitute,
-} from "../interfaces/listCaseClient";
+} from "../interfaces/bonita/listCaseClient";
 
 import { useLocation } from "react-router-dom";
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 import { BonitaTaskById, BonitaUsuarioActivo } from "../apis/bonita/ApiBonita";
 import ChildFormTareaDetalle from "../components/childFormTareaDetalle";
 import {
   iListTaskHumanUserId,
   RootContainerId,
-} from "../interfaces/listTaskHumanUserId";
+} from "../interfaces/bonita/listTaskHumanUserId";
 
 const TareaConDetalle = () => {
   let iUarioActivo: iUsuario = {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IGlpilogin } from "../../interfaces/gLpi/login";
-import { iUsuario } from "../../interfaces/usuario";
+import { iUsuario } from "../../interfaces/bonita/usuario";
 
 //#region Login
 export const persistUsuarioState = (usuarioActivo: iUsuario) => {

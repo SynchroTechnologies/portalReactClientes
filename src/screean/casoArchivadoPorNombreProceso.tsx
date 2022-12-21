@@ -9,9 +9,9 @@ import {
   ProcessDefinitionId,
   StartedBy,
   StartedBySubstitute,
-} from "../interfaces/listCaseClient";
+} from "../interfaces/bonita/listCaseClient";
 
-import { iCase } from "../interfaces/case";
+import { iCase } from "../interfaces/bonita/case";
 import { formatearFecha } from "../components/formatoFecha";
 import { BonitaGetCaseArchivedByProcessNameList } from "../apis/bonita/ApiBonita";
 import { useSelector } from "react-redux";
@@ -124,7 +124,6 @@ function CasoArchivadoPorNombreProceso() {
   }, [setisVisible]);
 
   const obtenerCaseList = async (user_id: string, process_name: string) => {
-    setCaseList([]);
     setisVisible(false);
     await BonitaGetCaseArchivedByProcessNameList(user_id, process_name)
       .then((resp) => {
@@ -132,6 +131,7 @@ function CasoArchivadoPorNombreProceso() {
         console.log(result.data);
         if (result.data.length > 0) {
           setisVisible(true);
+          setCaseList([]);
           setCaseList(result.data);
         } else {
           setisVisible(false);

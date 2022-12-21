@@ -9,7 +9,7 @@ import CasoConDetalle from "./casoConDetalle";
 import { BonitaCaseForId, BonitaUsuarioActivo } from "../apis/bonita/ApiBonita";
 import { iUsuario } from "../interfaces/bonita/usuario";
 
-const CasoDetalle = () => {
+const CasoDetalleTest = () => {
   let iUarioActivo: iUsuario = {
     copyright: "",
     is_guest_user: "",
@@ -80,27 +80,6 @@ const CasoDetalle = () => {
         console.log(error);
       });
     return;
-    //const localStorageUsuario = window.localStorage.getItem("usuario");
-    //const user_id = localStorageUsuario?.split(",")[4].split(":")[1];
-    //usuario.user_id = user_id ? user_id : "0";
-    /*
-    return;
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get("" + process.env.REACT_APP_API_USERACTIVE)
-      .then((resp) => {
-        let result = resp;
-        setUsuario(result.data);
-        console.log(result.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return;*/
   };
   //#endregion
 
@@ -212,6 +191,13 @@ const CasoDetalle = () => {
     }
   };
 
+  const prueba = () => {
+    if (caseList.length > 0) {
+      return <div>aca prueba caseList.length mas 0 {caseList[0]?.id}</div>;
+    } else {
+      return <div>aca prueba {caseList[0]?.id}</div>;
+    }
+  };
   return (
     <>
       <NavBar />
@@ -221,4 +207,4 @@ const CasoDetalle = () => {
   //#endregion
 };
 
-export default CasoDetalle;
+export default CasoDetalleTest;

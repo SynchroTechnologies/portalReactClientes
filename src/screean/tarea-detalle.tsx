@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "./navBar";
 import { useLocation } from "react-router-dom";
-import { iCase } from "../interfaces/case";
-import { iListCaseForClient } from "../interfaces/listCaseClient";
+import { iCase } from "../interfaces/bonita/case";
 import { BonitaTaskById, BonitaUsuarioActivo } from "../apis/bonita/ApiBonita";
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 import ChildFormTareaDetalle from "../components/childFormTareaDetalle";
 import TareaConDetalle from "./tareaConDetalle";
-import { iListTaskHumanUserId } from "../interfaces/listTaskHumanUserId";
+import { iListTaskHumanUserId } from "../interfaces/bonita/listTaskHumanUserId";
 
 const TareaDetalle = () => {
   let iUarioActivo: iUsuario = {
@@ -102,7 +101,6 @@ const TareaDetalle = () => {
 
   //#region useEffect
   useEffect(() => {
-    console.log("useEffect(()useEffect(()useEffect(()");
     const usuario = async () => {
       console.log("useEffect(()useEffect(()useEffect(()");
       await BonitaUsuarioActivo()
@@ -165,10 +163,7 @@ const TareaDetalle = () => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
           usuarioActivo();
-          //caseForId(idCaso);
           taskById(idTask);
-          //getHumeanTaskUserCase(usuario.user_id, idCaso);
-          //getHumanTadk("18");
         }, []);
         //caseForId(idCaso);
         if (show) {

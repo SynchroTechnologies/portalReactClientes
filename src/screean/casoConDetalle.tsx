@@ -9,16 +9,19 @@ import {
   ProcessDefinitionId,
   StartedBy,
   StartedBySubstitute,
-} from "../interfaces/listCaseClient";
-import { iCase } from "../interfaces/case";
+} from "../interfaces/bonita/listCaseClient";
+import { iCase } from "../interfaces/bonita/case";
 
 import { useLocation } from "react-router-dom";
 import ChildFormCasoDetalle from "../components/childFormCasoDetalle";
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 import {
   BonitaCaseForIdSubstitute,
   BonitaUsuarioActivo,
 } from "../apis/bonita/ApiBonita";
+import Icons from "../components/icons";
+import ListaTareas from "./lista-tareas";
+import ListaTareasCaso from "./lista-tareas-caso";
 
 const CasoConDetalle = () => {
   let iUarioActivo: iUsuario = {
@@ -267,24 +270,35 @@ const CasoConDetalle = () => {
       {isVisible === false ? (
         <div className=""></div>
       ) : (
-        <div>
+        <>
           <ul className="nav nav-tabs" role="tablist">
             <li className="nav-item" role="presentation">
-              <div
+              <a
                 className="nav-link active"
                 data-bs-toggle="tab"
-                //href="#home"
+                href="#home"
                 aria-selected="true"
                 role="tab"
               >
-                Caso encontrado
-              </div>
+                Casos encontrado <Icons />
+              </a>
+            </li>
+            <li className="nav-item" role="presentation">
+              <a
+                className="nav-link"
+                data-bs-toggle="tab"
+                href="#profile"
+                aria-selected="false"
+                role="tab"
+              >
+                Tareas de caso
+                <Icons />
+              </a>
             </li>
           </ul>
-
           <div id="myTabContent" className="tab-content">
             <div
-              className="tab-pane fade active show "
+              className="tab-pane fade active show"
               id="home"
               role="tabpanel"
             >
@@ -311,8 +325,28 @@ const CasoConDetalle = () => {
                 </div>
               </div>
             </div>
+            <div className="tab-pane fade " id="profile" role="tabpanel">
+              <div className="row">
+                <div className="column"></div>
+                <div className="column">
+                  <div className="container">
+                    <div className="row shadow p-2 mb-3 bg-white rounded">
+                      <div className="col-12">
+                        <div className="row">
+                          {" "}
+                          <div className="column"></div>
+                          <div className="column">
+                            <ListaTareasCaso casoId={idCaso} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

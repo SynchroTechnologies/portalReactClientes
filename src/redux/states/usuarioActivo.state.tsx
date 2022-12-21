@@ -1,4 +1,4 @@
-import { iUsuario } from "../../interfaces/usuario";
+import { iUsuario } from "../../interfaces/bonita/usuario";
 import { createSlice } from "@reduxjs/toolkit";
 
 export const initialUsuario: iUsuario = {

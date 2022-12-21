@@ -6,11 +6,11 @@ import {
   ProcessDefinitionId,
   StartedBy,
   StartedBySubstitute,
-} from "../interfaces/listCaseClient";
+} from "../interfaces/bonita/listCaseClient";
 
-import { iCase } from "../interfaces/case";
+import { iCase } from "../interfaces/bonita/case";
 import { formatearFecha } from "../components/formatoFecha";
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 import {
   BonitaGetCaseByProcessNameList,
   BonitaUsuarioActivo,

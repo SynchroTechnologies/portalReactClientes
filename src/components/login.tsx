@@ -8,7 +8,7 @@ import React, {
 import axios from "axios";
 import { IGlpilogin } from "../interfaces/gLpi/login";
 import { useNavigate, Link } from "react-router-dom";
-import { iUsuario } from "../interfaces/usuario";
+import { iUsuario } from "../interfaces/bonita/usuario";
 //import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
 //import "bootswatch/dist/js/bootstrap";
 import "../../src/style/bootswatch/dist/journal/bootstrapDev.css";
