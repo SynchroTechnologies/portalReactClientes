@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import NavBar from "./navBar";
 import { useLocation } from "react-router-dom";
 import { iCase } from "../interfaces/bonita/case";
-import { BonitaTaskById, BonitaUsuarioActivo } from "../apis/bonita/ApiBonita";
+import {
+  BonitaPutTaskById,
+  BonitaTaskById,
+  BonitaUsuarioActivo,
+} from "../apis/bonita/ApiBonita";
 import { iUsuario } from "../interfaces/bonita/usuario";
 import ChildFormTareaDetalle from "../components/childFormTareaDetalle";
 import TareaConDetalle from "./tareaConDetalle";
@@ -75,27 +79,6 @@ const TareaDetalle = () => {
         console.log(error);
       });
     return;
-    //const localStorageUsuario = window.localStorage.getItem("usuario");
-    //const user_id = localStorageUsuario?.split(",")[4].split(":")[1];
-    //usuario.user_id = user_id ? user_id : "0";
-    /*
-    return;
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get("" + process.env.REACT_APP_API_USERACTIVE)
-      .then((resp) => {
-        let result = resp;
-        setUsuario(result.data);
-        console.log(result.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return;*/
   };
   //#endregion
 
@@ -137,7 +120,7 @@ const TareaDetalle = () => {
       if (show) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
-          usuarioActivo();
+          //usuarioActivo();
           taskById(idTask);
         }, []);
         return (
@@ -162,7 +145,7 @@ const TareaDetalle = () => {
       } else {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
-          usuarioActivo();
+          //usuarioActivo();
           taskById(idTask);
         }, []);
         //caseForId(idCaso);
@@ -193,6 +176,7 @@ const TareaDetalle = () => {
                                 taskId={idTask}
                                 taskData={taskList[0]}
                                 cantTask={cantTask}
+                                usuarioId={usuario.user_id}
                               />
                             </div>
                           </div>

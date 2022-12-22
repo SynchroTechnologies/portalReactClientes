@@ -8,8 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppStore } from "../redux/store";
 import { modifyUser } from "../redux/states/usuarioActivo.state";
 import {
-  BonitaCreateCaseBonitaFechOk,
   BonitaGetProcessName,
+  BonitaPostCaseFetch,
 } from "../apis/bonita/ApiBonita";
 import { iCreateRequest } from "../interfaces/bonita/createRequest";
 const { Cookies: kks } = require("react-cookie");
@@ -54,9 +54,7 @@ const ChildFormServiceRequest: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    //getProcessName("ServiceRequest");
     LeerStorage();
-    //BonitaGetProcessName("ServiceRequest");
   }, []);
   const LeerStorage = async () => {
     await BonitaGetProcessName("ServiceRequest");
@@ -133,13 +131,11 @@ const ChildFormServiceRequest: React.FC<Props> = ({
       console.log("llego vacio el processID : ", processId);
       return false;
     }
-    //await BonitaCreateCaseBonitaFechOk(prop);
-
     if (processId === "") {
       console.log("llego vacio el processID : ", processId);
       return false;
     }
-    let creadoes = await BonitaCreateCaseBonitaFechOk(prop);
+    let creadoes = await BonitaPostCaseFetch(prop);
     console.log({ creadoes });
     setCreado(creadoes);
     return creadoes;
@@ -162,7 +158,7 @@ const ChildFormServiceRequest: React.FC<Props> = ({
       console.log("llego vacio el processID : ", processId);
       return false;
     }
-    let creadoes = await BonitaCreateCaseBonitaFechOk(prop);
+    let creadoes = await BonitaPostCaseFetch(prop);
     console.log({ creadoes });
     setCreado(creadoes);
     return creadoes;

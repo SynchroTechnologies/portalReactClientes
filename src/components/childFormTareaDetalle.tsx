@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import AlertDanger from "../screean/alertDanger";
 import AlertSuccess from "../screean/alertSuccess";
 import { formatearFecha } from "./formatoFecha";
@@ -10,6 +11,7 @@ import {
   BonitaGetSetParametros,
   BonitaGetSetServiceRequest,
   BonitaGetTaskAndContext,
+  BonitaPutTaskById,
 } from "../apis/bonita/ApiBonita";
 import { iListTaskHumanUserId } from "../interfaces/bonita/listTaskHumanUserId";
 import { iTaskContext } from "../interfaces/bonita/taskContext";
@@ -28,6 +30,7 @@ interface Props {
   taskData: iListTaskHumanUserId;
   taskId: string;
   cantTask: number;
+  usuarioId: string;
 }
 
 const ChildFormTareaDetalle: React.FC<Props> = ({
@@ -43,8 +46,13 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   taskData,
   taskId,
   cantTask,
+  usuarioId,
 }) => {
   type comment_ = iComment;
+  let putTask = "";
+  const [disable, setDisable] = React.useState(true);
+  const [isTomar, setIsTomar] = React.useState(true);
+
   const [listComments, setListComments] = useState<comment_[]>([]);
   const [comments, setComments] = useState("");
   const [creado, setCreado] = useState(false);
@@ -148,7 +156,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   };
 
   const getSetServiceRequest = async (storageId: string) => {
-    await BonitaGetSetServiceRequest("2986") //2964
+    await BonitaGetSetServiceRequest(storageId) //2964
       .then((resp) => {
         if (resp.status === 200) {
           setServiceRequestTask(resp.data);
@@ -186,6 +194,83 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         console.log(error);
       });
   };
+  const navigate = useNavigate();
+
+  const navigateTo = (routeUrl: string) => {
+    const url = "/tarea-detalle/?id=" + routeUrl;
+    console.log(url);
+    navigate(routeUrl);
+    // navigate(`/tarea-detalle/?id=${routeUrl}`);
+  };
+  //#region putTaskById
+  const liberar = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await putTaskById("", taskId);
+    setDisable(!disable);
+
+    //navigateTo("/tarea-detalle/?id=" + taskId);
+  };
+  const tomar = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await putTaskById(usuarioId, taskId);
+    setDisable(!disable);
+    console.log({ taskId });
+
+    //navigateTo("/tarea-detalle/?id=" + taskId);
+  };
+  const isTomars = () => {
+    console.log("taskData.assigned_id :", taskData.assigned_id);
+    if (taskData.assigned_id !== "") {
+      setIsTomar(true);
+      setDisable(false);
+    } else {
+      setIsTomar(false);
+      setDisable(true);
+    }
+  };
+  const putTaskById = async (user_id: string, task_id: string) => {
+    console.log({ user_id }, { task_id });
+    putTask = user_id;
+    await BonitaPutTaskById(user_id, task_id)
+      .then((result) => {
+        if (!result.ok) {
+          console.log("!result.ok", result);
+          return;
+        }
+        window.localStorage.setItem("putTaskById", JSON.stringify(result.body));
+        console.log({ result });
+        return;
+      })
+      .catch((error) => {
+        console.log("error fetch ------", error);
+        return;
+      });
+    return;
+    //setCaseList([]);
+    //setShow(false);
+    let idint = parseInt(task_id);
+    if (idint <= 0) {
+      console.log("no es mayor a cero");
+      setShow(false);
+    }
+    console.log({ user_id }, { task_id });
+    await BonitaPutTaskById(user_id, task_id)
+      .then((resp) => {
+        if (resp.status === 200) {
+          //habilitar pantall
+          setShow(true);
+        } else {
+          //deshabilita pantall
+        }
+      })
+      .catch((error: any) => {
+        console.log(error);
+        setShow(false);
+      });
+    return;
+  };
+
+  //#endregion
   //llamaos al listado de comentaros en el load page
   useEffect(() => {
     const a1 = async () => {
@@ -209,9 +294,12 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       );
     };
     a4();
+    isTomars();
   }, [taskData.caseId]);
 
-  useEffect(() => {}, [taskData.caseId]);
+  useEffect(() => {
+    //isTomars();
+  }, [disable]);
 
   const showAlert = () => {
     if (creado) {
@@ -219,6 +307,41 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
     } else {
       return <AlertDanger msj={"NO pudimos crear el incidente"} />;
     }
+  };
+
+  const asignada = () => {
+    return (
+      <>
+        {" "}
+        <button
+          disabled={isTomar}
+          onClick={tomar}
+          className="btn btn-primary btn-sm"
+        >
+          Tomar
+        </button>{" "}
+        <button
+          disabled={!isTomar}
+          onClick={liberar}
+          className="btn btn-success btn-sm"
+        >
+          Liberar
+        </button>
+      </>
+    );
+    /*if (taskData.assigned_id === "") {
+      return (
+        <button onClick={tomar} className="btn btn-primary btn-sm">
+          Tomar {taskId}
+        </button>
+      );
+    } else {
+      return (
+        <button onClick={liberar} className="btn btn-success btn-sm">
+          Liberar {taskId}
+        </button>
+      );
+    }*/
   };
 
   const listCommentsMap = (
@@ -277,6 +400,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
     <div className="form-group">
       <h5 className="form-label mt-1 text-start">Comentarios</h5>
       <textarea
+        disabled={disable}
         className="form-control"
         id="exampleTextarea"
         itemID="descripcion"
@@ -289,6 +413,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const formData = (
     <form>
       <fieldset>
+        <div>{asignada()}</div>
         <div className="form-group">
           <div className="btn-group d-flex justify-content-between col-4">
             <h5 className="form-label mt-1 text-start">
@@ -400,6 +525,8 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       </div>
 
       <button
+        disabled={disable}
+        id="btnAddComment"
         onClick={() => addComment(taskData.caseId, comments)}
         className="btn btn-primary btn-sm"
       >

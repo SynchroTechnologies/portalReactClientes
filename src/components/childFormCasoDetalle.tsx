@@ -1,5 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import AlertDanger from "../screean/alertDanger";
 import AlertSuccess from "../screean/alertSuccess";
 import { iCase } from "../interfaces/bonita/case";
@@ -9,11 +8,9 @@ import { iComment } from "../interfaces/bonita/comment";
 import Icons from "./icons";
 import {
   BonitaAddCommentFetch,
-  BonitaCaseForId,
   BonitaGetListComment,
 } from "../apis/bonita/ApiBonita";
-const { Cookies: kks } = require("react-cookie");
-const cok = new kks();
+
 type caseId = iCase;
 
 interface Props {

@@ -140,6 +140,45 @@ export const BonitaGetTaskHumanMyUserByCase = async (
       case_id
   );
 };
+export const BonitaPutTaskByIdbkpaxiso = async (
+  user_id: string,
+  task_id: string
+) => {
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  return await axios.put("" + process.env.REACT_APP_TASK_PUT_BY_ID + task_id);
+};
+
+export const BonitaPutTaskById = async (user_id: string, task_id: string) => {
+  const X_Bonita_API_Token = cok.get("X-Bonita-API-Token");
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("X-Bonita-API-Token", X_Bonita_API_Token);
+
+  const raw = JSON.stringify({
+    assigned_id: user_id,
+    assigned_date: "",
+  });
+
+  const RequestInit: RequestInit = {
+    method: "PUT",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+    credentials: "include",
+  };
+  RequestInit.method = "PUT";
+  const BASE_URL =
+    process.env.REACT_APP_BASE_URL_API +
+    "" +
+    process.env.REACT_APP_TASK_PUT_BY_ID +
+    task_id;
+  console.log(BASE_URL, RequestInit);
+  return await fetch(BASE_URL, RequestInit);
+};
 //#reg
 export const BonitaLogOut = async () => {
   console.log("BonitaLogOut BonitaLogOut");
@@ -265,12 +304,12 @@ export const BonitaLoginAxios = async (username: string, password: string) => {
     });
   return axiosstatus;
 };
-export const BonitaCreateCaseBonitaFechOk = async (Props: iCreateRequest) => {
+export const BonitaPostCaseFetch = async (Props: iCreateRequest) => {
   let returnBol = false;
   console.log({ returnBol });
   if (Props.processId === "") {
     console.log(
-      "BonitaCreateCaseBonitaFechOk llego vacio el processID : ",
+      "BonitaPostCaseFetch llego vacio el processID : ",
       Props.processId
     );
     console.log({ returnBol });

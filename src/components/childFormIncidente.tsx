@@ -49,7 +49,7 @@ const ChildFormIncidente: React.FC<Props> = ({
   ) => {
     await getProcessName("ServiceRequest");
     console.log("processId createcase :", sprocessId);
-    if (sprocessId == "") {
+    if (sprocessId === "") {
       console.log("sprocessId vacio ", sprocessId);
       await getProcessName("ServiceRequest");
       //usuarioActivo();

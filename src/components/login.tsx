@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import axios from "axios";
 import { IGlpilogin } from "../interfaces/gLpi/login";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { iUsuario } from "../interfaces/bonita/usuario";
 //import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
 //import "bootswatch/dist/js/bootstrap";

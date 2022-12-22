@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  iListCaseForClient,
   ProcessDefinitionId,
   StartedBy,
   StartedBySubstitute,
@@ -14,6 +13,7 @@ import {
   iListTaskHumanUserId,
   RootContainerId,
 } from "../interfaces/bonita/listTaskHumanUserId";
+import { LocationContext } from "react-router/dist/lib/context";
 
 const TareaConDetalle = () => {
   let iUarioActivo: iUsuario = {
@@ -31,6 +31,7 @@ const TareaConDetalle = () => {
   const query = new URLSearchParams(useLocation().search);
   let idTask: any;
   idTask = query.get("id") ? query.get("id") : "0";
+
   type listTaskHumanUserId = iListTaskHumanUserId;
   //usamos listCaseForClient para setArchivedCaseList y
   //tambien para setCaseList por que son los mismo atributos
@@ -221,6 +222,7 @@ const TareaConDetalle = () => {
                     taskData={taskId}
                     taskId={idTask}
                     cantTask={cantTask}
+                    usuarioId={usuario.user_id}
                   />
                 </div>
               </div>
