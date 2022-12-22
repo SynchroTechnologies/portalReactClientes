@@ -200,7 +200,8 @@ class BonitaApi {
   ///acceso a controles
   async accessControl(sId, token) {
     try {
-      const endpointc = "http://localhost:8080/bonita/API/accessControl/bdm";
+      const endpointc =
+        process.env.REACT_APP_BASE_URL_API + "/bonita/API/accessControl/bdm";
       const intancec = axios.create({
         baseURL: endpointc,
         headers: {
@@ -229,7 +230,8 @@ class BonitaApi {
 
     try {
       const endpointc =
-        "http://localhost:8080/bonita/API/bpm/case?p=0&c=10&f=processDefinitionId=" +
+        process.env.REACT_APP_BASE_URL_API +
+        "/bonita/API/bpm/case?p=0&c=10&f=processDefinitionId=" +
         processDefinitionId;
       const intancec = axios.create({
         baseURL: endpointc,

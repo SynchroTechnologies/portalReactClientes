@@ -140,7 +140,7 @@ function CasoArchivadoId() {
       console.log("no es mayor a cero");
       return;
     }
-    axios.defaults.baseURL = "http://localhost:8080";
+    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
 
     axios.defaults.headers.post["Content-Type"] =
       "application/json;charset=utf-8";
