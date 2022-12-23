@@ -12,6 +12,7 @@ import {
   BonitaGetSetServiceRequest,
   BonitaGetTaskAndContext,
   BonitaPutTaskById,
+  BonitaPutTaskByIdState,
 } from "../apis/bonita/ApiBonita";
 import { iListTaskHumanUserId } from "../interfaces/bonita/listTaskHumanUserId";
 import { iTaskContext } from "../interfaces/bonita/taskContext";
@@ -72,6 +73,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const addComment = async (caseId: string, comment: string) => {
     await addCommentFetch(caseId, comment);
     await getListComment(caseId);
+    await putTaskByIdCompleted(usuarioId, taskId);
   };
 
   const getComments = async (caseId: string) => {
@@ -218,6 +220,10 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
 
     //navigateTo("/tarea-detalle/?id=" + taskId);
   };
+  const completar = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await putTaskById("", taskId);
+  };
   const isTomars = () => {
     console.log("taskData.assigned_id :", taskData.assigned_id);
     if (taskData.assigned_id !== "") {
@@ -269,7 +275,28 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       });
     return;
   };
-
+  const putTaskByIdCompleted = async (user_id: string, task_id: string) => {
+    console.log({ user_id }, { task_id });
+    putTask = user_id;
+    await BonitaPutTaskByIdState(user_id, task_id, "completed")
+      .then((result) => {
+        if (!result.ok) {
+          console.log("!result.ok", result);
+          return;
+        }
+        window.localStorage.setItem(
+          "putTaskByIdCompleted",
+          JSON.stringify(result.body)
+        );
+        console.log({ result });
+        return;
+      })
+      .catch((error) => {
+        console.log("error fetch ------", error);
+        return;
+      });
+    return;
+  };
   //#endregion
   //llamaos al listado de comentaros en el load page
   useEffect(() => {

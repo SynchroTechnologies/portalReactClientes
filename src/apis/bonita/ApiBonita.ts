@@ -179,7 +179,37 @@ export const BonitaPutTaskById = async (user_id: string, task_id: string) => {
   console.log(BASE_URL, RequestInit);
   return await fetch(BASE_URL, RequestInit);
 };
-//#reg
+export const BonitaPutTaskByIdState = async (
+  user_id: string,
+  task_id: string,
+  state: string
+) => {
+  const X_Bonita_API_Token = cok.get("X-Bonita-API-Token");
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("X-Bonita-API-Token", X_Bonita_API_Token);
+
+  const raw = JSON.stringify({
+    state: state,
+  });
+
+  const RequestInit: RequestInit = {
+    method: "PUT",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+    credentials: "include",
+  };
+  RequestInit.method = "PUT";
+  const BASE_URL =
+    process.env.REACT_APP_BASE_URL_API +
+    "" +
+    process.env.REACT_APP_TASK_PUT_BY_ID +
+    task_id;
+  console.log(BASE_URL, RequestInit);
+  return await fetch(BASE_URL, RequestInit);
+};
+//#region
 export const BonitaLogOut = async () => {
   console.log("BonitaLogOut BonitaLogOut");
 
