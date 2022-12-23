@@ -315,13 +315,12 @@ function Login() {
 
                         <div className="form-group ">
                           <h4 className="card-title"></h4>
-                          <a
+                          <button
                             className="btn btn-succes"
                             onClick={fetchLoginService}
-                            href="/home"
                           >
                             Ingresar
-                          </a>
+                          </button>
 
                           {/*<button
                             className="btn btn-succes"
