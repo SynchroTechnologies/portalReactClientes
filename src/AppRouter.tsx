@@ -39,15 +39,7 @@ export default function AppRouter() {
             }
             errorElement={<ErrorPage />}
           />
-          <Route
-            path="/home"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
+          <Route path="/home" element={<Home />} errorElement={<ErrorPage />} />
           <Route
             path="/app"
             element={
@@ -116,6 +108,15 @@ export default function AppRouter() {
             element={
               <ProtectedRoute>
                 <CasoDetalle />
+              </ProtectedRoute>
+            }
+            errorElement={<ErrorPage />}
+          />
+          <Route
+            path="/*"
+            element={
+              <ProtectedRoute>
+                <Home />
               </ProtectedRoute>
             }
             errorElement={<ErrorPage />}

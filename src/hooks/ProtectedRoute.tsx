@@ -1,21 +1,35 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { createUser, resetUser } from "../redux/states/usuarioActivo.state";
 import { AppStore } from "../redux/store";
 import { createSessionToken } from "../redux/states/sessionTokenGlpi.state";
+import { useState } from "react";
 
 export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+  const navigate = useNavigate();
+  //const [isLogged, setIsLogged] = useState(false);
+
+  const navigateTo = (routeUrl: string) => {
+    const url = `/${routeUrl}`;
+    navigate(url);
+  };
   let user = useAuth();
   //const { login } = useLogin();
   //const { usuarioA } = usuarioActivo();
-  if (!user) {
+  //setIsLogged(user.user);
+  console.log({ user });
+  if (!user.user) {
     console.log("if (!user):: NO user en localstore");
-
+    // navigateTo();
+    ///<Route path="/login" element={<Login />} />;
+    ///return <Navigate to="/login" />;
     return <Navigate to="/login" />;
   } else {
+    console.log({ children });
     return children;
   }
 };
+
 //function usuarioActivo(): { usuarioA: boolean } {
 // eslint-disable-next-line react-hooks/rules-of-hooks
 //const userState = useSelector((store: AppStore) => store.usuarioActivo);
@@ -47,26 +61,26 @@ export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 
 //function useAuth(): { user: iUsuario } {
 function useAuth(): { user: boolean } {
-  const userState = useSelector((store: AppStore) => store.usuarioActivo);
+  //const userState = useSelector((store: AppStore) => store.usuarioActivo);
   //console.log("useAuth():", JSON.stringify(userState));
-  const dispatch = useDispatch();
-  const usuario = window.localStorage.getItem("usuario")
-    ? window.localStorage.getItem("usuario")
+  //const dispatch = useDispatch();
+  const usuario = window.localStorage.getItem("usuariousuario")
+    ? window.localStorage.getItem("usuariousuario")
+    : "usuariousuario";
+  console.log({ usuario });
+  const BonitaLoginAxios = window.localStorage.getItem("BonitaLoginAxios")
+    ? window.localStorage.getItem("BonitaLoginAxios")
     : "";
-  const glpiSssion_token = window.localStorage.getItem("glpiSssion_token")
+  console.log({ BonitaLoginAxios });
+  /* const glpiSssion_token = window.localStorage.getItem("glpiSssion_token")
     ? window.localStorage.getItem("glpiSssion_token")
-    : "";
+    : "";*/
   //if (!usuario || !glpiSssion_token) {
-  if (!usuario) {
+  if (BonitaLoginAxios !== "204") {
+    console.log("BonitaLoginAxios !== 204");
     return { user: false };
   } else {
+    console.log("BonitaLoginAxios === 204");
     return { user: true };
-    /*try {
-      dispatch(createUser(usuario));
-      //dispatch(createSessionToken(glpiSssion_token));
-    } catch (error) {
-      console.log("error : ", error);
-    }
-    return { user: true };*/
   }
 }

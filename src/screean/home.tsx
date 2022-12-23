@@ -41,7 +41,7 @@ const Home = () => {
     const bonitaUsuarioActivo = await BonitaUsuarioActivo();
     console.log("await BonitaUsuarioActivo");
     if (bonitaUsuarioActivo.status === 200) {
-      await dispatch(createUser(bonitaUsuarioActivo.data));
+      //await dispatch(createUser(bonitaUsuarioActivo.data));
       //await managenUsuarioState(bonitaUsuarioActivo.data);
       //setUsuario(bonitaUsuarioActivo.data);
       //setServiceLogin("Login Success " + bonitaUsuarioActivo.data.status);
