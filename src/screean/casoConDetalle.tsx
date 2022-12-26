@@ -291,7 +291,7 @@ const CasoConDetalle = () => {
                 aria-selected="false"
                 role="tab"
               >
-                Tareas de caso
+                Tareas del caso
                 <Icons />
               </a>
             </li>

@@ -19,6 +19,7 @@ import {
 import { useDispatch } from "react-redux";
 import { createUser } from "../redux/states/usuarioActivo.state";
 import { managenUsuarioState } from "../apis/bonita/persist.data.service";
+import AlertSuccess from "./alertSuccess";
 //import apiGlpi from "../apis/glpi/ApiGlpi";
 interface Props {
   casoId: string;
@@ -41,6 +42,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
   type _iListTaskHumanCompleteUser = iListTaskHumanCompleteUser;
   type _listTaskHumanUserId = iListTaskHumanUserId;
 
+  const [show, setShow] = useState(false);
   let [listTackHumanUserId, SetlistTackHumanUserId] = useState<
     _listTaskHumanUserId[]
   >([]);
@@ -54,7 +56,6 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
 
   let allTask: _iListTaskHumanCompleteUser[] = [];
 
-  const [show, setShow] = useState(false);
   const [usuario, setUsuario] = useState<iUsuario>(iUarioActivo);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -69,9 +70,10 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
   const getTaskHumanOpenByCase = async (user_id: string, casoId: string) => {
     let userId = usuario.user_id;
     console.log({ userId });
+
+    SetlistTackHumanUserId([]);
     await BonitaGetTaskHumanOpenByCase(user_id, casoId)
       .then((resp) => {
-        SetlistTackHumanUserId([]);
         SetlistTackHumanUserId(resp.data);
         allTask.push(resp.data);
 
@@ -86,6 +88,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
       })
       .catch((error: any) => {
         console.log(error);
+        setShow(true);
       });
     return;
   };
@@ -97,9 +100,10 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
     casoId: string
   ) => {
     console.log({ user_id });
+
+    setListTaskHumanCompleteUser([]);
     await BonitaGetTaskHumanCompleteUserByCase(user_id, casoId)
       .then((resp) => {
-        setListTaskHumanCompleteUser([]);
         setListTaskHumanCompleteUser(resp.data);
         allTask.push(resp.data);
         console.log("getTaskHumanCompleteUser", resp.data);
@@ -120,23 +124,30 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
 
   //#region getTaskHumanMyUser
   const getTaskHumanMyUserByCase = async (user_id: string, case_id: string) => {
+    let msj = false;
+    setShow(msj);
+
+    setListTaskHumanMyUser([]);
     await BonitaGetTaskHumanMyUserByCase(user_id, case_id)
       .then((resp) => {
-        setListTaskHumanMyUser([]);
         setListTaskHumanMyUser(resp.data);
         allTask.push(resp.data);
         console.log("getTaskHumanMyUser", resp.data);
         if (resp.data.length === 0) {
           console.log("lista vacia");
-          setShow(true);
+          msj = true;
+          //setShow(true);
         } else {
-          setShow(false);
+          msj = false;
+          //setShow(false);
         }
       })
       .catch((error: any) => {
-        setShow(true);
+        msj = true;
+        //setShow(true);
         console.log(error);
       });
+    setShow(msj);
     return;
   };
 
@@ -163,11 +174,12 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
   //#region useEffect
   useEffect(() => {
     usuarioActivo();
-
+    //getTaskHumanMyUserByCase(usuario.user_id, casoId);
     const a4 = async () => {
+      //setShow(false);
       await getTaskHumanMyUserByCase(usuario.user_id, casoId);
-      await getTaskHumanOpenByCase(usuario.user_id, casoId);
-      await getTaskHumanCompleteUserByCase(usuario.user_id, casoId);
+      //await getTaskHumanOpenByCase(usuario.user_id, casoId);
+      // await getTaskHumanCompleteUserByCase(usuario.user_id, casoId);
     };
     a4();
   }, []);
@@ -179,6 +191,60 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
       return <AlertDanger msj={msjAlert} />;
     } else {
       return <p>{msj}</p>;
+    }
+  };
+  const showAlertAlertSuccess = (msjAlert: string, msj: string) => {
+    if (show) {
+      return <AlertDanger msj={msjAlert} />;
+    } else {
+      return (
+        <>
+          <p>{msj}</p>
+          {listTackHumanUserId.map((list) => (
+            <div className="container">
+              <div className="row shadow p-2 mb-3 bg-white rounded">
+                <div className="col-1">
+                  <div> Id tarea </div>
+                  <div>{list.id} </div>
+                </div>
+                <div className="col-2">
+                  <div>Nombre tarea </div>
+                  <div> {list.name}</div>
+                </div>
+                <div className="col-1">
+                  <div>Caso </div>
+                  <div> {list.caseId}</div>
+                </div>
+                <div className="col-2">
+                  <div>Nombre Proceso </div>
+                  <div> {list.rootContainerId.displayName}</div>
+                </div>
+                <div className="col-3">
+                  {" "}
+                  <div>Ultima actualizacion</div>
+                  <div>{formatearFecha(list.last_update_date)} </div>
+                </div>
+                <div className="col-2">
+                  {" "}
+                  <div>Vencimiento</div>
+                  <div>{formatearFecha(list.dueDate)} </div>
+                </div>
+                <div className="col-1">
+                  <div>
+                    <button
+                      onClick={() => navigateTo(list.id)}
+                      className="btn btn-outline-info btn-sm align-text-bottom"
+                    >
+                      {" "}
+                      Ver{" "}
+                    </button>{" "}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </>
+      );
     }
   };
   //#endregion
@@ -414,7 +480,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
       onClick={() => getTaskHumanCompleteUserByCase(usuario.user_id, casoId)}
       tabIndex={-1}
     >
-      Tareas realizadas <Icons />
+      Tareas realizadas {listTaskHumanCompleteUser.length} <Icons />
     </a>
   );
 
