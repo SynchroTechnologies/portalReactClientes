@@ -91,14 +91,14 @@ function NavBar() {
       )
         .then((response) => response.text())
         .then((result) => {
-          console.log("result :", result);
+          console.log("loginFetchGlpi result :", result);
           SetInitSession(result);
           //dispatch(createSessionToken(result));
           console.log("SetInitSession:: ", initSession);
           window.localStorage.setItem("initSession", JSON.stringify(result));
         })
         .catch((error) => {
-          console.log("error:: ", error);
+          console.log("loginFetchGlpi error:: ", error);
           // dispatch(resetSessionToken());
           window.localStorage.removeItem("initSession");
         });
