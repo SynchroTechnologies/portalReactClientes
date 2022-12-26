@@ -5,9 +5,9 @@ import React, {
   useContext,
   useReducer,
 } from "react";
-import axios from "axios";
+
 import { IGlpilogin } from "../interfaces/gLpi/login";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { iUsuario } from "../interfaces/bonita/usuario";
 //import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
 //import "bootswatch/dist/js/bootstrap";
@@ -29,7 +29,7 @@ import {
   Glpi_GetTicket,
   Glpi_GetMyEnties,
   Glpi_Login2,
-} from "../apis/glpi/publicservice";
+} from "../apis/glpi/public.service";
 import { UseLocalStorage } from "../auth/useLocalStorage";
 import {
   createSessionToken,
@@ -86,18 +86,25 @@ function Login() {
 
   //#region Login
   const [visibilidad, setVisibilidad] = useState(false);
-  const traercomponente = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    console.log(visibilidad);
-    setVisibilidad(!visibilidad);
-    console.log(visibilidad);
-  };
+
+  /*onClick = {() => navigateTo(routeUrl)
+}
+  const navigate = useNavigate();
+  const navigateTo = (routeUrl: string) => {
+    const url = `/${routeUrl}`;
+    navigate(url);
+  };*/
 
   const fetchLoginService = async () => {
-    setShow(false);
-    let data = {};
+    console.log("fetchLoginService");
     let bonitaLoginAxios = await BonitaLoginAxios(inputUsuario, inputPass);
+    console.log({ bonitaLoginAxios });
+
+    setShow(false);
+    //let bonitaLoginAxios = await BonitaLoginAxios(inputUsuario, inputPass);
     //console.log({ bredirect }, { bonitaLoginAxios });
+    console.log({ bonitaLoginAxios });
+
     if (bonitaLoginAxios) {
       const login = await usuarioActivo();
       console.log({ login });
@@ -105,15 +112,31 @@ function Login() {
       const bonitaUsuarioActivo = await BonitaUsuarioActivo();
 
       if (bonitaUsuarioActivo.status === 200) {
-        console.log({ bonitaLoginAxios });
+        navigateTo("home");
+        /* console.log({ bonitaLoginAxios });
         data = bonitaUsuarioActivo.data;
         await dispatch(createUser(bonitaUsuarioActivo.data));
         await managenUsuarioState(bonitaUsuarioActivo.data);
         bonitaLoginAxios = true;
-        //login glpi
-        //console.log({ bonitaLoginAxios });
+        console.log({ bonitaLoginAxios });*/
+      } else {
+        console.log("bonitaLoginAxios", { bonitaLoginAxios });
+        bonitaLoginAxios = false;
+        setShow(true);
+      }
+    }
 
-        /*console.log("const apiglpis = new apiGlpi()");
+    /*console.log({ bonitaLoginAxios });
+    if (bonitaLoginAxios) {
+      console.log({ bonitaLoginAxios });
+      navigateTo("home");
+    } else {
+      setShow(true);
+    }*/
+    //login glpi
+    //console.log({ bonitaLoginAxios });
+
+    /*console.log("const apiglpis = new apiGlpi()");
         const apiglpis = new apiGlpi();
 
         console.log("const apiglpis = new apiGlpi()");
@@ -133,20 +156,6 @@ function Login() {
           bonitaLoginAxios = false;
           console.log({ bonitaLoginAxios });
         }*/
-        console.log({ bonitaLoginAxios });
-      } else {
-        console.log("bonitaLoginAxios", { bonitaLoginAxios });
-        bonitaLoginAxios = false;
-      }
-    }
-
-    console.log({ bonitaLoginAxios });
-    if (bonitaLoginAxios) {
-      console.log({ bonitaLoginAxios });
-      navigateTo("home");
-    } else {
-      setShow(true);
-    }
   };
 
   const usuarioActivo = async () => {
@@ -167,40 +176,11 @@ function Login() {
     return login;
   };
 
-  const loginAxiosGlpi = async () => {
-    await Glpi_Login()
-      .then((resp) => {
-        if (resp.status === 200) {
-          console.log(resp.data);
-        } else {
-          console.log(resp.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return;
-    const config = {
-      method: "get",
-      url: "https://glpi.apps.synchro.com.ar/apirest.php/initSession",
-      headers: {
-        Authorization: "'user_token' Qb8ETzMRCBj8E5mV8e83mIpZnbBjssxvsZ7HCyuJ",
-        "App-Token": "JPgp2P6F38ZyWbjM1u8OyCEtXCd8Fj8Cl5KWhtiA",
-      },
-    };
-    console.log(JSON.stringify(config));
-    await axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
-    return;
-  };
   const loginFetchGlpi = async () => {
+    // const lglpi = await loginGlpi;
     await glpiloginfech();
+    //console.log(lglpi);
+    //loginFechToBonita(username, password);
     async function glpiloginfech() {
       const appToken = process.env.REACT_APP_GLPI_TOKEN;
       const authorization = process.env.REACT_APP_GLPI_AUTHORIZATION;
@@ -284,12 +264,6 @@ function Login() {
                     <form>
                       <fieldset>
                         <div className="form-group">
-                          <a
-                            className="btn btn-succes"
-                            onClick={() => loginAxiosGlpi()}
-                          >
-                            login glpi
-                          </a>
                           <label className="form-label mt-4">Usuario</label>
                           <input
                             type="text"
@@ -315,14 +289,14 @@ function Login() {
 
                         <div className="form-group ">
                           <h4 className="card-title"></h4>
-                          <button
+                          {/*<button
                             className="btn btn-succes"
-                            onClick={fetchLoginService}
+                            onClick={() => fetchLoginService()}
                           >
                             Ingresar
                           </button>
 
-                          {/*<button
+                          <button
                             className="btn btn-succes"
                             onClick={fetchLoginService}
                           >
@@ -346,6 +320,12 @@ function Login() {
                         </div>
                       </fieldset>
                     </form>
+                    <button
+                      className="btn btn-succes"
+                      onClick={() => fetchLoginService()}
+                    >
+                      Ingresar
+                    </button>
                   </div>
                 </div>
               </div>

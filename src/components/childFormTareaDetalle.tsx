@@ -52,6 +52,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   type comment_ = iComment;
   let putTask = "";
   const [disable, setDisable] = React.useState(true);
+  const [disableBtn, setDisableBtn] = React.useState(true);
   const [isTomar, setIsTomar] = React.useState(true);
 
   const [listComments, setListComments] = useState<comment_[]>([]);
@@ -71,9 +72,14 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const Style = `card border-primary mb-${style}`;
 
   const addComment = async (caseId: string, comment: string) => {
-    await addCommentFetch(caseId, comment);
+    if (comments.length > 20) {
+      await addCommentFetch(caseId, comment);
+      await putTaskByIdCompleted(usuarioId, taskId);
+    } else {
+      console.log("comments.length: ", comments.length);
+    }
+
     await getListComment(caseId);
-    await putTaskByIdCompleted(usuarioId, taskId);
   };
 
   const getComments = async (caseId: string) => {
@@ -178,7 +184,6 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         console.log(error);
       });
   };
-
   const getSetParametros = async (storageId: string) => {
     await BonitaGetSetParametros(storageId) //("2987")
       .then((resp) => {
@@ -209,13 +214,14 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
     event.preventDefault();
     await putTaskById("", taskId);
     setDisable(!disable);
-
+    setDisableBtn(!disable);
     //navigateTo("/tarea-detalle/?id=" + taskId);
   };
   const tomar = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     await putTaskById(usuarioId, taskId);
     setDisable(!disable);
+    setDisableBtn(disable);
     console.log({ taskId });
 
     //navigateTo("/tarea-detalle/?id=" + taskId);
@@ -229,9 +235,13 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
     if (taskData.assigned_id !== "") {
       setIsTomar(true);
       setDisable(false);
+
+      setDisableBtn(false);
     } else {
       setIsTomar(false);
       setDisable(true);
+
+      setDisableBtn(false);
     }
   };
   const putTaskById = async (user_id: string, task_id: string) => {
@@ -250,28 +260,6 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       .catch((error) => {
         console.log("error fetch ------", error);
         return;
-      });
-    return;
-    //setCaseList([]);
-    //setShow(false);
-    let idint = parseInt(task_id);
-    if (idint <= 0) {
-      console.log("no es mayor a cero");
-      setShow(false);
-    }
-    console.log({ user_id }, { task_id });
-    await BonitaPutTaskById(user_id, task_id)
-      .then((resp) => {
-        if (resp.status === 200) {
-          //habilitar pantall
-          setShow(true);
-        } else {
-          //deshabilita pantall
-        }
-      })
-      .catch((error: any) => {
-        console.log(error);
-        setShow(false);
       });
     return;
   };
@@ -325,8 +313,12 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   }, [taskData.caseId]);
 
   useEffect(() => {
-    //isTomars();
-  }, [disable]);
+    if (comments.length > 20) {
+      setDisableBtn(false);
+    } else {
+      setDisableBtn(true);
+    }
+  }, [comments.length]);
 
   const showAlert = () => {
     if (creado) {
@@ -431,7 +423,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         className="form-control"
         id="exampleTextarea"
         itemID="descripcion"
-        placeholder="Ingrese sus comentarios"
+        placeholder="Ingrese sus comentarios, mas de 20 caracteres"
         onChange={(e) => setComments(e.target.value)}
       ></textarea>
     </div>
@@ -552,7 +544,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       </div>
 
       <button
-        disabled={disable}
+        disabled={disableBtn}
         id="btnAddComment"
         onClick={() => addComment(taskData.caseId, comments)}
         className="btn btn-primary btn-sm"
