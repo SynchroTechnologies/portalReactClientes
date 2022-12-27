@@ -198,7 +198,8 @@ async function createcase(
     var config = {
       method: "post",
       url:
-        "http://localhost:8080/bonita/API/bpm/process/" +
+        process.env.REACT_APP_BASE_URL_API +
+        "/bonita/API/bpm/process/" +
         processId +
         "/instantiation",
       headers: {

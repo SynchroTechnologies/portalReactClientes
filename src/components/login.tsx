@@ -86,18 +86,25 @@ function Login() {
 
   //#region Login
   const [visibilidad, setVisibilidad] = useState(false);
-  const traercomponente = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    console.log(visibilidad);
-    setVisibilidad(!visibilidad);
-    console.log(visibilidad);
-  };
+
+  /*onClick = {() => navigateTo(routeUrl)
+}
+  const navigate = useNavigate();
+  const navigateTo = (routeUrl: string) => {
+    const url = `/${routeUrl}`;
+    navigate(url);
+  };*/
 
   const fetchLoginService = async () => {
-    setShow(false);
-    let data = {};
+    console.log("fetchLoginService");
     let bonitaLoginAxios = await BonitaLoginAxios(inputUsuario, inputPass);
+    console.log({ bonitaLoginAxios });
+
+    setShow(false);
+    //let bonitaLoginAxios = await BonitaLoginAxios(inputUsuario, inputPass);
     //console.log({ bredirect }, { bonitaLoginAxios });
+    console.log({ bonitaLoginAxios });
+
     if (bonitaLoginAxios) {
       const login = await usuarioActivo();
       console.log({ login });
@@ -105,15 +112,31 @@ function Login() {
       const bonitaUsuarioActivo = await BonitaUsuarioActivo();
 
       if (bonitaUsuarioActivo.status === 200) {
-        console.log({ bonitaLoginAxios });
+        navigateTo("home");
+        /* console.log({ bonitaLoginAxios });
         data = bonitaUsuarioActivo.data;
         await dispatch(createUser(bonitaUsuarioActivo.data));
         await managenUsuarioState(bonitaUsuarioActivo.data);
         bonitaLoginAxios = true;
-        //login glpi
-        //console.log({ bonitaLoginAxios });
+        console.log({ bonitaLoginAxios });*/
+      } else {
+        console.log("bonitaLoginAxios", { bonitaLoginAxios });
+        bonitaLoginAxios = false;
+        setShow(true);
+      }
+    }
 
-        /*console.log("const apiglpis = new apiGlpi()");
+    /*console.log({ bonitaLoginAxios });
+    if (bonitaLoginAxios) {
+      console.log({ bonitaLoginAxios });
+      navigateTo("home");
+    } else {
+      setShow(true);
+    }*/
+    //login glpi
+    //console.log({ bonitaLoginAxios });
+
+    /*console.log("const apiglpis = new apiGlpi()");
         const apiglpis = new apiGlpi();
 
         console.log("const apiglpis = new apiGlpi()");
@@ -133,20 +156,6 @@ function Login() {
           bonitaLoginAxios = false;
           console.log({ bonitaLoginAxios });
         }*/
-        console.log({ bonitaLoginAxios });
-      } else {
-        console.log("bonitaLoginAxios", { bonitaLoginAxios });
-        bonitaLoginAxios = false;
-      }
-    }
-
-    console.log({ bonitaLoginAxios });
-    if (bonitaLoginAxios) {
-      console.log({ bonitaLoginAxios });
-      navigateTo("home");
-    } else {
-      setShow(true);
-    }
   };
 
   const usuarioActivo = async () => {
@@ -280,15 +289,14 @@ function Login() {
 
                         <div className="form-group ">
                           <h4 className="card-title"></h4>
-                          <a
+                          {/*<button
                             className="btn btn-succes"
-                            onClick={fetchLoginService}
-                            href="/home"
+                            onClick={() => fetchLoginService()}
                           >
                             Ingresar
-                          </a>
+                          </button>
 
-                          {/*<button
+                          <button
                             className="btn btn-succes"
                             onClick={fetchLoginService}
                           >
@@ -312,6 +320,12 @@ function Login() {
                         </div>
                       </fieldset>
                     </form>
+                    <button
+                      className="btn btn-succes"
+                      onClick={() => fetchLoginService()}
+                    >
+                      Ingresar
+                    </button>
                   </div>
                 </div>
               </div>

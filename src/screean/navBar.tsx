@@ -19,6 +19,7 @@ function NavBar() {
   const localStorageUsuario = window.localStorage.getItem("usuario");
   const userName = localStorageUsuario?.split(",")[5].split(":")[1];
 
+  const [initSession, SetInitSession] = useState("");
   const dispatch = useDispatch();
   const [serviceLogin, setServiceLogin] = useState("");
   //let [usuario, setUsuario] = useState<iUarioActivo>();
@@ -47,6 +48,61 @@ function NavBar() {
   //#region logout
   const loginOut = async () => {
     await BonitaLogOut();
+  };
+
+  const loginFetchGlpi = async () => {
+    // const lglpi = await loginGlpi;
+    await glpiloginfech();
+    //console.log(lglpi);
+    //loginFechToBonita(username, password);
+    async function glpiloginfech() {
+      const appToken = process.env.REACT_APP_GLPI_TOKEN;
+      const authorization = process.env.REACT_APP_GLPI_AUTHORIZATION;
+      let myHeaders = new Headers();
+      myHeaders.append(
+        "Authorization",
+        "'user_token' Qb8ETzMRCBj8E5mV8e83mIpZnbBjssxvsZ7HCyuJ"
+      );
+      myHeaders.append("App-Token", "JPgp2P6F38ZyWbjM1u8OyCEtXCd8Fj8Cl5KWhtiA");
+      const RequestInit: RequestInit = {
+        method: "GET",
+        headers: {
+          Authorization:
+            "'user_token' Qb8ETzMRCBj8E5mV8e83mIpZnbBjssxvsZ7HCyuJ",
+          "App-Token": "JPgp2P6F38ZyWbjM1u8OyCEtXCd8Fj8Cl5KWhtiA",
+          Connection: "keep-alive",
+          "Accept-Encoding": "gzip, deflate, br",
+          Accept: "*/*",
+          "User-Agent": "PostmanRuntime/7.29.0",
+          Host: "<calculated when request is sent>",
+        },
+        redirect: "follow",
+      };
+      RequestInit.method = "GET";
+      console.log(JSON.stringify(RequestInit.headers));
+      //console.log(JSON.stringify(RequestInit));
+      //"https://glpi.apps.synchro.com.ar/apirest.php/initSession",
+      await fetch(
+        "" +
+          process.env.REACT_APP_BASE_URL_API_GLPI +
+          process.env.REACT_APP_GLPI_LOGIN,
+
+        RequestInit
+      )
+        .then((response) => response.text())
+        .then((result) => {
+          console.log("loginFetchGlpi result :", result);
+          SetInitSession(result);
+          //dispatch(createSessionToken(result));
+          console.log("SetInitSession:: ", initSession);
+          window.localStorage.setItem("initSession", JSON.stringify(result));
+        })
+        .catch((error) => {
+          console.log("loginFetchGlpi error:: ", error);
+          // dispatch(resetSessionToken());
+          window.localStorage.removeItem("initSession");
+        });
+    }
   };
 
   //#endregion
@@ -251,14 +307,14 @@ function NavBar() {
                   Usuario activo
                 </a>
               </li>
-              <li className="nav-item" onClick={fetchLoginService}>
-                <a className="nav-link" href="#">
-                  Login
-                </a>
-              </li>
               <li className="nav-item" onClick={loginOut}>
                 <a className="nav-link" href="/">
                   LogOut
+                </a>
+              </li>
+              <li className="nav-item" onClick={loginFetchGlpi}>
+                <a className="nav-link" href="#">
+                  login glpi
                 </a>
               </li>
 

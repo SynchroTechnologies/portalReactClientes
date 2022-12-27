@@ -90,7 +90,6 @@ export const BonitaLoginAxios = async (username: string, password: string) => {
     "application/json;charset=utf-8";
   axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
   axios.defaults.withCredentials = true;
-  console.log("BonitaLoginAxios 103");
 
   await axios
     .get(
@@ -103,7 +102,6 @@ export const BonitaLoginAxios = async (username: string, password: string) => {
         "&redirect=false"
     )
     .then((resp) => {
-      console.log("BonitaLoginAxios 116");
       window.localStorage.setItem(
         "BonitaLoginAxios",
         JSON.stringify(resp.status)
@@ -116,12 +114,10 @@ export const BonitaLoginAxios = async (username: string, password: string) => {
       } else {
         axiosstatus = false;
       }
-      //axiosstatus = false;
     })
     .catch((error) => {
-      console.log("BonitaLoginAxios 123");
       window.localStorage.removeItem("BonitaLoginAxios");
-      console.log(error);
+      console.log({ error });
       axiosstatus = false;
     });
   return axiosstatus;
