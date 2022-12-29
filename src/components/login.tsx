@@ -9,8 +9,6 @@ import React, {
 import { IGlpilogin } from "../interfaces/gLpi/login";
 import { useNavigate, Link } from "react-router-dom";
 import { iUsuario } from "../interfaces/bonita/usuario";
-//import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
-//import "bootswatch/dist/js/bootstrap";
 import "../../src/style/bootswatch/dist/journal/bootstrapDev.css";
 import "../../src/style/bootswatch/dist/js/bootstrap";
 import { UsuarioContext } from "../context/usuarioContext";
@@ -65,7 +63,7 @@ function Login() {
   type iUarioActivo = iUsuario;
 
   const [bredirect, setBredirect] = useState(false);
-  const [isLogin, setLogin] = useState(false);
+  const [isLogin, setLogin] = useState(true);
   const [serviceLogin, setServiceLogin] = useState("");
   let iUarioActivo: iUsuario = {
     copyright: "",
@@ -87,22 +85,12 @@ function Login() {
   //#region Login
   const [visibilidad, setVisibilidad] = useState(false);
 
-  /*onClick = {() => navigateTo(routeUrl)
-}
-  const navigate = useNavigate();
-  const navigateTo = (routeUrl: string) => {
-    const url = `/${routeUrl}`;
-    navigate(url);
-  };*/
-
   const fetchLoginService = async () => {
     console.log("fetchLoginService");
     let bonitaLoginAxios = await BonitaLoginAxios(inputUsuario, inputPass);
     console.log({ bonitaLoginAxios });
 
     setShow(false);
-    //let bonitaLoginAxios = await BonitaLoginAxios(inputUsuario, inputPass);
-    //console.log({ bredirect }, { bonitaLoginAxios });
     console.log({ bonitaLoginAxios });
 
     if (bonitaLoginAxios) {
@@ -245,7 +233,118 @@ function Login() {
     const url = `/${routeUrl}`;
     navigate(url);
   };
+  const loadingPanel = () => {
+    if (isLogin) {
+      return (
+        <div className="k-loading-mask">
+          <span className="k-loading-text">Loading ...</span>
+          <div className="k-loading-image"></div>
+          <div className="k-loading-color"></div>
+        </div>
+      );
+    }
+  };
+  const Loading = () => {
+    if (isLogin) {
+      return (
+        <div className="k-loading-mask">
+          <span className="k-loading-text">Loading ...</span>
+          <div className="k-loading-image"></div>
+          <div className="k-loading-color"></div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle ">
+          {" "}
+          <div className="login-container ">
+            {" "}
+            <div className="">
+              {" "}
+              <div className=" shadow p-2 mb-3 bg-secundary ">
+                <div className="card text-white bg-primary mb-3">
+                  {showAlert("NO hemos logrado identificarte", "")}
+                  <div className="card-header">Portal </div>
+                  <div className="card-body">
+                    <h4 className="card-title">Login</h4>
+                    <div className="">
+                      <form>
+                        <fieldset>
+                          <div className="form-group">
+                            <label className="form-label mt-4">Usuario</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="usuario"
+                              placeholder="Usuario"
+                              autoComplete="off"
+                              onChange={(e) => setInputUsuario(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label className="form-label mt-4">
+                              Contraseña
+                            </label>
+                            <input
+                              itemID="password"
+                              type="password"
+                              className="form-control"
+                              id="password"
+                              autoComplete="off"
+                              placeholder="Contraseña"
+                              onChange={(e) => setInputPass(e.target.value)}
+                            />
+                          </div>
 
+                          <div className="form-group ">
+                            <h4 className="card-title"></h4>
+                            {/*<button
+                            className="btn btn-succes"
+                            onClick={() => fetchLoginService()}
+                          >
+                            Ingresar
+                          </button>
+
+                          <button
+                            className="btn btn-succes"
+                            onClick={fetchLoginService}
+                          >
+                            fetchLoginService
+                          </button>{visibilidad ? <ButtonComponent /> : null}
+
+                          <button
+                            className="btn btn-succes"
+                            onClick={traercomponente}
+                          >
+                            traer componente
+                          </button>*/}
+                            {/*    
+                          <label className="form-label mt-4"></label>
+                                                <button
+                            className="btn btn-succes"
+                            onClick={fetchLoginService}
+                          >
+                            Ingresar
+                          </button>*/}
+                          </div>
+                        </fieldset>
+                      </form>
+                      <button
+                        className="btn btn-succes"
+                        onClick={() => fetchLoginService()}
+                      >
+                        Ingresar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>{" "}
+            </div>{" "}
+          </div>
+        </div>
+      );
+    }
+  };
   return (
     <>
       <div className="position-absolute top-50 start-50 translate-middle ">
@@ -333,7 +432,6 @@ function Login() {
           </div>{" "}
         </div>
       </div>
-
       {/*<LoginFc />*/}
     </>
   );

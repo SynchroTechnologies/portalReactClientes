@@ -93,14 +93,14 @@ const ChildFormCasoDetalle: React.FC<Props> = ({
     return;
   };
   const getListComment = async (caseId: string) => {
-    //setListComments([]);
+    setListComments([]);
     await BonitaGetListComment(caseId)
       .then((resp) => {
         const respData = resp.data;
         const listCommentsFilter = respData.filter(
           (comment: iComment) => comment.userId.userName !== "System"
         );
-        setListComments([]);
+
         setListComments(listCommentsFilter);
         console.log("setListComments", resp.data);
         if (resp.data.length === 0) {

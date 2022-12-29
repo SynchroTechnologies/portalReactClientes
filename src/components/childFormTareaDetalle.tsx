@@ -339,13 +339,6 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         >
           Tomar
         </button>{" "}
-        <button
-          disabled={!isTomar}
-          onClick={liberar}
-          className="btn btn-success btn-sm"
-        >
-          Liberar
-        </button>
       </>
     );
     /*if (taskData.assigned_id === "") {

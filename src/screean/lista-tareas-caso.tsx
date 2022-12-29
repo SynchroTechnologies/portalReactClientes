@@ -14,6 +14,7 @@ import {
   BonitaGetTaskHumanMyUser,
   BonitaGetTaskHumanMyUserByCase,
   BonitaGetTaskHumanOpenByCase,
+  BonitaPutTaskById,
   BonitaUsuarioActivo,
 } from "../apis/bonita/ApiBonita";
 import { useDispatch } from "react-redux";
@@ -43,7 +44,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
   type _listTaskHumanUserId = iListTaskHumanUserId;
 
   const [show, setShow] = useState(false);
-  let [listTackHumanUserId, SetlistTackHumanUserId] = useState<
+  let [listTaskHumanUserId, SetlistTaskHumanUserId] = useState<
     _listTaskHumanUserId[]
   >([]);
   const [listTaskHumanMyUser, setListTaskHumanMyUser] = useState<
@@ -61,6 +62,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
   const dispatch = useDispatch();
   const [serviceLogin, setServiceLogin] = useState("");
 
+  const [isTomar, setIsTomar] = React.useState(true);
   const navigateTo = (routeUrl: string) => {
     const url = `/tarea-detalle/?id=${routeUrl}`;
     navigate(url);
@@ -68,13 +70,10 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
 
   //#region getTaskHumanOpen
   const getTaskHumanOpenByCase = async (user_id: string, casoId: string) => {
-    let userId = usuario.user_id;
-    console.log({ userId });
-
-    SetlistTackHumanUserId([]);
+    SetlistTaskHumanUserId([]);
     await BonitaGetTaskHumanOpenByCase(user_id, casoId)
       .then((resp) => {
-        SetlistTackHumanUserId(resp.data);
+        SetlistTaskHumanUserId(resp.data);
         allTask.push(resp.data);
 
         console.log({ allTask });
@@ -99,8 +98,6 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
     user_id: string,
     casoId: string
   ) => {
-    console.log({ user_id });
-
     setListTaskHumanCompleteUser([]);
     await BonitaGetTaskHumanCompleteUserByCase(user_id, casoId)
       .then((resp) => {
@@ -116,6 +113,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
       })
       .catch((error: any) => {
         setShow(true);
+        setListTaskHumanCompleteUser([]);
         console.log(error);
       });
     return;
@@ -124,9 +122,6 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
 
   //#region getTaskHumanMyUser
   const getTaskHumanMyUserByCase = async (user_id: string, case_id: string) => {
-    let msj = false;
-    setShow(msj);
-
     setListTaskHumanMyUser([]);
     await BonitaGetTaskHumanMyUserByCase(user_id, case_id)
       .then((resp) => {
@@ -135,19 +130,16 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
         console.log("getTaskHumanMyUser", resp.data);
         if (resp.data.length === 0) {
           console.log("lista vacia");
-          msj = true;
-          //setShow(true);
+          setShow(true);
         } else {
-          msj = false;
-          //setShow(false);
+          setShow(false);
         }
       })
       .catch((error: any) => {
-        msj = true;
-        //setShow(true);
+        setShow(true);
+        setListTaskHumanMyUser([]);
         console.log(error);
       });
-    setShow(msj);
     return;
   };
 
@@ -174,7 +166,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
   //#region useEffect
   useEffect(() => {
     usuarioActivo();
-    //getTaskHumanMyUserByCase(usuario.user_id, casoId);
+    setListTaskHumanMyUser([]);
     const a4 = async () => {
       //setShow(false);
       await getTaskHumanMyUserByCase(usuario.user_id, casoId);
@@ -193,62 +185,81 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
       return <p>{msj}</p>;
     }
   };
-  const showAlertAlertSuccess = (msjAlert: string, msj: string) => {
-    if (show) {
-      return <AlertDanger msj={msjAlert} />;
-    } else {
-      return (
-        <>
-          <p>{msj}</p>
-          {listTackHumanUserId.map((list) => (
-            <div className="container">
-              <div className="row shadow p-2 mb-3 bg-white rounded">
-                <div className="col-1">
-                  <div> Id tarea </div>
-                  <div>{list.id} </div>
-                </div>
-                <div className="col-2">
-                  <div>Nombre tarea </div>
-                  <div> {list.name}</div>
-                </div>
-                <div className="col-1">
-                  <div>Caso </div>
-                  <div> {list.caseId}</div>
-                </div>
-                <div className="col-2">
-                  <div>Nombre Proceso </div>
-                  <div> {list.rootContainerId.displayName}</div>
-                </div>
-                <div className="col-3">
-                  {" "}
-                  <div>Ultima actualizacion</div>
-                  <div>{formatearFecha(list.last_update_date)} </div>
-                </div>
-                <div className="col-2">
-                  {" "}
-                  <div>Vencimiento</div>
-                  <div>{formatearFecha(list.dueDate)} </div>
-                </div>
-                <div className="col-1">
-                  <div>
-                    <button
-                      onClick={() => navigateTo(list.id)}
-                      className="btn btn-outline-info btn-sm align-text-bottom"
-                    >
-                      {" "}
-                      Ver{" "}
-                    </button>{" "}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </>
-      );
-    }
-  };
-  //#endregion
 
+  //#endregion
+  const asignada = (assigned_id: string, taskId: string) => {
+    return (
+      <>
+        <div>
+          <br />
+          <button
+            disabled={!isTomar}
+            onClick={(e) => liberar(e, taskId)}
+            className="btn btn-success btn-sm"
+          >
+            Liberar
+          </button>
+        </div>
+        <div>
+          <br />
+          <button
+            disabled={isTomar}
+            onClick={(e) => tomar(e, taskId)}
+            className="btn btn-primary btn-sm"
+          >
+            Tomar
+          </button>
+        </div>
+        <div>
+          <br />
+          <button
+            onClick={() => navigateTo(taskId)}
+            className="btn btn-outline-info btn-sm align-text-bottom"
+          >
+            Ver
+          </button>
+        </div>
+      </>
+    );
+  };
+
+  const liberar = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    taskId: string
+  ) => {
+    event.preventDefault();
+    putTaskById("", taskId);
+    //getTaskHumanOpen(usuario.user_id);
+  };
+  const tomar = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    taskId: string
+  ) => {
+    event.preventDefault();
+    putTaskById(usuario.user_id, taskId);
+    console.log({ taskId });
+    //getTaskHumanOpen(usuario.user_id);
+  };
+
+  const putTaskById = async (user_id: string, task_id: string) => {
+    console.log({ user_id }, { task_id });
+    await BonitaPutTaskById(user_id, task_id)
+      .then((result) => {
+        if (!result.ok) {
+          console.log("!result.ok", result);
+          return;
+        }
+        window.localStorage.setItem("putTaskById", JSON.stringify(result.body));
+        console.log({ result });
+        setIsTomar(!isTomar);
+        return;
+      })
+      .catch((error) => {
+        console.log("error fetch ------", error);
+        return;
+      });
+    return;
+  };
   //#region renderizacion
   const tabTaskActive = (
     <div>
@@ -266,7 +277,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
               "NO encontramos Tareas por Hacer para el cliente logueado",
               "Estas son las Tareas por Hacer"
             )}
-            {listTackHumanUserId.map((list) => (
+            {listTaskHumanUserId.map((list) => (
               <div className="container">
                 <div className="row shadow p-2 mb-3 bg-white rounded">
                   <div className="col-1">
@@ -285,7 +296,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
                     <div>Nombre Proceso </div>
                     <div> {list.rootContainerId.displayName}</div>
                   </div>
-                  <div className="col-3">
+                  <div className="col-2">
                     {" "}
                     <div>Ultima actualizacion</div>
                     <div>{formatearFecha(list.last_update_date)} </div>
@@ -295,16 +306,8 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
                     <div>Vencimiento</div>
                     <div>{formatearFecha(list.dueDate)} </div>
                   </div>
-                  <div className="col-1">
-                    <div>
-                      <button
-                        onClick={() => navigateTo(list.id)}
-                        className="btn btn-outline-info btn-sm align-text-bottom"
-                      >
-                        {" "}
-                        Ver{" "}
-                      </button>{" "}
-                    </div>
+                  <div className="col-2 btn-group">
+                    {asignada(list.assigned_id, list.id)}
                   </div>
                 </div>
               </div>
@@ -454,7 +457,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
       role="tab"
       onClick={() => getTaskHumanOpenByCase(usuario.user_id, casoId)}
     >
-      Tareas por Hacer {listTackHumanUserId.length}
+      Tareas por Hacer {listTaskHumanUserId.length}
       {"  "} <Icons />
     </a>
   );

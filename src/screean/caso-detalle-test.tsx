@@ -47,7 +47,7 @@ const CasoDetalleTest = () => {
       setShow(false);
       return;
     }
-
+    setCaseList([]);
     await BonitaCaseForId(id)
       .then((resp) => {
         if (resp.status === 200) {

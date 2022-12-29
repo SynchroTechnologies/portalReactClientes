@@ -15,7 +15,7 @@ import {
   BonitaGetHumeanTaskUser,
 } from "../apis/bonita/ApiBonita";
 
-const Lista = () => {
+const listaverLoad = () => {
   let iUarioActivo: iUsuario = {
     copyright: "",
     is_guest_user: "",
@@ -45,6 +45,9 @@ const Lista = () => {
   const [usuario, setUsuario] = useState<iUsuario>(iUarioActivo);
 
   const [cantTask, setCantTask] = useState(0);
+  const [isLoading, setLoading] = useState(false);
+
+  const [isLoadingArchivados, setLoadingArchivados] = useState(false);
   //useEffect(() => {
   //  //obtenerCaseList("4");
   //  //caseForId;
@@ -58,9 +61,11 @@ const Lista = () => {
   };
   const obtenerCaseList = async (user_id: string) => {
     //await usuarioActivo();
-    BonitaCaseList(user_id)
+    setLoading(true);
+    await BonitaCaseList(user_id)
       .then((resp) => {
         setCaseList(resp.data);
+        setLoading(false);
         if (resp.data.length === 0) {
           console.log("lista vacia");
           setShow(true);
@@ -72,51 +77,19 @@ const Lista = () => {
         setShow(true);
         console.log(error);
       });
-    // getHumeanTaskUserCase(user_id, list.id);
+
     return;
-    /*console.log("usuario", usuario);
-    console.log("serviceLogin", serviceLogin);
-
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    console.log(usuario.user_id);
-    await axios
-      .get(
-        "/bonita/portal/resource/app/userAppBonita/case-list/API/bpm/case?c=20&p=0&d=processDefinitionId&d=started_by&d=startedBySubstitute&f=user_id=" +
-          usuario.user_id +
-          "&n=activeFlowNodes&n=failedFlowNodes&t=0&o=startDate+DESC"
-      )
-      .then((resp) => {
-        let result = resp;
-        setCaseList(result.data);
-        console.log(result.data);
-        if (result.data.length === 0) {
-          console.log("lista vacia");
-          setShow(true);
-        } else {
-          setShow(false);
-        }
-      })
-      .catch((error: any) => {
-        setShow(true);
-        console.log(error);
-      });
-
-    console.log(usuario);
-    console.log(usuario.user_id);
-    return;*/
   };
   //#region usuario activo
   const usuarioActivo = async () => {
     await BonitaUsuarioActivo()
       .then((resp) => {
-        if (resp.status === 200) {
-          setUsuario(resp.data);
-        }
+        setUsuario(resp.data);
+        window.localStorage.setItem("usuario", JSON.stringify(resp.data));
+        window.localStorage.setItem(
+          "usuariousuario",
+          JSON.stringify(resp.data)
+        );
       })
       .catch((error) => {
         window.localStorage.removeItem("usuario");
@@ -142,7 +115,7 @@ const Lista = () => {
   };
   useEffect(() => {
     usuarioActivo();
-    obtenerCaseList(usuario.user_id);
+    //tareaPorCase(usuario.user_id);
   }, []);
 
   useEffect(() => {
@@ -153,10 +126,12 @@ const Lista = () => {
 
   //#region obtenerArchivedActivity
   const obtenerArchivedActivity = async () => {
+    setLoadingArchivados(true);
     BonitaArchivedActivityList(usuario.user_id)
       .then((resp) => {
         let result = resp;
         setArchivedCaseList(result.data);
+        setLoadingArchivados(false);
         console.log("setArchivedCaseList", result.data);
         if (result.data.length === 0) {
           console.log("lista vacia");
@@ -192,7 +167,160 @@ const Lista = () => {
     return;
   };
   //#endregion
+  const theBody = () => {
+    return <div id="myTabContent" className="tab-content"></div>;
+  };
 
+  const LoadingAbiertos = () => {
+    if (isLoading) {
+      return (
+        <div className="k-loading-mask">
+          <span className="k-loading-text">Loading ...</span>
+          <div className="k-loading-image"></div>
+          <div className="k-loading-color"></div>
+        </div>
+      );
+    } else {
+      return (
+        <div id="myTabContent" className="tab-content">
+          <div className="tab-pane fade active show" id="home" role="tabpanel">
+            <div className="row">
+              {" "}
+              <div className="column"></div>
+              <div className="column">
+                <div className="row"></div>
+                {showAlert(
+                  "NO encontramos casos para el cliente logueado",
+                  "Estos son los casos abiertos"
+                )}
+                {caseList.map((list) => (
+                  <div className="container">
+                    <div className="row shadow p-2 mb-3 bg-white rounded">
+                      <div className="col-1">
+                        <div>Id </div>
+                        <div>{list.rootCaseId} </div>
+                      </div>
+                      <div className="col-1">
+                        <div> Proceso </div>
+                        <div>{list.processDefinitionId.displayName} </div>
+                      </div>
+                      <div className="col-3">
+                        <div>Iniciado por </div>
+                        <div>
+                          {" "}
+                          {list.startedBySubstitute.firstname}{" "}
+                          {list.startedBySubstitute.lastname}{" "}
+                        </div>
+                      </div>
+                      <div className="col-3">
+                        {" "}
+                        <div>Fecha inicio</div>
+                        <div>{formatearFecha(list.start)} </div>
+                      </div>
+                      <div className="col-3">
+                        <div>Tareas</div>
+                        <div>{cantTask}</div>
+                      </div>
+                      <div className="col-1">
+                        <div>
+                          {/*<div>
+            <Modals id={"vemos o no el modal "} isShow={true} />{" "}
+          </div>*/}
+                          <button
+                            onClick={() => navigateTo(list.id)}
+                            className="btn btn-outline-info btn-sm align-text-bottom"
+                          >
+                            {" "}
+                            Ver{" "}
+                          </button>{" "}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  };
+  const LoadingArchivados = () => {
+    if (isLoadingArchivados) {
+      return (
+        <div className="k-loading-mask">
+          <span className="k-loading-text">Loading ...</span>
+          <div className="k-loading-image"></div>
+          <div className="k-loading-color"></div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="k-loading-mask">
+          <span className="k-loading-text">hedho Loading ...</span>
+          <div className="k-loading-image"></div>
+          <div className="k-loading-color"></div>
+        </div>
+
+        /*<div id="myTabContent" className="tab-content">
+          <div className="tab-pane fade " id="profile" role="tabpanel">
+            <div className="row">
+              <div className="column"></div>
+              <div className="column">
+                {showAlert(
+                  "NO encontramos casos para el cliente logueado",
+                  "Estos son los casos archivados"
+                )}
+
+                {archivedCaseList.map((list) => (
+                  <div className="container">
+                    <div className="row shadow p-2 mb-3 bg-white rounded">
+                      <div className="col-1">
+                        <div>Id </div>
+                        <div>{list.rootCaseId} </div>
+                      </div>
+                      <div className="col-1">
+                        <div> Proceso </div>
+                        <div>{list.processDefinitionId.displayName} </div>
+                      </div>
+                      <div className="col-3">
+                        <div>Iniciado por </div>
+                        <div>
+                          {" "}
+                          {list.startedBySubstitute.firstname}{" "}
+                          {list.startedBySubstitute.lastname}{" "}
+                        </div>
+                      </div>
+                      <div className="col-3">
+                        {" "}
+                        <div>Fecha inicio</div>
+                        <div>{formatearFecha(list.start)} </div>
+                      </div>
+                      <div className="col-3">
+                        <div>Fecha fin</div>
+                        <div>{formatearFecha(list.end_date)}</div>
+                      </div>
+                      <div className="col-1">
+                        <div>
+                          <button
+                            onClick={() => caseForId(list.id)}
+                            className="btn btn-outline-info btn-sm align-text-bottom"
+                          >
+                            {" "}
+                            Ver{" "}
+                          </button>{" "}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>*/
+      );
+    }
+  };
   //#region alert
   const showAlert = (msjAlert: string, msj: string) => {
     if (show) {
@@ -200,7 +328,6 @@ const Lista = () => {
     } else {
       return <p>{msj}</p>;
     }
-
     /*{
       return (
         show && (
@@ -240,7 +367,10 @@ const Lista = () => {
           </a>
         </li>
       </ul>
-      <div id="myTabContent" className="tab-content">
+      {theBody()}
+      {LoadingAbiertos()}
+      {LoadingArchivados()}
+      {/*<div id="myTabContent" className="tab-content">
         <div className="tab-pane fade active show" id="home" role="tabpanel">
           <div className="row">
             {" "}
@@ -281,9 +411,7 @@ const Lista = () => {
                     </div>
                     <div className="col-1">
                       <div>
-                        {/*<div>
-            <Modals id={"vemos o no el modal "} isShow={true} />{" "}
-          </div>*/}
+
                         <button
                           onClick={() => navigateTo(list.id)}
                           className="btn btn-outline-info btn-sm align-text-bottom"
@@ -353,9 +481,9 @@ const Lista = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>*/}
     </>
   );
 };
 
-export default Lista;
+export default listaverLoad;

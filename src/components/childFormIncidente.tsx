@@ -33,7 +33,6 @@ const ChildFormIncidente: React.FC<Props> = ({
   const [alarma, setAlarma] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [creado, setCreado] = useState(false);
-  const [show, setShow] = useState(false);
   const [prioridad, setPrioridad] = useState("");
 
   const Style = `card border-primary mb-${style}`;

@@ -67,21 +67,6 @@ const TareaDetalle = () => {
 
   //#endregion
 
-  //#region usuario activo
-  const usuarioActivo = async () => {
-    await BonitaUsuarioActivo()
-      .then((resp) => {
-        let result = resp;
-        setUsuario(result.data);
-        console.log(result.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return;
-  };
-  //#endregion
-
   //#region useEffect
   useEffect(() => {
     const usuario = async () => {
@@ -120,7 +105,6 @@ const TareaDetalle = () => {
       if (show) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
-          //usuarioActivo();
           taskById(idTask);
         }, []);
         return (
@@ -145,7 +129,6 @@ const TareaDetalle = () => {
       } else {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
-          //usuarioActivo();
           taskById(idTask);
         }, []);
         //caseForId(idCaso);

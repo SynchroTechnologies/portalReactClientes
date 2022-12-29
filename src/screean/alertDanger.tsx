@@ -9,8 +9,6 @@ interface Props {
   msj: string;
 }
 const AlertDanger: React.FC<Props> = ({ msj }) => {
-  const [show, setShow] = useState(false);
-
   // const handleClose = () => setShow(false);
   // const handleShow = () => setShow(true);
 

@@ -1,9 +1,5 @@
-import Moment from "moment";
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import Cookies from "universal-cookie";
-import axios, { AxiosResponse } from "axios";
-import { kMaxLength } from "buffer";
-import { ClasesApi } from "../clases/clasesApi";
+import axios from "axios";
 import {
   iListCaseForClient,
   ProcessDefinitionId,
@@ -17,10 +13,10 @@ import ChildFormCasoDetalle from "../components/childFormCasoDetalle";
 import { iUsuario } from "../interfaces/bonita/usuario";
 import {
   BonitaCaseForIdSubstitute,
+  BonitaPutTaskById,
   BonitaUsuarioActivo,
 } from "../apis/bonita/ApiBonita";
 import Icons from "../components/icons";
-import ListaTareas from "./lista-tareas";
 import ListaTareasCaso from "./lista-tareas-caso";
 
 const CasoConDetalle = () => {
@@ -47,6 +43,8 @@ const CasoConDetalle = () => {
   const [isVisible, setisVisible] = useState(true);
   const [inputId, setInputId] = useState<string>("1");
   const [caseList, setCaseList] = useState<listCaseForClient[]>([]);
+
+  const [isTomar, setIsTomar] = React.useState(true);
   type caseId = iCase;
   let startedBySubstitute: StartedBySubstitute = {
     last_connection: "",
@@ -265,6 +263,7 @@ const CasoConDetalle = () => {
     CaseForIdSubstitute(idCaso);
     //getHumeanTaskUserCase(usuario.user_id, idCaso);
   }, []);
+
   return (
     <>
       {isVisible === false ? (
@@ -291,8 +290,7 @@ const CasoConDetalle = () => {
                 aria-selected="false"
                 role="tab"
               >
-                Tareas del caso
-                <Icons />
+                Tareas del caso <Icons />
               </a>
             </li>
           </ul>
@@ -302,54 +300,66 @@ const CasoConDetalle = () => {
               id="home"
               role="tabpanel"
             >
-              <div className="row">
-                {" "}
-                <div className="column"></div>
-                <div className="column">
-                  <div className="row"></div>
-
-                  <ChildFormCasoDetalle
-                    idAcordion={caseid.processDefinitionId.displayName + "s"}
-                    titleAcordion={caseid.processDefinitionId.displayName}
-                    cardHeader={"ID del Caso :" + idCaso}
-                    cardTitle={""}
-                    body={""}
-                    textButton={"Añadir comentario"}
-                    routeUrl="routeUrl"
-                    style={"danger"}
-                    data={"danger"}
-                    caseData={caseid}
-                    casoId={idCaso}
-                    cantTask={cantTask}
-                  />
-                </div>
-              </div>
+              {panelCasoDetalle()}
             </div>
             <div className="tab-pane fade " id="profile" role="tabpanel">
-              <div className="row">
-                <div className="column"></div>
-                <div className="column">
-                  <div className="container">
-                    <div className="row shadow p-2 mb-3 bg-white rounded">
-                      <div className="col-12">
-                        <div className="row">
-                          {" "}
-                          <div className="column"></div>
-                          <div className="column">
-                            <ListaTareasCaso casoId={idCaso} />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {panerlListaTareas()}
             </div>
           </div>
         </>
       )}
     </>
   );
+
+  function panelCasoDetalle() {
+    return (
+      <div className="row">
+        {" "}
+        <div className="column"></div>
+        <div className="column">
+          <div className="row"></div>
+
+          <ChildFormCasoDetalle
+            idAcordion={caseid.processDefinitionId.displayName + "s"}
+            titleAcordion={caseid.processDefinitionId.displayName}
+            cardHeader={"ID del Caso :" + idCaso}
+            cardTitle={""}
+            body={""}
+            textButton={"Añadir comentario"}
+            routeUrl="routeUrl"
+            style={"danger"}
+            data={"danger"}
+            caseData={caseid}
+            casoId={idCaso}
+            cantTask={cantTask}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  function panerlListaTareas() {
+    return (
+      <div className="row">
+        <div className="column"></div>
+        <div className="column">
+          <div className="container">
+            <div className="row shadow p-2 mb-3 bg-white rounded">
+              <div className="col-12">
+                <div className="row">
+                  {" "}
+                  <div className="column"></div>
+                  <div className="column">
+                    <ListaTareasCaso casoId={idCaso} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 };
 
 export default CasoConDetalle;

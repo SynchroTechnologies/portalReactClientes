@@ -12,6 +12,7 @@ import {
   BonitaGetTaskHumanCompleteUser,
   BonitaGetTaskHumanMyUser,
   BonitaGetTaskHumanOpen,
+  BonitaPutTaskById,
   BonitaUsuarioActivo,
 } from "../apis/bonita/ApiBonita";
 import { useDispatch } from "react-redux";
@@ -53,6 +54,9 @@ const ListaTareas = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [serviceLogin, setServiceLogin] = useState("");
+  const [disable, setDisable] = React.useState(true);
+  const [disableBtn, setDisableBtn] = React.useState(true);
+  const [isTomar, setIsTomar] = React.useState(true);
 
   const navigateTo = (routeUrl: string) => {
     const url = `/tarea-detalle/?id=${routeUrl}`;
@@ -61,8 +65,7 @@ const ListaTareas = () => {
 
   //#region getTaskHumanOpen
   const getTaskHumanOpen = async (user_id: string) => {
-    let userId = usuario.user_id;
-    console.log({ userId });
+    SetlistTackHumanUserId([]);
     await BonitaGetTaskHumanOpen(user_id)
       .then((resp) => {
         SetlistTackHumanUserId(resp.data);
@@ -83,7 +86,7 @@ const ListaTareas = () => {
 
   //#region getTaskHumanCompleteUser
   const getTaskHumanCompleteUser = async (user_id: string) => {
-    console.log({ user_id });
+    setListTaskHumanCompleteUser([]);
     await BonitaGetTaskHumanCompleteUser(user_id)
       .then((resp) => {
         setListTaskHumanCompleteUser(resp.data);
@@ -105,7 +108,7 @@ const ListaTareas = () => {
 
   //#region getTaskHumanMyUser
   const getTaskHumanMyUser = async (user_id: string) => {
-    console.log({ user_id });
+    setListTaskHumanMyUser([]);
     await BonitaGetTaskHumanMyUser(user_id)
       .then((resp) => {
         setListTaskHumanMyUser(resp.data);
@@ -170,6 +173,7 @@ const ListaTareas = () => {
   //#region useEffect
   useEffect(() => {
     usuarioActivo();
+    //getTaskHumanOpen(usuario.user_id);
   }, []);
   //#endregion
 
@@ -183,6 +187,79 @@ const ListaTareas = () => {
   };
   //#endregion
 
+  const asignada = (assigned_id: string, taskId: string) => {
+    return (
+      <>
+        <div>
+          <br />
+          <button
+            disabled={!isTomar}
+            onClick={(e) => liberar(e, taskId)}
+            className="btn btn-success btn-sm"
+          >
+            Liberar
+          </button>
+        </div>
+        <div>
+          <br />
+          <button
+            disabled={isTomar}
+            onClick={(e) => tomar(e, taskId)}
+            className="btn btn-primary btn-sm"
+          >
+            Tomar
+          </button>
+        </div>
+        <div>
+          <br />
+          <button
+            onClick={() => navigateTo(taskId)}
+            className="btn btn-outline-info btn-sm align-text-bottom"
+          >
+            Ver
+          </button>
+        </div>
+      </>
+    );
+  };
+
+  const liberar = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    taskId: string
+  ) => {
+    event.preventDefault();
+    putTaskById("", taskId);
+    getTaskHumanOpen(usuario.user_id);
+  };
+  const tomar = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    taskId: string
+  ) => {
+    event.preventDefault();
+    putTaskById(usuario.user_id, taskId);
+    console.log({ taskId });
+    getTaskHumanOpen(usuario.user_id);
+  };
+
+  const putTaskById = async (user_id: string, task_id: string) => {
+    console.log({ user_id }, { task_id });
+    await BonitaPutTaskById(user_id, task_id)
+      .then((result) => {
+        if (!result.ok) {
+          console.log("!result.ok", result);
+          return;
+        }
+        window.localStorage.setItem("putTaskById", JSON.stringify(result.body));
+        console.log({ result });
+        setIsTomar(!isTomar);
+        return;
+      })
+      .catch((error) => {
+        console.log("error fetch ------", error);
+        return;
+      });
+    return;
+  };
   //#region renderizacion
   const tabTaskActive = (
     <div>
@@ -219,26 +296,17 @@ const ListaTareas = () => {
                     <div>Nombre Proceso </div>
                     <div> {list.rootContainerId.displayName}</div>
                   </div>
-                  <div className="col-3">
+                  <div className="col-2">
                     {" "}
                     <div>Ultima actualizacion</div>
                     <div>{formatearFecha(list.last_update_date)} </div>
                   </div>
                   <div className="col-2">
-                    {" "}
                     <div>Vencimiento</div>
                     <div>{formatearFecha(list.dueDate)} </div>
                   </div>
-                  <div className="col-1">
-                    <div>
-                      <button
-                        onClick={() => navigateTo(list.id)}
-                        className="btn btn-outline-info btn-sm align-text-bottom"
-                      >
-                        {" "}
-                        Ver{" "}
-                      </button>{" "}
-                    </div>
+                  <div className="col-2 btn-group">
+                    {asignada(list.assigned_id, list.id)}
                   </div>
                 </div>
               </div>

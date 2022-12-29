@@ -72,7 +72,11 @@ export const BonitaGetTaskHumanOpenByCase = async (
   axios.defaults.withCredentials = true;
 
   return await axios.get(
-    "" + process.env.REACT_APP_LISTHUMANTASK_BY_CASE + case_id
+    "" +
+      process.env.REACT_APP_LISTHUMANTASK_BY_CASE +
+      user_id +
+      "&f=rootCaseId=" +
+      case_id
   );
 };
 
