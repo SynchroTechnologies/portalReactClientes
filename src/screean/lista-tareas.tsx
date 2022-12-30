@@ -18,6 +18,7 @@ import {
 import { useDispatch } from "react-redux";
 import { createUser } from "../redux/states/usuarioActivo.state";
 import { managenUsuarioState } from "../apis/bonita/persist.data.service";
+import swipe from "../style/bootstrap/js/dist/util/swipe";
 //import apiGlpi from "../apis/glpi/ApiGlpi";
 
 const ListaTareas = () => {
@@ -57,6 +58,7 @@ const ListaTareas = () => {
   const [disable, setDisable] = React.useState(true);
   const [disableBtn, setDisableBtn] = React.useState(true);
   const [isTomar, setIsTomar] = React.useState(true);
+  const [isLiberar, setLiberar] = React.useState(true);
 
   const navigateTo = (routeUrl: string) => {
     const url = `/tarea-detalle/?id=${routeUrl}`;
@@ -187,7 +189,53 @@ const ListaTareas = () => {
   };
   //#endregion
 
-  const asignada = (assigned_id: string, taskId: string) => {
+  const estaTomada = (assigned_id: string) => {
+    if (assigned_id === "") {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const asignada = (assigned_id: string, taskId: string, getBonita: string) => {
+    return (
+      <>
+        <div>
+          <br />
+          <button
+            disabled={assigned_id === "" ? true : false}
+            //disabled={estaTomada(assigned_id)} //disabled={!isTomar}
+            onClick={(e) => liberar(e, taskId, getBonita)}
+            className="btn btn-success btn-sm"
+          >
+            Liberar
+          </button>
+        </div>
+        <div>
+          <br />
+          <button
+            disabled={assigned_id !== "" ? true : false}
+            //disabled={estaTomada(assigned_id)} //ddisabled={isTomar}
+
+            onClick={(e) => tomar(e, taskId, getBonita)}
+            className="btn btn-primary btn-sm"
+          >
+            Tomar
+          </button>
+        </div>
+        <div>
+          <br />
+          <button
+            onClick={() => navigateTo(taskId)}
+            className="btn btn-outline-info btn-sm align-text-bottom"
+          >
+            Ver
+          </button>
+        </div>
+      </>
+    );
+  };
+  /* const asignadanew = (assigned_id: string, taskId: string) => {
     return (
       <>
         <div>
@@ -221,24 +269,45 @@ const ListaTareas = () => {
         </div>
       </>
     );
+  };*/
+  const switchGetBonita = (getBonita: string) => {
+    switch (getBonita) {
+      case "getTaskHumanOpen":
+        return getTaskHumanOpen(usuario.user_id);
+
+      case "getTaskHumanMyUser":
+        return getTaskHumanMyUser(usuario.user_id);
+
+      case "getTaskHumanCompleteUser":
+        return getTaskHumanCompleteUser(usuario.user_id);
+
+      default:
+        return getTaskHumanOpen(usuario.user_id);
+    }
   };
 
   const liberar = (
     event: React.MouseEvent<HTMLButtonElement>,
-    taskId: string
+    taskId: string,
+    getBonita: string
   ) => {
     event.preventDefault();
     putTaskById("", taskId);
-    getTaskHumanOpen(usuario.user_id);
+    setIsTomar(!isTomar);
+    setLiberar(!isLiberar);
+    switchGetBonita(getBonita);
   };
+
   const tomar = (
     event: React.MouseEvent<HTMLButtonElement>,
-    taskId: string
+    taskId: string,
+    getBonita: string
   ) => {
     event.preventDefault();
     putTaskById(usuario.user_id, taskId);
-    console.log({ taskId });
-    getTaskHumanOpen(usuario.user_id);
+    setLiberar(!isLiberar);
+    setIsTomar(!isTomar);
+    switchGetBonita(getBonita);
   };
 
   const putTaskById = async (user_id: string, task_id: string) => {
@@ -252,6 +321,7 @@ const ListaTareas = () => {
         window.localStorage.setItem("putTaskById", JSON.stringify(result.body));
         console.log({ result });
         setIsTomar(!isTomar);
+        setLiberar(!isLiberar);
         return;
       })
       .catch((error) => {
@@ -306,7 +376,7 @@ const ListaTareas = () => {
                     <div>{formatearFecha(list.dueDate)} </div>
                   </div>
                   <div className="col-2 btn-group">
-                    {asignada(list.assigned_id, list.id)}
+                    {asignada(list.assigned_id, list.id, "getTaskHumanOpen")}
                   </div>
                 </div>
               </div>
@@ -352,7 +422,7 @@ const ListaTareas = () => {
                     <div>Nombre Proceso </div>
                     <div> {listc.rootContainerId.displayName}</div>
                   </div>
-                  <div className="col-3">
+                  <div className="col-2">
                     {" "}
                     <div>Ultima actualizacion</div>
                     <div>{formatearFecha(listc.last_update_date)} </div>
@@ -362,16 +432,12 @@ const ListaTareas = () => {
                     <div>Vencimiento</div>
                     <div>{formatearFecha(listc.dueDate)} </div>
                   </div>
-                  <div className="col-1">
-                    <div>
-                      <button
-                        onClick={() => navigateTo(listc.id)}
-                        className="btn btn-outline-info btn-sm align-text-bottom"
-                      >
-                        {" "}
-                        Ver{" "}
-                      </button>{" "}
-                    </div>
+                  <div className="col-2 btn-group">
+                    {asignada(
+                      listc.assigned_id,
+                      listc.id,
+                      "getTaskHumanMyUser"
+                    )}
                   </div>
                 </div>
               </div>

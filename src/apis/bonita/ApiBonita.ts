@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import { iUsuario } from "../../interfaces/bonita/usuario";
 import { iCreateRequest } from "../../interfaces/bonita/createRequest";
+import { iContratoMasInformacion } from "../../interfaces/bonita/contratoMasInformacion";
 
 const { Cookies: kks } = require("react-cookie");
 const cok = new kks();
@@ -405,6 +406,74 @@ export const BonitaPostCaseFetch = async (Props: iCreateRequest) => {
   console.log({ returnBol });
   return returnBol;
 };
+
+export const BonitaPostPutTaskFetch = async (
+  Props: iContratoMasInformacion,
+  user_id: string,
+  task_id: string
+) => {
+  let returnBol = false;
+  console.log({ returnBol });
+  /* if (Props.processId === "") {
+    console.log(
+      "BonitaPostCaseFetch llego vacio el processID : ",
+      Props.processId
+    );
+    console.log({ returnBol });
+    return returnBol;
+  }*/
+  const X_Bonita_API_Token = cok.get("X-Bonita-API-Token");
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("X-Bonita-API-Token", X_Bonita_API_Token);
+  console.log(JSON.stringify(myHeaders));
+  const raw = JSON.stringify({
+    state: Props.state,
+    serviceRequestInput: {
+      notas: Props.serviceRequestInput.notas,
+    },
+  });
+  console.log(JSON.stringify(raw));
+  const RequestInit: RequestInit = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+    credentials: "include",
+  };
+  RequestInit.method = "POST";
+
+  let BASE_URL =
+    "" +
+    process.env.REACT_APP_BASE_URL_API +
+    process.env.REACT_APP_TASK_PUT_BY_ID +
+    task_id +
+    process.env.REACT_APP_TASK_PUT_ACTION;
+
+  await fetch(BASE_URL, RequestInit)
+    .then((response) => {
+      if (!response.ok) {
+        console.log("BonitaPostPutTaskFetch !result.ok", response);
+        returnBol = false;
+        console.log({ returnBol });
+      } else {
+        window.localStorage.setItem(
+          "BonitaPostPutTaskFetch",
+          JSON.stringify({ response })
+        );
+        returnBol = true;
+        console.log(JSON.stringify({ response }));
+      }
+    })
+    .catch((error) => {
+      console.log("error fetch ------", error);
+      returnBol = false;
+      console.log({ returnBol });
+    });
+  console.log({ returnBol });
+  return returnBol;
+};
+
 ///////////////  function readCreateCase(body: {}) {
 export const BonitaGetHumeanTaskUserCase = async (
   user_id: string,

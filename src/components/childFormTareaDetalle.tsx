@@ -4,6 +4,7 @@ import AlertDanger from "../screean/alertDanger";
 import AlertSuccess from "../screean/alertSuccess";
 import { formatearFecha } from "./formatoFecha";
 import { iComment } from "../interfaces/bonita/comment";
+import { iContratoMasInformacion } from "../interfaces/bonita/contratoMasInformacion";
 import Icons from "./icons";
 import {
   BonitaAddCommentFetch,
@@ -11,6 +12,7 @@ import {
   BonitaGetSetParametros,
   BonitaGetSetServiceRequest,
   BonitaGetTaskAndContext,
+  BonitaPostPutTaskFetch,
   BonitaPutTaskById,
   BonitaPutTaskByIdState,
 } from "../apis/bonita/ApiBonita";
@@ -74,7 +76,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const addComment = async (caseId: string, comment: string) => {
     if (comments.length > 20) {
       await addCommentFetch(caseId, comment);
-      await putTaskByIdCompleted(usuarioId, taskId);
+      //await putTaskByIdCompleted(usuarioId, taskId, comment);
     } else {
       console.log("comments.length: ", comments.length);
     }
@@ -82,6 +84,24 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
     await getListComment(caseId);
   };
 
+  const send = async (caseId: string, comment: string) => {
+    if (comments.length > 20) {
+      await addCommentFetch(caseId, comment);
+      await putTaskByIdCompleted(usuarioId, taskId, comment);
+    } else {
+      console.log("comments.length: ", comments.length);
+    }
+
+    await getListComment(caseId);
+
+    if (creado) {
+      console.log({ creado });
+      showAlert();
+    }
+    setTimeout(function () {
+      navigateTo("/app");
+    }, 4000);
+  };
   const getComments = async (caseId: string) => {
     getListComment(caseId);
   };
@@ -91,25 +111,26 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       .then((result) => {
         if (!result.ok) {
           console.log("!result.ok", result);
-          setCreado(false);
+          //setCreado(false);
           return;
         }
         window.localStorage.setItem(
           "addCommentFetch",
           JSON.stringify(result.body)
         );
-        setCreado(true);
+        //setCreado(true);
         console.log(result.body);
-        showAlert();
+
         return;
       })
       .catch((error) => {
         console.log("error fetch ------", error);
-        setCreado(false);
+        //setCreado(false);
         return;
       });
     return;
   };
+
   const getListComment = async (caseId: string) => {
     await BonitaGetListComment(caseId)
       .then((resp) => {
@@ -220,8 +241,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const tomar = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     await putTaskById(usuarioId, taskId);
-    setDisable(!disable);
-    setDisableBtn(disable);
+
     console.log({ taskId });
 
     //navigateTo("/tarea-detalle/?id=" + taskId);
@@ -255,6 +275,9 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         }
         window.localStorage.setItem("putTaskById", JSON.stringify(result.body));
         console.log({ result });
+        setDisable(!disable);
+        setIsTomar(true);
+        setDisableBtn(disable);
         return;
       })
       .catch((error) => {
@@ -263,29 +286,47 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       });
     return;
   };
-  const putTaskByIdCompleted = async (user_id: string, task_id: string) => {
+  const putTaskByIdCompleted = async (
+    user_id: string,
+    task_id: string,
+    comment: string
+  ) => {
+    let contratoMasInformacion: iContratoMasInformacion = {
+      state: "completed",
+      serviceRequestInput: {
+        notas: comment,
+      },
+    };
     console.log({ user_id }, { task_id });
     putTask = user_id;
-    await BonitaPutTaskByIdState(user_id, task_id, "completed")
+    await BonitaPostPutTaskFetch(contratoMasInformacion, user_id, task_id)
       .then((result) => {
-        if (!result.ok) {
+        if (!result) {
+          setCreado(false);
+          setDisable(false);
           console.log("!result.ok", result);
           return;
         }
+        setCreado(true);
+        setDisable(true);
+        setComments("");
         window.localStorage.setItem(
           "putTaskByIdCompleted",
-          JSON.stringify(result.body)
+          JSON.stringify(result)
         );
         console.log({ result });
         return;
       })
       .catch((error) => {
         console.log("error fetch ------", error);
+        setCreado(false);
+        setDisable(false);
         return;
       });
     return;
   };
   //#endregion
+
   //llamaos al listado de comentaros en el load page
   useEffect(() => {
     const a1 = async () => {
@@ -322,12 +363,11 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
 
   const showAlert = () => {
     if (creado) {
-      return <AlertSuccess msj={"Incidente creado Numero"} />;
+      return <AlertSuccess msj={"Tarea completada"} />;
     } else {
-      return <AlertDanger msj={"NO pudimos crear el incidente"} />;
+      return <></>;
     }
   };
-
   const asignada = () => {
     return (
       <>
@@ -425,6 +465,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const formData = (
     <form>
       <fieldset>
+        {showAlert()}
         <div>{asignada()}</div>
         <div className="form-group">
           <div className="btn-group d-flex justify-content-between col-4">
@@ -535,7 +576,14 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         <p className="card-text"></p>
         {formData}
       </div>
-
+      <button
+        disabled={disableBtn}
+        id="btnAddComment"
+        onClick={() => send(taskData.caseId, comments)}
+        className="btn btn-primary btn-sm"
+      >
+        Enviar
+      </button>
       <button
         disabled={disableBtn}
         id="btnAddComment"
