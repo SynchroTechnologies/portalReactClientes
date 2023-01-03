@@ -13,11 +13,8 @@ import TareaConDetalle from "./tareaConDetalle";
 import { iListTaskHumanUserId } from "../interfaces/bonita/listTaskHumanUserId";
 import ChildFormTareaAprobarDetalle from "../components/childFormTareaAprobarDetalle";
 import ChildFormTareaCalificarFinalizarDetalle from "../components/childFormTareaCalificarFinalizarDetalle";
-import TareaMasInformacionDetalle from "./tareaMasInformacionDetalle";
-import TareaAprobarDetalle from "./tareaAprobarDetalle";
-import TareaCalificarFinalizarDetalle from "./tareaCalificarFinalizarDetalle";
 
-const TareaDetalle = () => {
+const TareaDetalleBkp = () => {
   let iUarioActivo: iUsuario = {
     copyright: "",
     is_guest_user: "",
@@ -87,21 +84,6 @@ const TareaDetalle = () => {
         });
       usuario();
     };
-    const task = async () => {
-      await BonitaTaskById(idTask ? idTask : "")
-        .then((resp) => {
-          let result = resp;
-          setTaskId(result.data[0]);
-          setTaskList(result.data);
-          console.log(result.data);
-          setShow(true);
-        })
-        .catch((error: any) => {
-          console.log(error);
-          setShow(false);
-        });
-      task();
-    };
   }, []);
   //#endregion
 
@@ -134,10 +116,12 @@ const TareaDetalle = () => {
                 <div className="container ">
                   <div className="row shadow p-2 mb-3 bg-white rounded">
                     <div className="row">
-                      <div className="col"> {renderizar()}</div>
-
-                      {/*<TareaConDetalle />
-                      {renderizarFormularioB(taskList[0].name)}*/}
+                      <div className="col">
+                        {" "}
+                        <div></div>
+                      </div>
+                      {/*renderizarFormularioB(taskList[0].name)*/}
+                      {<TareaConDetalle />}
                     </div>
                   </div>
                 </div>
@@ -164,8 +148,7 @@ const TareaDetalle = () => {
                             {" "}
                             <div></div>
                             <div>
-                              {renderizar()}
-                              {/*renderizarFormularioB(taskList[0].name)*/}
+                              {renderizarFormulario(taskList[0].name)}
                               {/*<ChildFormTareaDetalle
                                 idAcordion={"Tarea"}
                                 titleAcordion={"Tareas"}
@@ -207,54 +190,17 @@ const TareaDetalle = () => {
       }
     }
   };
-  const renderizar = () => {
-    console.log("taskList[0].name");
-    if (taskList[0].name === "Mas Información") {
-      return (
-        <>
-          <TareaMasInformacionDetalle />
-        </>
-      );
-    }
-
-    if (taskList[0].name === "Aprobar") {
-      return (
-        <>
-          <TareaAprobarDetalle />
-        </>
-      );
-    }
-    if (taskList[0].name === "Calificar y finalizar") {
-      return (
-        <>
-          <TareaCalificarFinalizarDetalle />
-        </>
-      );
-    }
-  };
   const renderizarFormularioB = (nombreTarea: string) => {
     console.log({ nombreTarea });
     if (nombreTarea === "Mas Información") {
-      return (
-        <>
-          <TareaMasInformacionDetalle />
-        </>
-      );
+      return <TareaConDetalle />;
     }
 
     if (nombreTarea === "Aprobar") {
-      return (
-        <>
-          <TareaAprobarDetalle />
-        </>
-      );
+      return <TareaConDetalle />;
     }
     if (nombreTarea === "Calificar y finalizar") {
-      return (
-        <>
-          <TareaCalificarFinalizarDetalle />
-        </>
-      );
+      return <TareaConDetalle />;
     }
   };
   const renderizarFormulario = (nombreTarea: string) => {
@@ -327,12 +273,10 @@ const TareaDetalle = () => {
   return (
     <>
       <NavBar />
-      {/*renderizarTarea()*/}
-      {/*renderizarFormularioB(taskList[0].name)*/}
-      {renderizar}
+      {renderizarTarea()}
     </>
   );
   //#endregion
 };
 
-export default TareaDetalle;
+export default TareaDetalleBkp;

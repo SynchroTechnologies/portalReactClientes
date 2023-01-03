@@ -4,7 +4,7 @@ import AlertDanger from "../screean/alertDanger";
 import AlertSuccess from "../screean/alertSuccess";
 import { formatearFecha } from "./formatoFecha";
 import { iComment } from "../interfaces/bonita/comment";
-import { iContratoMasInformacion } from "../interfaces/bonita/contratoMasInformacion";
+import { iContratoAprobacion } from "../interfaces/bonita/contratoAprobacion";
 import Icons from "./icons";
 import {
   BonitaAddCommentFetch,
@@ -12,6 +12,7 @@ import {
   BonitaGetSetParametros,
   BonitaGetSetServiceRequest,
   BonitaGetTaskAndContext,
+  BonitaPostPutTaskAprobar,
   BonitaPostPutTaskFetch,
   BonitaPutTaskById,
   BonitaPutTaskByIdState,
@@ -20,6 +21,7 @@ import { iListTaskHumanUserId } from "../interfaces/bonita/listTaskHumanUserId";
 import { iTaskContext } from "../interfaces/bonita/taskContext";
 import { iServiceRequestTask } from "../interfaces/bonita/serviceRequestTask";
 import { iParametrosTask } from "../interfaces/bonita/parametrosTask";
+import { ImportExpression } from "typescript";
 interface Props {
   idAcordion: string;
   titleAcordion: string;
@@ -36,7 +38,7 @@ interface Props {
   usuarioId: string;
 }
 
-const ChildFormTareaDetalle: React.FC<Props> = ({
+const ChildFormTareaAprobarDetalle: React.FC<Props> = ({
   idAcordion,
   titleAcordion,
   cardHeader,
@@ -56,7 +58,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const [disable, setDisable] = React.useState(true);
   const [disableBtn, setDisableBtn] = React.useState(true);
   const [isTomar, setIsTomar] = React.useState(true);
-
+  const [aprobado, setAprobado] = useState(true);
   const [listComments, setListComments] = useState<comment_[]>([]);
   const [comments, setComments] = useState("");
   const [creado, setCreado] = useState(false);
@@ -84,10 +86,10 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
     await getListComment(caseId);
   };
 
-  const send = async (caseId: string, comment: string) => {
+  const send = async (caseId: string, comment: string, aprobado: boolean) => {
     if (comments.length > 20) {
       await addCommentFetch(caseId, comment);
-      await putTaskByIdCompleted(usuarioId, taskId, comment);
+      await putTaskByIdCompleted(usuarioId, taskId, comment, aprobado);
     } else {
       console.log("comments.length: ", comments.length);
     }
@@ -289,17 +291,19 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const putTaskByIdCompleted = async (
     user_id: string,
     task_id: string,
-    comment: string
+    comment: string,
+    aprobado: boolean
   ) => {
-    let contratoMasInformacion: iContratoMasInformacion = {
+    let contratoAprobacion: iContratoAprobacion = {
       state: "completed",
       serviceRequestInput: {
+        horasAprobadas: aprobado,
         notas: comment,
       },
     };
     console.log({ user_id }, { task_id });
     putTask = user_id;
-    await BonitaPostPutTaskFetch(contratoMasInformacion, user_id, task_id)
+    await BonitaPostPutTaskAprobar(contratoAprobacion, user_id, task_id)
       .then((result) => {
         if (!result) {
           setCreado(false);
@@ -381,19 +385,6 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         </button>{" "}
       </>
     );
-    /*if (taskData.assigned_id === "") {
-      return (
-        <button onClick={tomar} className="btn btn-primary btn-sm">
-          Tomar {taskId}
-        </button>
-      );
-    } else {
-      return (
-        <button onClick={liberar} className="btn btn-success btn-sm">
-          Liberar {taskId}
-        </button>
-      );
-    }*/
   };
 
   const listCommentsMap = (
@@ -439,7 +430,6 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
             data-bs-toggle="tab"
             aria-selected="true"
             role="tab"
-            href="#"
             onClick={() => getComments(taskData.caseId)}
           >
             Refrescar <Icons />
@@ -530,6 +520,46 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         </div>
         <div className="d-flex col">
           <div className="col">
+            <p className="form-label mt-1 text-start">Tiempo</p>
+          </div>
+          <div className="col">
+            {" "}
+            <p className="form-label mt-1 text-start">
+              {`${serviceRequestTask?.tiempo}`}
+            </p>
+          </div>
+        </div>
+        <div className="d-flex col">
+          <div className="col">
+            <p className="form-label mt-1 text-start">Horas Aprobadas </p>
+          </div>
+          <div className="col text-start">
+            <input
+              type="radio"
+              className="btn-check"
+              name="btnradio"
+              id="btnradio1"
+              autoComplete="off"
+              onChange={(e) => setAprobado(true)}
+            />
+            <label className="btn btn-outline-info" htmlFor="btnradio1">
+              Si
+            </label>
+            <input
+              type="radio"
+              className="btn-check"
+              name="btnradio"
+              id="btnradio2"
+              autoComplete="off"
+              onChange={(e) => setAprobado(false)}
+            />
+            <label className="btn btn-outline-warning" htmlFor="btnradio2">
+              No
+            </label>
+          </div>
+        </div>
+        <div className="d-flex col">
+          <div className="col">
             <p className="form-label mt-1 text-start">Categoria</p>
           </div>
           <div className="col">
@@ -580,7 +610,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       <button
         disabled={disableBtn}
         id="btnAddComment"
-        onClick={() => send(taskData.caseId, comments)}
+        onClick={() => send(taskData.caseId, comments, aprobado)}
         className="btn btn-primary btn-sm"
       >
         Enviar
@@ -604,4 +634,4 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   );
 };
 
-export default ChildFormTareaDetalle;
+export default ChildFormTareaAprobarDetalle;

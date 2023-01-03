@@ -22,6 +22,8 @@ import swipe from "../style/bootstrap/js/dist/util/swipe";
 //import apiGlpi from "../apis/glpi/ApiGlpi";
 
 const ListaTareas = () => {
+  //#region  const , let e interfaces
+
   let iUarioActivo: iUsuario = {
     copyright: "",
     is_guest_user: "",
@@ -59,10 +61,21 @@ const ListaTareas = () => {
   const [disableBtn, setDisableBtn] = React.useState(true);
   const [isTomar, setIsTomar] = React.useState(true);
   const [isLiberar, setLiberar] = React.useState(true);
+  //#endregion
 
-  const navigateTo = (routeUrl: string) => {
-    const url = `/tarea-detalle/?id=${routeUrl}`;
-    navigate(url);
+  const navigateTo = (taskId: string, taskName: string) => {
+    let url = `/tarea-detalle/?id=${taskId}`;
+    console.log(url, taskName);
+    switch (taskName) {
+      case "Mas Información":
+        return navigate(`/tarea-detalle-mas-informacion/?id=${taskId}`);
+      case "Aprobación":
+        return navigate(`/tarea-detalle-aprobar/?id=${taskId}`);
+      case "Calificar y finalizar":
+        return navigate(`/tarea-detalle-calificar-finalizar/?id=${taskId}`);
+      default:
+        navigate(`/tarea-detalle/?id=${taskId}`);
+    }
   };
 
   //#region getTaskHumanOpen
@@ -127,30 +140,8 @@ const ListaTareas = () => {
         console.log(error);
       });
     return;
-
-    /*axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get("" + process.env.REACT_APP_HUMANTASK_MY_USER + user_id)
-      .then((resp) => {
-        setListTaskHumanMyUser(resp.data);
-        console.log("getTaskHumanMyUser", resp.data);
-        if (resp.data.length === 0) {
-          console.log("lista vacia");
-          setShow(true);
-        } else {
-          setShow(false);
-        }
-      })
-      .catch((error: any) => {
-        setShow(true);
-        console.log(error);
-      });
-    return;*/
   };
+  //#endregion
 
   //#region usuarioActivo
   const usuarioActivo = async () => {
@@ -175,7 +166,6 @@ const ListaTareas = () => {
   //#region useEffect
   useEffect(() => {
     usuarioActivo();
-    //getTaskHumanOpen(usuario.user_id);
   }, []);
   //#endregion
 
@@ -189,22 +179,18 @@ const ListaTareas = () => {
   };
   //#endregion
 
-  const estaTomada = (assigned_id: string) => {
-    if (assigned_id === "") {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const asignada = (assigned_id: string, taskId: string, getBonita: string) => {
+  const asignada = (
+    assigned_id: string,
+    taskId: string,
+    taskName: string,
+    getBonita: string
+  ) => {
     return (
       <>
         <div>
           <br />
           <button
             disabled={assigned_id === "" ? true : false}
-            //disabled={estaTomada(assigned_id)} //disabled={!isTomar}
             onClick={(e) => liberar(e, taskId, getBonita)}
             className="btn btn-success btn-sm"
           >
@@ -215,8 +201,6 @@ const ListaTareas = () => {
           <br />
           <button
             disabled={assigned_id !== "" ? true : false}
-            //disabled={estaTomada(assigned_id)} //ddisabled={isTomar}
-
             onClick={(e) => tomar(e, taskId, getBonita)}
             className="btn btn-primary btn-sm"
           >
@@ -226,7 +210,7 @@ const ListaTareas = () => {
         <div>
           <br />
           <button
-            onClick={() => navigateTo(taskId)}
+            onClick={() => navigateTo(taskId, taskName)}
             className="btn btn-outline-info btn-sm align-text-bottom"
           >
             Ver
@@ -235,41 +219,6 @@ const ListaTareas = () => {
       </>
     );
   };
-  /* const asignadanew = (assigned_id: string, taskId: string) => {
-    return (
-      <>
-        <div>
-          <br />
-          <button
-            disabled={!isTomar}
-            onClick={(e) => liberar(e, taskId)}
-            className="btn btn-success btn-sm"
-          >
-            Liberar
-          </button>
-        </div>
-        <div>
-          <br />
-          <button
-            disabled={isTomar}
-            onClick={(e) => tomar(e, taskId)}
-            className="btn btn-primary btn-sm"
-          >
-            Tomar
-          </button>
-        </div>
-        <div>
-          <br />
-          <button
-            onClick={() => navigateTo(taskId)}
-            className="btn btn-outline-info btn-sm align-text-bottom"
-          >
-            Ver
-          </button>
-        </div>
-      </>
-    );
-  };*/
   const switchGetBonita = (getBonita: string) => {
     switch (getBonita) {
       case "getTaskHumanOpen":
@@ -376,7 +325,12 @@ const ListaTareas = () => {
                     <div>{formatearFecha(list.dueDate)} </div>
                   </div>
                   <div className="col-2 btn-group">
-                    {asignada(list.assigned_id, list.id, "getTaskHumanOpen")}
+                    {asignada(
+                      list.assigned_id,
+                      list.id,
+                      list.name,
+                      "getTaskHumanOpenByCase"
+                    )}
                   </div>
                 </div>
               </div>
@@ -400,8 +354,8 @@ const ListaTareas = () => {
           <div className="column">
             <div className="row"></div>
             {showAlert(
-              "NO encontramos Mis Tareas para el cliente logueado",
-              "Estas son Mis Tareas"
+              "NO encontramos Tareas en ejecución para el cliente logueado",
+              "Estas son Tareas en ejecución"
             )}
             {listTaskHumanMyUser.map((listc) => (
               <div className="container">
@@ -436,6 +390,7 @@ const ListaTareas = () => {
                     {asignada(
                       listc.assigned_id,
                       listc.id,
+                      listc.name,
                       "getTaskHumanMyUser"
                     )}
                   </div>
@@ -496,7 +451,7 @@ const ListaTareas = () => {
                   <div className="col-1">
                     <div>
                       <button
-                        onClick={() => navigateTo(listc.id)}
+                        onClick={() => navigateTo(listc.id, listc.name)}
                         className="btn btn-outline-info btn-sm align-text-bottom"
                       >
                         {" "}
@@ -535,7 +490,7 @@ const ListaTareas = () => {
       role="tab"
       onClick={() => getTaskHumanMyUser(usuario.user_id)}
     >
-      Mis tareas {listTaskHumanMyUser.length} <Icons />
+      Tareas en ejecución {listTaskHumanMyUser.length} <Icons />
     </a>
   );
   const tab3 = (

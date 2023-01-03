@@ -3,6 +3,6 @@ export interface iContratoAprobacion {
   serviceRequestInput: ServiceRequestInput;
 }
 export interface ServiceRequestInput {
-  horasAprobadas: string;
+  horasAprobadas: boolean;
   notas: string;
 }

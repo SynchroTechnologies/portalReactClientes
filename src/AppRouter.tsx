@@ -16,6 +16,10 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import TareaDetalle from "./screean/tarea-detalle";
 import CasoDetalleTest from "./screean/caso-detalle-test";
+import TareaDetalleAprobar from "./screean/tarea-detalle-aprobar";
+import TareaDetalleCalificarFinalizar from "./screean/tarea-detalle-calificar-finalizar";
+import TareaDetalleMasInformacion from "./screean/tarea-detalle-mas-informacion";
+import CasoArchivadoDetalle from "./screean/caso-archivado-detalle";
 
 export const AppContext = React.createContext({});
 
@@ -123,10 +127,37 @@ export default function AppRouter() {
             errorElement={<ErrorPage />}
           />
           <Route
-            path="/tarea-detalle"
+            path="/caso-archivado-detalle"
             element={
               <ProtectedRoute>
-                <TareaDetalle />
+                <CasoArchivadoDetalle />
+              </ProtectedRoute>
+            }
+            errorElement={<ErrorPage />}
+          />
+          <Route
+            path="/tarea-detalle-mas-informacion"
+            element={
+              <ProtectedRoute>
+                <TareaDetalleMasInformacion />
+              </ProtectedRoute>
+            }
+            errorElement={<ErrorPage />}
+          />
+          <Route
+            path="/tarea-detalle-aprobar"
+            element={
+              <ProtectedRoute>
+                <TareaDetalleAprobar />
+              </ProtectedRoute>
+            }
+            errorElement={<ErrorPage />}
+          />
+          <Route
+            path="/tarea-detalle-calificar-finalizar"
+            element={
+              <ProtectedRoute>
+                <TareaDetalleCalificarFinalizar />
               </ProtectedRoute>
             }
             errorElement={<ErrorPage />}

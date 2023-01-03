@@ -3,5 +3,5 @@ export interface iContratoCalificarFinalizar {
   serviceRequestInput: ServiceRequestInput;
 }
 export interface ServiceRequestInput {
-  validarSatisfaccion: number;
+  validarSatisfaccion: string;
 }

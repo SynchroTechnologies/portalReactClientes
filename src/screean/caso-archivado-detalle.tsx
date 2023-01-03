@@ -6,10 +6,14 @@ import ChildFormCasoDetalle from "../components/childFormCasoDetalle";
 import { iCase } from "../interfaces/bonita/case";
 import { iListCaseForClient } from "../interfaces/bonita/listCaseClient";
 import CasoConDetalle from "./casoConDetalle";
-import { BonitaCaseForId, BonitaUsuarioActivo } from "../apis/bonita/ApiBonita";
+import {
+  BonitaCaseArchivedForId,
+  BonitaCaseForId,
+  BonitaUsuarioActivo,
+} from "../apis/bonita/ApiBonita";
 import { iUsuario } from "../interfaces/bonita/usuario";
 
-const CasoDetalle = () => {
+const CasoArchivadoDetalle = () => {
   let iUarioActivo: iUsuario = {
     copyright: "",
     is_guest_user: "",
@@ -48,7 +52,7 @@ const CasoDetalle = () => {
       return;
     }
 
-    await BonitaCaseForId(id)
+    await BonitaCaseArchivedForId(id)
       .then((resp) => {
         if (resp.status === 200) {
           setCaseid(resp.data[0]);
@@ -200,4 +204,4 @@ const CasoDetalle = () => {
   //#endregion
 };
 
-export default CasoDetalle;
+export default CasoArchivadoDetalle;

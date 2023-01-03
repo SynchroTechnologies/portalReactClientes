@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import AlertDanger from "../screean/alertDanger";
 import AlertSuccess from "../screean/alertSuccess";
 import { formatearFecha } from "./formatoFecha";
 import { iComment } from "../interfaces/bonita/comment";
-import { iContratoMasInformacion } from "../interfaces/bonita/contratoMasInformacion";
+
 import Icons from "./icons";
 import {
   BonitaAddCommentFetch,
@@ -12,14 +11,14 @@ import {
   BonitaGetSetParametros,
   BonitaGetSetServiceRequest,
   BonitaGetTaskAndContext,
-  BonitaPostPutTaskFetch,
+  BonitaPostPutTaskCalificarFinalizar,
   BonitaPutTaskById,
-  BonitaPutTaskByIdState,
 } from "../apis/bonita/ApiBonita";
 import { iListTaskHumanUserId } from "../interfaces/bonita/listTaskHumanUserId";
 import { iTaskContext } from "../interfaces/bonita/taskContext";
 import { iServiceRequestTask } from "../interfaces/bonita/serviceRequestTask";
 import { iParametrosTask } from "../interfaces/bonita/parametrosTask";
+import { iContratoCalificarFinalizar } from "../interfaces/bonita/contratoCalificarFinalizar";
 interface Props {
   idAcordion: string;
   titleAcordion: string;
@@ -36,7 +35,7 @@ interface Props {
   usuarioId: string;
 }
 
-const ChildFormTareaDetalle: React.FC<Props> = ({
+const ChildFormTareaCalificarFinalizarDetalle: React.FC<Props> = ({
   idAcordion,
   titleAcordion,
   cardHeader,
@@ -53,12 +52,15 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
 }) => {
   type comment_ = iComment;
   let putTask = "";
+  if (taskId === null) {
+    taskId = "";
+  }
   const [disable, setDisable] = React.useState(true);
   const [disableBtn, setDisableBtn] = React.useState(true);
   const [isTomar, setIsTomar] = React.useState(true);
-
   const [listComments, setListComments] = useState<comment_[]>([]);
   const [comments, setComments] = useState("");
+  const [validarSatisfaccion, setvalidarSatisfaccion] = useState("5");
   const [creado, setCreado] = useState(false);
   const [show, setShow] = useState(false);
   type taskContexts = iTaskContext;
@@ -76,7 +78,6 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const addComment = async (caseId: string, comment: string) => {
     if (comments.length > 20) {
       await addCommentFetch(caseId, comment);
-      //await putTaskByIdCompleted(usuarioId, taskId, comment);
     } else {
       console.log("comments.length: ", comments.length);
     }
@@ -84,10 +85,14 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
     await getListComment(caseId);
   };
 
-  const send = async (caseId: string, comment: string) => {
+  const send = async (
+    caseId: string,
+    comment: string,
+    validarSatisfaccion: string
+  ) => {
     if (comments.length > 20) {
       await addCommentFetch(caseId, comment);
-      await putTaskByIdCompleted(usuarioId, taskId, comment);
+      await putTaskByIdCompleted(usuarioId, taskId, validarSatisfaccion);
     } else {
       console.log("comments.length: ", comments.length);
     }
@@ -169,14 +174,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
             "setParametros_refStorageId",
             JSON.stringify(resp.data.parametros_ref.storageId)
           );
-          //setParametros_refStorageId(resp.data.estimar22_ref.storageId_string);
-          //setServiceRequest_refStorageId(
-          //  resp.data.parametros22_ref.storageId_string
-          //);
         }
-
-        //getSetParametros(resp.data.parametros22_ref.storageId_string);
-        //getSetServiceRequest(resp.data.estimar22_ref.storageId_string);
       })
       .catch((error: any) => {
         setShow(true);
@@ -193,12 +191,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
             "getSetServiceRequest",
             JSON.stringify(resp.data)
           );
-          //setParametros_refStorageId(resp.data.parametros_ref.storageId);
-          //setServiceRequest_refStorageId(
-          //  resp.data.serviceRequest_ref.storageId
-          //);
         }
-        //console.log("getSetServiceRequest", resp.data);
       })
       .catch((error: any) => {
         setShow(true);
@@ -241,15 +234,9 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const tomar = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     await putTaskById(usuarioId, taskId);
-
     console.log({ taskId });
+  };
 
-    //navigateTo("/tarea-detalle/?id=" + taskId);
-  };
-  const completar = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    await putTaskById("", taskId);
-  };
   const isTomars = () => {
     console.log("taskData.assigned_id :", taskData.assigned_id);
     if (taskData.assigned_id !== "") {
@@ -289,17 +276,21 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   const putTaskByIdCompleted = async (
     user_id: string,
     task_id: string,
-    comment: string
+    validarSatisfaccion: string
   ) => {
-    let contratoMasInformacion: iContratoMasInformacion = {
+    let contratoCalificarFinalizar: iContratoCalificarFinalizar = {
       state: "completed",
       serviceRequestInput: {
-        notas: comment,
+        validarSatisfaccion: validarSatisfaccion,
       },
     };
     console.log({ user_id }, { task_id });
     putTask = user_id;
-    await BonitaPostPutTaskFetch(contratoMasInformacion, user_id, task_id)
+    await BonitaPostPutTaskCalificarFinalizar(
+      contratoCalificarFinalizar,
+      user_id,
+      task_id
+    )
       .then((result) => {
         if (!result) {
           setCreado(false);
@@ -381,19 +372,6 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         </button>{" "}
       </>
     );
-    /*if (taskData.assigned_id === "") {
-      return (
-        <button onClick={tomar} className="btn btn-primary btn-sm">
-          Tomar {taskId}
-        </button>
-      );
-    } else {
-      return (
-        <button onClick={liberar} className="btn btn-success btn-sm">
-          Liberar {taskId}
-        </button>
-      );
-    }*/
   };
 
   const listCommentsMap = (
@@ -554,6 +532,65 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
         <div className="d-flex col">
           <div className="col">
             {" "}
+            <p className="form-label mt-1 text-start">Tiempo</p>
+          </div>
+          <div className="col">
+            {" "}
+            <p className="form-label mt-1 text-start">
+              {serviceRequestTask?.tiempo}
+            </p>
+          </div>
+        </div>
+        <div className="d-flex col">
+          <div className="col">
+            {" "}
+            <p className="form-label mt-1 text-start">Asignacion</p>
+          </div>
+          <div className="col">
+            {" "}
+            <p className="form-label mt-1 text-start">
+              {serviceRequestTask?.asignacion}
+            </p>
+          </div>
+        </div>
+        <div className="d-flex col">
+          <div className="col">
+            {" "}
+            <p className="form-label mt-1 text-start">Notas </p>
+          </div>
+          <div className="col">
+            {" "}
+            <p className="form-label mt-1 text-start">
+              {serviceRequestTask?.notas}
+            </p>
+          </div>
+        </div>
+        <div className="d-flex col">
+          <div className="col">
+            {" "}
+            <p className="form-label mt-1 text-start">Validar Satisfaccion </p>
+          </div>
+          <div className="col">
+            <div className="form-group"></div>{" "}
+            <p className="form-label mt-1 text-start">
+              <select
+                className="form-select"
+                aria-label="Default select example"
+                onChange={(e) => setvalidarSatisfaccion(e.target.value)}
+              >
+                <option>Seleccione</option>
+                <option value="5">Excelente</option>
+                <option value="4">Muy bueno</option>
+                <option value="3">Bueno</option>
+                <option value="2">Regular</option>
+                <option value="1">Malo</option>
+              </select>
+            </p>
+          </div>
+        </div>
+        <div className="d-flex col">
+          <div className="col">
+            {" "}
             <p className="form-label mt-1 text-start">Fecha esperada</p>
           </div>
           <div className="col">
@@ -580,7 +617,7 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
       <button
         disabled={disableBtn}
         id="btnAddComment"
-        onClick={() => send(taskData.caseId, comments)}
+        onClick={() => send(taskData.caseId, comments, validarSatisfaccion)}
         className="btn btn-primary btn-sm"
       >
         Enviar
@@ -604,4 +641,4 @@ const ChildFormTareaDetalle: React.FC<Props> = ({
   );
 };
 
-export default ChildFormTareaDetalle;
+export default ChildFormTareaCalificarFinalizarDetalle;

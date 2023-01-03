@@ -17,7 +17,7 @@ import { LocationContext } from "react-router/dist/lib/context";
 import ChildFormTareaCalificarFinalizarDetalle from "../components/childFormTareaCalificarFinalizarDetalle";
 import ChildFormTareaAprobarDetalle from "../components/childFormTareaAprobarDetalle";
 
-const TareaConDetalle = () => {
+const TareaCalificarFinalizarDetalle = () => {
   let iUarioActivo: iUsuario = {
     copyright: "",
     is_guest_user: "",
@@ -223,7 +223,7 @@ const TareaConDetalle = () => {
                 <div className="column">
                   <div className="row"></div>
 
-                  <ChildFormTareaDetalle
+                  <ChildFormTareaCalificarFinalizarDetalle
                     idAcordion={taskId.description + "s"}
                     titleAcordion={taskId.description}
                     cardHeader={"ID Tarea :" + idTask}
@@ -248,4 +248,4 @@ const TareaConDetalle = () => {
   );
 };
 
-export default TareaConDetalle;
+export default TareaCalificarFinalizarDetalle;

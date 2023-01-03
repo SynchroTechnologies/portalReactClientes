@@ -55,17 +55,32 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
     _iListTaskHumanCompleteUser[]
   >([]);
 
-  let allTask: _iListTaskHumanCompleteUser[] = [];
-
+  //let allTask: _iListTaskHumanCompleteUser[] = [];
+  const [allTask, setallTask] = useState<_iListTaskHumanCompleteUser[]>([]);
   const [usuario, setUsuario] = useState<iUsuario>(iUarioActivo);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [serviceLogin, setServiceLogin] = useState("");
 
   const [isTomar, setIsTomar] = React.useState(true);
-  const navigateTo = (routeUrl: string) => {
+  const [isLiberar, setLiberar] = React.useState(true);
+  const navigateTobkp = (routeUrl: string) => {
     const url = `/tarea-detalle/?id=${routeUrl}`;
     navigate(url);
+  };
+  const navigateTo = (taskId: string, taskName: string) => {
+    let url = `/tarea-detalle/?id=${taskId}`;
+    console.log(url, taskName);
+    switch (taskName) {
+      case "Mas Información":
+        return navigate(`/tarea-detalle-mas-informacion/?id=${taskId}`);
+      case "Aprobación":
+        return navigate(`/tarea-detalle-aprobar/?id=${taskId}`);
+      case "Calificar y finalizar":
+        return navigate(`/tarea-detalle-calificar-finalizar/?id=${taskId}`);
+      default:
+        navigate(`/tarea-detalle/?id=${taskId}`);
+    }
   };
 
   //#region getTaskHumanOpen
@@ -74,10 +89,10 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
     await BonitaGetTaskHumanOpenByCase(user_id, casoId)
       .then((resp) => {
         SetlistTaskHumanUserId(resp.data);
-        allTask.push(resp.data);
-
-        console.log({ allTask });
-        console.log(resp.data);
+        setallTask((old) => [...old, ...resp.data]);
+        //allTask.push(resp.data);
+        //console.log({ allTask });
+        //console.log(resp.data);
         if (resp.data.length === 0) {
           console.log("lista vacia");
           setShow(true);
@@ -102,7 +117,9 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
     await BonitaGetTaskHumanCompleteUserByCase(user_id, casoId)
       .then((resp) => {
         setListTaskHumanCompleteUser(resp.data);
-        allTask.push(resp.data);
+        setallTask(resp.data);
+        //allTask.push(resp.data);
+        //allTask.push(resp.data);
         console.log("getTaskHumanCompleteUser", resp.data);
         if (resp.data.length === 0) {
           console.log("lista vacia");
@@ -126,7 +143,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
     await BonitaGetTaskHumanMyUserByCase(user_id, case_id)
       .then((resp) => {
         setListTaskHumanMyUser(resp.data);
-        allTask.push(resp.data);
+        //allTask.push(resp.data);
         console.log("getTaskHumanMyUser", resp.data);
         if (resp.data.length === 0) {
           console.log("lista vacia");
@@ -187,14 +204,14 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
   };
 
   //#endregion
-  const asignada = (assigned_id: string, taskId: string) => {
+  const asignadabkp = (assigned_id: string, taskId: string) => {
     return (
       <>
         <div>
           <br />
           <button
             disabled={!isTomar}
-            onClick={(e) => liberar(e, taskId)}
+            //onClick={(e) => liberar(e, taskId)}
             className="btn btn-success btn-sm"
           >
             Liberar
@@ -204,7 +221,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
           <br />
           <button
             disabled={isTomar}
-            onClick={(e) => tomar(e, taskId)}
+            //onClick={(e) => tomar(e, taskId)}
             className="btn btn-primary btn-sm"
           >
             Tomar
@@ -213,7 +230,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
         <div>
           <br />
           <button
-            onClick={() => navigateTo(taskId)}
+            //onClick={() => navigateTo(taskId)}
             className="btn btn-outline-info btn-sm align-text-bottom"
           >
             Ver
@@ -222,8 +239,47 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
       </>
     );
   };
-
-  const liberar = (
+  const asignada = (
+    assigned_id: string,
+    taskId: string,
+    taskName: string,
+    getBonita: string
+  ) => {
+    return (
+      <>
+        <div>
+          <br />
+          <button
+            disabled={assigned_id === "" ? true : false}
+            onClick={(e) => liberar(e, taskId, getBonita)}
+            className="btn btn-success btn-sm"
+          >
+            Liberar
+          </button>
+        </div>
+        <div>
+          <br />
+          <button
+            disabled={assigned_id !== "" ? true : false}
+            onClick={(e) => tomar(e, taskId, getBonita)}
+            className="btn btn-primary btn-sm"
+          >
+            Tomar
+          </button>
+        </div>
+        <div>
+          <br />
+          <button
+            onClick={() => navigateTo(taskId, taskName)}
+            className="btn btn-outline-info btn-sm align-text-bottom"
+          >
+            Ver
+          </button>
+        </div>
+      </>
+    );
+  };
+  const liberarBkp = (
     event: React.MouseEvent<HTMLButtonElement>,
     taskId: string
   ) => {
@@ -231,7 +287,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
     putTaskById("", taskId);
     //getTaskHumanOpen(usuario.user_id);
   };
-  const tomar = (
+  const tomarBkp = (
     event: React.MouseEvent<HTMLButtonElement>,
     taskId: string
   ) => {
@@ -240,7 +296,44 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
     console.log({ taskId });
     //getTaskHumanOpen(usuario.user_id);
   };
+  const liberar = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    taskId: string,
+    getBonita: string
+  ) => {
+    event.preventDefault();
+    putTaskById("", taskId);
+    setIsTomar(!isTomar);
+    setLiberar(!isLiberar);
+    switchGetBonita(getBonita);
+  };
 
+  const tomar = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    taskId: string,
+    getBonita: string
+  ) => {
+    event.preventDefault();
+    putTaskById(usuario.user_id, taskId);
+    setLiberar(!isLiberar);
+    setIsTomar(!isTomar);
+    switchGetBonita(getBonita);
+  };
+  const switchGetBonita = (getBonita: string) => {
+    switch (getBonita) {
+      case "getTaskHumanOpenByCase":
+        return getTaskHumanOpenByCase(usuario.user_id, casoId);
+
+      case "getTaskHumanMyUserByCase":
+        return getTaskHumanMyUserByCase(usuario.user_id, casoId);
+
+      case "getTaskHumanCompleteUserByCase":
+        return getTaskHumanCompleteUserByCase(usuario.user_id, casoId);
+
+      default:
+        return getTaskHumanOpenByCase(usuario.user_id, casoId);
+    }
+  };
   const putTaskById = async (user_id: string, task_id: string) => {
     console.log({ user_id }, { task_id });
     await BonitaPutTaskById(user_id, task_id)
@@ -252,6 +345,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
         window.localStorage.setItem("putTaskById", JSON.stringify(result.body));
         console.log({ result });
         setIsTomar(!isTomar);
+        setLiberar(!isLiberar);
         return;
       })
       .catch((error) => {
@@ -307,7 +401,12 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
                     <div>{formatearFecha(list.dueDate)} </div>
                   </div>
                   <div className="col-2 btn-group">
-                    {asignada(list.assigned_id, list.id)}
+                    {asignada(
+                      list.assigned_id,
+                      list.id,
+                      list.name,
+                      "getTaskHumanOpenByCase"
+                    )}
                   </div>
                 </div>
               </div>
@@ -320,59 +419,52 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
 
   const tabTaskMe = (
     <div>
-      <div
-        className="tab-pane fade active show"
-        id="tabTaskComplete"
-        role="tabpanel"
-      >
+      <div className="tab-pane fade active show" id="tabTaskMe" role="tabpanel">
         <div className="row">
           {" "}
           <div className="column"></div>
           <div className="column">
             <div className="row"></div>
             {showAlert(
-              "NO encontramos Mis Tareas para el cliente logueado",
-              "Estas son Mis Tareas"
+              "NO encontramos tareas en ejecución para el cliente logueado",
+              "Tareas en ejecución"
             )}
-            {listTaskHumanMyUser.map((listc) => (
+            {listTaskHumanMyUser.map((listM) => (
               <div className="container">
                 <div className="row shadow p-2 mb-3 bg-white rounded">
                   <div className="col-1">
                     <div> Id tarea </div>
-                    <div>{listc.id} </div>
+                    <div>{listM.id} </div>
                   </div>
                   <div className="col-2">
                     <div>Nombre tarea </div>
-                    <div> {listc.name}</div>
+                    <div> {listM.name}</div>
                   </div>
                   <div className="col-1">
                     <div>Caso </div>
-                    <div> {listc.caseId}</div>
+                    <div> {listM.caseId}</div>
                   </div>
                   <div className="col-2">
                     <div>Nombre Proceso </div>
-                    <div> {listc.rootContainerId.displayName}</div>
+                    <div> {listM.rootContainerId.displayName}</div>
                   </div>
-                  <div className="col-3">
+                  <div className="col-2">
                     {" "}
                     <div>Ultima actualizacion</div>
-                    <div>{formatearFecha(listc.last_update_date)} </div>
+                    <div>{formatearFecha(listM.last_update_date)} </div>
                   </div>
                   <div className="col-2">
                     {" "}
                     <div>Vencimiento</div>
-                    <div>{formatearFecha(listc.dueDate)} </div>
+                    <div>{formatearFecha(listM.dueDate)} </div>
                   </div>
-                  <div className="col-1">
-                    <div>
-                      <button
-                        onClick={() => navigateTo(listc.id)}
-                        className="btn btn-outline-info btn-sm align-text-bottom"
-                      >
-                        {" "}
-                        Ver{" "}
-                      </button>{" "}
-                    </div>
+                  <div className="col-2 btn-group">
+                    {asignada(
+                      listM.assigned_id,
+                      listM.id,
+                      listM.name,
+                      "getTaskHumanMyUserByCase"
+                    )}
                   </div>
                 </div>
               </div>
@@ -418,7 +510,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
                     <div>Nombre Proceso </div>
                     <div> {listc.rootContainerId.displayName}</div>
                   </div>
-                  <div className="col-3">
+                  <div className="col-2">
                     {" "}
                     <div>Ultima actualizacion</div>
                     <div>{formatearFecha(listc.last_update_date)} </div>
@@ -428,15 +520,78 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
                     <div>Vencimiento</div>
                     <div>{formatearFecha(listc.dueDate)} </div>
                   </div>
+                  <div className="col-2 btn-group">
+                    <div className="col-1">
+                      <div>
+                        <br />
+                        <button
+                          onClick={() => navigateTo(listc.id, listc.name)}
+                          className="btn btn-outline-info btn-sm align-text-bottom"
+                        >
+                          {" "}
+                          Ver{" "}
+                        </button>{" "}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  const tabTaskHistory = (
+    <div>
+      <div
+        className="tab-pane fade active show"
+        id="tabTaskHistory"
+        role="tabpanel"
+      >
+        <div className="row">
+          {" "}
+          <div className="column"></div>
+          <div className="column">
+            <div className="row"></div>
+            {showAlert(
+              "NO encontramos Tareas para el caso ",
+              "Linea de tiempo"
+            )}
+            {allTask.map((listHIs) => (
+              <div className="container">
+                <div className="row shadow p-2 mb-3 bg-white rounded">
                   <div className="col-1">
-                    <div>
-                      <button
-                        onClick={() => navigateTo(listc.id)}
-                        className="btn btn-outline-info btn-sm align-text-bottom"
-                      >
-                        {" "}
-                        Ver{" "}
-                      </button>{" "}
+                    <div> Id tarea </div>
+                    <div>{listHIs.id} </div>
+                  </div>
+                  <div className="col-2">
+                    <div>Nombre tarea </div>
+                    <div> {listHIs.name}</div>
+                  </div>
+                  <div className="col-1">
+                    <div>Caso </div>
+                    <div> {listHIs.caseId}</div>
+                  </div>
+                  <div className="col-2">
+                    <div>Nombre Proceso </div>
+                    <div> {listHIs.rootContainerId.displayName}</div>
+                  </div>
+                  <div className="col-2">
+                    {" "}
+                    <div>Ultima actualizacion</div>
+                    <div>{formatearFecha(listHIs.last_update_date)} </div>
+                  </div>
+                  <div className="col-2">
+                    {" "}
+                    <div>Vencimiento</div>
+                    <div>{formatearFecha(listHIs.dueDate)} </div>
+                  </div>
+                  <div className="col-2 btn-group">
+                    <div className="col-1">
+                      <div>
+                        <br />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -470,7 +625,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
       role="tab"
       onClick={() => getTaskHumanMyUserByCase(usuario.user_id, casoId)}
     >
-      Mis tareas {listTaskHumanMyUser.length} <Icons />
+      Tareas en ejecución {listTaskHumanMyUser.length} <Icons />
     </a>
   );
   const tab3 = (
@@ -486,7 +641,19 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
       Tareas realizadas {listTaskHumanCompleteUser.length} <Icons />
     </a>
   );
-
+  const tab4 = (
+    <a
+      className="nav-link"
+      data-bs-toggle="tab"
+      href="#tres"
+      aria-selected="false"
+      role="tab"
+      //onClick={() => getTaskHumanCompleteUserByCase(usuario.user_id, casoId)}
+      tabIndex={-1}
+    >
+      Linea de tiempo {allTask.length} <Icons />
+    </a>
+  );
   return (
     <>
       <ul className="nav nav-tabs" role="tablist">
@@ -499,6 +666,9 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
         <li className="nav-item" role="presentation">
           {tab3}
         </li>
+        <li className="nav-item" role="presentation">
+          {tab4}
+        </li>
       </ul>
       <div id="myTabContent" className="tab-content">
         <div className="tab-pane fade active show" id="uno" role="tabpanel">
@@ -509,6 +679,9 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
         </div>
         <div className="tab-pane fade" id="tres" role="tabpanel">
           {tabTaskComplete}
+        </div>
+        <div className="tab-pane fade" id="cuatro" role="tabpanel">
+          {tabTaskHistory}
         </div>
       </div>
     </>
