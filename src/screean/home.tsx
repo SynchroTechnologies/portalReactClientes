@@ -12,21 +12,10 @@ const Home = () => {
   const SelectorUsuarioActivo = useSelector(
     (store: AppStore) => store.usuarioActivo
   );
-  let user: iUsuario = {
-    copyright: "",
-    is_guest_user: "",
-    branding_version: "",
-    branding_version_with_date: "",
-    user_id: "",
-    user_name: "",
-    session_id: "",
-    conf: "",
-    is_technical_user: "",
-    version: "",
-  };
-  const { user_name } = { ...SelectorUsuarioActivo };
 
-  console.log({ user_name });
+  const { user_name, user_id } = { ...SelectorUsuarioActivo };
+
+  console.log({ user_name }, { user_id });
   const dss = JSON.parse(JSON.stringify(SelectorUsuarioActivo));
   const dispatch = useDispatch();
   const usuarioActivo = async () => {
@@ -45,7 +34,7 @@ const Home = () => {
     return;
   };
   useEffect(() => {
-    usuarioActivo();
+    //usuarioActivo();
   }, []);
   return (
     <>

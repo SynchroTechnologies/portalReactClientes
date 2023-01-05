@@ -1,6 +1,11 @@
 import { useContext, useEffect, useReducer, useState } from "react";
-
-import { BonitaLogOut, BonitaUsuarioActivo } from "../../apis/bonita/ApiBonita";
+//import { useDispatch, useSelector } from "react-redux";
+import { AppStore } from "../../redux/store";
+import {
+  BonitaLogOut,
+  BonitaUsuarioActivo,
+  BonitaUsuarioActivoContext,
+} from "../../apis/bonita/ApiBonita";
 import { iUsuario } from "../../interfaces/bonita/usuario";
 import { UsuarioContext } from "./UsuarioContext";
 import { usuarioReducer } from "./usuarioReduce";
@@ -22,15 +27,43 @@ export const UsuarioProvider = ({ children }: Props) => {
   //comparto o proveeo al resto de la aplicacion  los state y funciones que necesito
   const [state, dispatch] = useReducer(usuarioReducer, INITIAL_STATE);
   //obtenemos del usuarioContext el usuario activo
-  const { isReading, usuario, setUsuario } = useContext(UsuarioContext);
-
+  let { isReading, usuario, setUsuario } = useContext(UsuarioContext);
+  //const SelectorUsuarioActivo = useSelector(
+  //  (store: AppStore) => store.usuarioActivo
+  //);
   //usamos useEffect para borrar el usuario acivo
   useEffect(() => {
-    const nusuario: iUsuario = {
-      copyright: "",
-      is_guest_user: "",
-      branding_version: "",
-      branding_version_with_date: "",
+    //const { user_name } = { ...SelectorUsuarioActivo };
+    const bonitaUsuarioActivoContext = BonitaUsuarioActivoContext()
+      .then((resp) => {
+        if (resp.status === 200) {
+          console.log(resp.data);
+          usuario = resp.data;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    /*     let localStorageUsuario = JSON.stringify(
+      window.localStorage.getItem("usuario")
+    );
+    localStorageUsuario?.includes("user_id");
+  is_guest_user: localStorageUsuario?.split(",")[1].split(":").toString(),
+      branding_version: localStorageUsuario
+        ?.split(",")[4]
+        .split(":")
+        .toString(),*/
+    const newUsuario: iUsuario = {
+      copyright: "probando el contexto contexto",
+      is_guest_user: usuario?.is_guest_user
+        ? usuario?.is_guest_user
+        : "is_guest_user",
+      branding_version: usuario?.branding_version
+        ? usuario?.branding_version
+        : "",
+      branding_version_with_date: usuario?.branding_version_with_date
+        ? usuario?.branding_version_with_date
+        : "",
       user_id: "",
       user_name: "",
       session_id: "",
@@ -40,7 +73,7 @@ export const UsuarioProvider = ({ children }: Props) => {
     };
 
     //disparamos la accion "setMarkers"
-    dispatch({ type: "setUsuario", payload: nusuario });
+    dispatch({ type: "setUsuario", payload: newUsuario });
   }, []);
 
   const getUsuario = (usuario: iUsuario) => {

@@ -64,6 +64,17 @@ export const BonitaGetTaskHumanOpen = async (user_id: string) => {
   axios.defaults.withCredentials = true;
   return await axios.get("" + process.env.REACT_APP_LISTHUMANTASK + user_id);
 };
+export const BonitaGetTaskHumanArchiveByCaseId = async (caseId: string) => {
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  return await axios.get(
+    "" + process.env.REACT_APP_TASK_HUMAN_ARCHIVED_BY_CASEID + caseId
+  );
+};
+
 export const BonitaGetTaskHumanOpenByCase = async (
   user_id: string,
   case_id: string
@@ -125,6 +136,7 @@ export const BonitaGetTaskHumanMyUser = async (user_id: string) => {
     "" + process.env.REACT_APP_HUMANTASK_MY_USER_BY_CASE + user_id
   );
 };
+
 export const BonitaGetTaskHumanMyUserByCase = async (
   user_id: string,
   case_id: string
@@ -138,7 +150,6 @@ export const BonitaGetTaskHumanMyUserByCase = async (
   return await axios.get(
     "" +
       process.env.REACT_APP_HUMANTASK_MY_USER_BY_CASE +
-      user_id +
       "&f=rootCaseId=" +
       case_id
   );
@@ -163,7 +174,7 @@ export const BonitaPutTaskById = async (user_id: string, task_id: string) => {
 
   const raw = JSON.stringify({
     assigned_id: user_id,
-    assigned_date: "",
+    //assigned_date: "",
   });
 
   const RequestInit: RequestInit = {
@@ -293,7 +304,35 @@ export const BonitaUsuarioActivo = async () => {
   //console.log("await BonitaUsuarioActivo", data);
   return await axios.get("" + process.env.REACT_APP_API_USERACTIVE);
 };
-
+export const BonitaUsuarioActivoContext = async () => {
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  /* await axios
+    .get("" + process.env.REACT_APP_API_USERACTIVE)
+    .then((resp) => {
+      //setUsuario(resp.data);
+      if (resp.status === 200) {
+        window.localStorage.setItem("usuario", JSON.stringify(resp.data));
+        window.localStorage.setItem(
+          "usuariousuario",
+          JSON.stringify(resp.data)
+        );
+      }
+    })
+    .catch((error) => {
+      window.localStorage.removeItem("usuario");
+      console.log(error);
+    });
+  */
+  //const dispatch = useDispatch();
+  //
+  //await dispatch(createUser(JSON.stringify(data)));
+  //console.log("await BonitaUsuarioActivo", data);
+  return await axios.get("" + process.env.REACT_APP_API_USERACTIVE);
+};
 export const BonitaLoginAxios = async (username: string, password: string) => {
   let axiosstatus = false;
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
@@ -397,6 +436,7 @@ export const BonitaPostCaseFetch = async (Props: iCreateRequest) => {
         );
         returnBol = true;
         console.log(JSON.stringify({ response }));
+        console.log(response);
       }
     })
     .catch((error) => {
@@ -765,6 +805,7 @@ export const BonitaCaseForId = async (id: string) => {
   return await axios.get(process.env.REACT_APP_GET_CASEFORID + id);
 };
 export const BonitaCaseArchivedForId = async (id: string) => {
+  console.log({ id }, "BonitaCaseArchivedForId");
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
   axios.defaults.headers.post["Content-Type"] =
     "application/json;charset=utf-8";
@@ -867,6 +908,16 @@ export const BonitaGetListComment = async (caseId: string) => {
     process.env.REACT_APP_LISTCOMMENT + caseId + "&d=userId&t=0"
   );
 };
+
+export const BonitaGetListCommentArchived = async (caseId: string) => {
+  axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json;charset=utf-8";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.withCredentials = true;
+  return await axios.get(process.env.REACT_APP_LISTCOMMENT_ARCHIVED + caseId);
+};
+
 export const BonitaGetTaskAndContext = async (taskId: string) => {
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
   axios.defaults.headers.post["Content-Type"] =

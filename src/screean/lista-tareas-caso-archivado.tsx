@@ -8,6 +8,7 @@ import { iListTaskHumanUserId } from "../interfaces/bonita/listTaskHumanUserId";
 import { iListTaskHumanCompleteUser } from "../interfaces/bonita/listTaskHumanCompleteUser";
 import { iListTaskHumanMyUser } from "../interfaces/bonita/listTaskHumanMyUser";
 import {
+  BonitaGetTaskHumanArchiveByCaseId,
   BonitaGetTaskHumanCompleteUserByCase,
   BonitaGetTaskHumanMyUserByCase,
   BonitaGetTaskHumanOpenByCase,
@@ -22,7 +23,7 @@ import AlertSuccess from "./alertSuccess";
 interface Props {
   casoId: string;
 }
-const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
+const ListaTareasCasoArchivado: React.FC<Props> = ({ casoId }) => {
   let iUarioActivo: iUsuario = {
     copyright: "",
     is_guest_user: "",
@@ -52,6 +53,9 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
     _iListTaskHumanCompleteUser[]
   >([]);
 
+  const [listTaskHumanArchived, setListTaskHumanArchived] = useState<
+    _iListTaskHumanCompleteUser[]
+  >([]);
   //let allTask: _iListTaskHumanCompleteUser[] = [];
   const [allTask, setallTask] = useState<_iListTaskHumanCompleteUser[]>([]);
   const [usuario, setUsuario] = useState<iUsuario>(iUarioActivo);
@@ -100,7 +104,37 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
 
   //#region getTaskHumanCompleteUser
   const getTaskHist = async (user_id: string, casoId: string) => {
-    setallTask([]);
+    //setListTaskHumanArchived([]);
+    SetlistTaskHumanUserId([]);
+    await BonitaGetTaskHumanArchiveByCaseId(casoId)
+      .then((resp) => {
+        //setListTaskHumanArchived(resp.data);
+
+        SetlistTaskHumanUserId(resp.data);
+        if (resp.data.length === 0) {
+          console.log("lista vacia");
+          setShow(true);
+        } else {
+          setShow(false);
+        }
+      })
+      .catch((error: any) => {
+        setShow(true);
+        //setListTaskHumanArchived([]);
+        SetlistTaskHumanUserId([]);
+        console.log(error);
+      });
+
+    return;
+  };
+  //#endregion
+
+  //#region getTaskHumanCompleteUser
+  const getBonitaGetTaskArchiveByCaseId = async (
+    user_id: string,
+    casoId: string
+  ) => {
+    //setallTask([]);
     setListTaskHumanCompleteUser([]);
     await BonitaGetTaskHumanCompleteUserByCase(user_id, casoId)
       .then((resp) => {
@@ -115,7 +149,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
         console.log(error);
       });
     SetlistTaskHumanUserId([]);
-    await BonitaGetTaskHumanOpenByCase(user_id, casoId)
+    await BonitaGetTaskHumanArchiveByCaseId(casoId)
       .then((resp) => {
         if (resp.status === 200) {
           SetlistTaskHumanUserId(resp.data);
@@ -201,10 +235,10 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
   //#region useEffect
   useEffect(() => {
     usuarioActivo();
-    setallTask([]);
     const a4 = async () => {
       //setShow(false);
       await getTaskHist(usuario.user_id, casoId);
+      //await getBonitaGetTaskArchiveByCaseId(usuario.user_id, casoId);
     };
     a4();
   }, []);
@@ -324,52 +358,50 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
   //#endregion
 
   //#region renderizacion
-  const renderrenderAllTask = allTask
-    .sort((a, b) => (a.reached_state_date < b.reached_state_date ? 1 : -1))
-    .map((listHIs) => (
-      <div className="container">
-        <div className="row shadow p-2 mb-3 bg-white rounded">
+  const renderrenderAllTask = listTaskHumanArchived.map((listHIs) => (
+    <div className="container">
+      <div className="row shadow p-2 mb-3 bg-white rounded">
+        <div className="col-1">
+          <div> Id tarea </div>
+          <div>{listHIs.id} </div>
+        </div>
+        <div className="col-2">
+          <div>Nombre tarea </div>
+          <div> {listHIs.name}</div>
+        </div>
+        <div className="col-1">
+          <div>Caso </div>
+          <div> {listHIs.caseId}</div>
+        </div>
+        <div className="col-2">
+          <div>Nombre Proceso </div>
+          <div> {listHIs.rootContainerId.displayName}</div>
+        </div>
+        <div className="col-2">
+          {" "}
+          <div>Creada</div>
+          <div>{formatearFecha(listHIs.reached_state_date)} </div>
+        </div>
+        <div className="col-2">
+          {" "}
+          <div>Tomada</div>
+          <div>{formatearFecha(listHIs.assigned_date)} </div>
+        </div>
+        <div className="col-2">
+          {" "}
+          <div>Ultima actualizacion</div>
+          <div>{formatearFecha(listHIs.last_update_date)} </div>
+        </div>
+        <div className="col-2 btn-group">
           <div className="col-1">
-            <div> Id tarea </div>
-            <div>{listHIs.id} </div>
-          </div>
-          <div className="col-2">
-            <div>Nombre tarea </div>
-            <div> {listHIs.name}</div>
-          </div>
-          <div className="col-1">
-            <div>Caso </div>
-            <div> {listHIs.caseId}</div>
-          </div>
-          <div className="col-2">
-            <div>Nombre Proceso </div>
-            <div> {listHIs.rootContainerId.displayName}</div>
-          </div>
-          <div className="col-2">
-            {" "}
-            <div>Creada</div>
-            <div>{formatearFecha(listHIs.reached_state_date)} </div>
-          </div>
-          <div className="col-2">
-            {" "}
-            <div>Tomada</div>
-            <div>{formatearFecha(listHIs.assigned_date)} </div>
-          </div>
-          <div className="col-2">
-            {" "}
-            <div>Ultima actualizacion</div>
-            <div>{formatearFecha(listHIs.last_update_date)} </div>
-          </div>
-          <div className="col-2 btn-group">
-            <div className="col-1">
-              <div>
-                <br />
-              </div>
+            <div>
+              <br />
             </div>
           </div>
         </div>
       </div>
-    ));
+    </div>
+  ));
 
   const tabTaskHistory = (
     <div>
@@ -452,7 +484,7 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
             <div className="row"></div>
             {showAlert(
               "NO encontramos Tareas por Hacer para el cliente logueado",
-              "Estas son las Tareas por Hacer"
+              ""
             )}
             {renderListTaskHumanUserId}
           </div>
@@ -609,13 +641,14 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
       className="nav-link active"
       data-bs-toggle="tab"
       href="#cuatro"
-      aria-selected="true"
+      aria-selected="false"
       role="tab"
-      onClick={() => getTaskHist(usuario.user_id, casoId)}
-      tabIndex={-1}
+      onClick={() => getTaskHumanMyUserByCase(usuario.user_id, casoId)}
+      // onClick={() => getTaskHist(usuario.user_id, casoId)}
+      //tabIndex={-1}
     >
       Historico {""}
-      {allTask.length} <Icons />
+      {listTaskHumanArchived.length} <Icons />
     </a>
   );
   const tab1 = (
@@ -625,9 +658,9 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
       href="#uno"
       aria-selected="false"
       role="tab"
-      onClick={() => getTaskHumanOpenByCase(usuario.user_id, casoId)}
+      onClick={() => getTaskHist(usuario.user_id, casoId)}
     >
-      Tareas por Hacer {listTaskHumanUserId.length}
+      Historico de tareas {listTaskHumanUserId.length}
       {"  "} <Icons />
     </a>
   );
@@ -661,17 +694,18 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
     <>
       <ul className="nav nav-tabs" role="tablist">
         <li className="nav-item" role="presentation">
-          {tab4}
-        </li>
-        <li className="nav-item" role="presentation">
           {tab1}
+        </li>
+        {/*    
+                <li className="nav-item" role="presentation">
+          {tab4}
         </li>
         <li className="nav-item" role="presentation">
           {tab2}
         </li>
         <li className="nav-item" role="presentation">
           {tab3}
-        </li>
+  </li>*/}
       </ul>
       <div id="myTabContent" className="tab-content">
         <div className="tab-pane fade" id="cuatro" role="tabpanel">
@@ -680,17 +714,18 @@ const ListaTareasCaso: React.FC<Props> = ({ casoId }) => {
         <div className="tab-pane fade" id="uno" role="tabpanel">
           {tabTaskActive}
         </div>
+        {/* 
+
         <div className="tab-pane fade" id="dos" role="tabpanel">
           {tabTaskMe}
         </div>
         <div className="tab-pane fade" id="tres" role="tabpanel">
           {tabTaskComplete}
-        </div>
+        </div>*/}
       </div>
     </>
   );
-
   //#endregion
 };
 
-export default ListaTareasCaso;
+export default ListaTareasCasoArchivado;

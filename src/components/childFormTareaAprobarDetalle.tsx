@@ -607,22 +607,38 @@ const ChildFormTareaAprobarDetalle: React.FC<Props> = ({
         <p className="card-text"></p>
         {formData}
       </div>
-      <button
-        disabled={disableBtn}
-        id="btnAddComment"
-        onClick={() => send(taskData.caseId, comments, aprobado)}
-        className="btn btn-primary btn-sm"
-      >
-        Enviar
-      </button>
-      <button
-        disabled={disableBtn}
-        id="btnAddComment"
-        onClick={() => addComment(taskData.caseId, comments)}
-        className="btn btn-primary btn-sm"
-      >
-        {textButton}
-      </button>
+      <div className="col-12 btn-group">
+        <div className="col-3 btn-group">
+          <button
+            disabled={disableBtn}
+            id="btnAddComment"
+            onClick={() => addComment(taskData.caseId, comments)}
+            className="btn btn-primary btn-sm"
+          >
+            {textButton}
+          </button>
+        </div>
+        <div className="col-6 btn-group"></div>
+        <div className="col-3 btn-group">
+          <button
+            disabled={disableBtn}
+            id="btnAddComment"
+            onClick={() => send(taskData.caseId, comments, aprobado)}
+            className="btn btn-primary btn-sm"
+          >
+            Enviar
+          </button>
+          <button
+            //disabled={disableBtn}
+            id="btnAddCerrar"
+            onClick={() => navigateTo("/tareas")}
+            className="btn btn-primary btn-sm"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+
       {tabComments}
     </div>
   );

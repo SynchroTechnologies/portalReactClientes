@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import axios from "axios";
 import {
   iListCaseForClient,
   ProcessDefinitionId,
@@ -9,17 +8,16 @@ import {
 import { iCase } from "../interfaces/bonita/case";
 
 import { useLocation } from "react-router-dom";
-import ChildFormCasoDetalle from "../components/childFormCasoDetalle";
 import { iUsuario } from "../interfaces/bonita/usuario";
 import {
-  BonitaCaseForIdSubstitute,
-  BonitaPutTaskById,
+  BonitaCaseArchivedForId,
   BonitaUsuarioActivo,
 } from "../apis/bonita/ApiBonita";
 import Icons from "../components/icons";
-import ListaTareasCaso from "./lista-tareas-caso";
+import ChildFormCasoArchivadoDetalle from "../components/childFormCasoArchivadoDetalle";
+import ListaTareasCasoArchivado from "./lista-tareas-caso-archivado";
 
-const CasoConDetalle = () => {
+const CasoArchivadoConDetalle = () => {
   let iUarioActivo: iUsuario = {
     copyright: "",
     is_guest_user: "",
@@ -123,7 +121,8 @@ const CasoConDetalle = () => {
   const [caseid, setCaseid] = useState<listCaseForClient>(elcase);
 
   //#region caseForId
-  const caseForId = async (id: string) => {
+
+  const GetBonitaCaseArchivedForId = async (id: string) => {
     setCaseList([]);
     setisVisible(false);
     let idint = parseInt(id);
@@ -131,44 +130,12 @@ const CasoConDetalle = () => {
       console.log("no es mayor a cero");
       return;
     }
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
+    //await BonitaCaseForIdSubstitute(id)
 
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get(
-        process.env.REACT_APP_GET_CASEFORID +
-          id +
-          "?d=processDefinitionId&d=started_by&d=startedBySubstitute"
-      )
+    await BonitaCaseArchivedForId(id)
       .then((resp) => {
-        let result = resp;
-        setCaseid(result.data);
-        setisVisible(true);
-        return;
-      })
-      .catch((error: any) => {
-        console.log(error);
-        //LimpiarUseState();
-        setisVisible(false);
-        return;
-      });
-    return;
-  };
-  const CaseForIdSubstitute = async (id: string) => {
-    setCaseList([]);
-    setisVisible(false);
-    let idint = parseInt(id);
-    if (idint <= 0) {
-      console.log("no es mayor a cero");
-      return;
-    }
-
-    await BonitaCaseForIdSubstitute(id)
-      .then((resp) => {
-        setCaseid(resp.data);
+        setCaseid(resp.data[0]);
+        setCaseList(resp.data);
         setisVisible(true);
         console.log(resp.data);
         return;
@@ -181,40 +148,7 @@ const CasoConDetalle = () => {
       });
     return;
   };
-  const caseForIdbkp = async (id: string) => {
-    setCaseList([]);
-    setisVisible(false);
-    let idint = parseInt(id);
-    if (idint <= 0) {
-      console.log("no es mayor a cero");
-      return;
-    }
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
 
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get(
-        process.env.REACT_APP_GET_CASEFORID +
-          id +
-          "?d=processDefinitionId&d=started_by&d=startedBySubstitute"
-      )
-      .then((resp) => {
-        let result = resp;
-        setCaseid(result.data);
-        setisVisible(true);
-        return;
-      })
-      .catch((error: any) => {
-        console.log(error);
-        //LimpiarUseState();
-        setisVisible(false);
-        return;
-      });
-    return;
-  };
   const usuarioActivo = async () => {
     await BonitaUsuarioActivo()
       .then((resp) => {
@@ -227,41 +161,12 @@ const CasoConDetalle = () => {
       });
     return;
   };
-  const getHumeanTaskUserCase = async (user_id: string, caso_id: string) => {
-    //await usuarioActivo();
-    let userId = usuario.user_id;
-    console.log({ userId });
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL_API;
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    axios.defaults.withCredentials = true;
-    await axios
-      .get(
-        "/bonita/API/bpm/humanTask?p=0&c=50&f=state=ready&f=user_id=" +
-          userId +
-          "&f=caseId=" +
-          idCaso
-      )
-      .then((resp) => {
-        setCantTask(resp.data.length);
-        console.log("result.data.length :", resp.data.length);
-        if (resp.data.length == 0) {
-          console.log("lista vacia");
-        } else {
-        }
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-    return;
-  };
+
   //#endregion
 
   useEffect(() => {
     usuarioActivo();
-    CaseForIdSubstitute(idCaso);
-    //getHumeanTaskUserCase(usuario.user_id, idCaso);
+    GetBonitaCaseArchivedForId(idCaso);
   }, []);
 
   return (
@@ -303,6 +208,7 @@ const CasoConDetalle = () => {
               {panelCasoDetalle()}
             </div>
             <div className="tab-pane fade " id="profile" role="tabpanel">
+              {"ID del Caso :" + idCaso}
               {panelListaTareas()}
             </div>
           </div>
@@ -319,7 +225,7 @@ const CasoConDetalle = () => {
         <div className="column">
           <div className="row"></div>
 
-          <ChildFormCasoDetalle
+          <ChildFormCasoArchivadoDetalle
             idAcordion={caseid.processDefinitionId.displayName + "s"}
             titleAcordion={caseid.processDefinitionId.displayName}
             cardHeader={"ID del Caso :" + idCaso}
@@ -350,7 +256,7 @@ const CasoConDetalle = () => {
                   {" "}
                   <div className="column"></div>
                   <div className="column">
-                    <ListaTareasCaso casoId={idCaso} />
+                    <ListaTareasCasoArchivado casoId={idCaso} />
                   </div>
                 </div>
               </div>
@@ -362,4 +268,4 @@ const CasoConDetalle = () => {
   }
 };
 
-export default CasoConDetalle;
+export default CasoArchivadoConDetalle;

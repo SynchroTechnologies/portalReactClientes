@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "./navBar";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
-import ChildFormCasoDetalle from "../components/childFormCasoDetalle";
 import { iCase } from "../interfaces/bonita/case";
 import { iListCaseForClient } from "../interfaces/bonita/listCaseClient";
 import CasoConDetalle from "./casoConDetalle";
@@ -12,6 +10,8 @@ import {
   BonitaUsuarioActivo,
 } from "../apis/bonita/ApiBonita";
 import { iUsuario } from "../interfaces/bonita/usuario";
+import CasoArchivadoConDetalle from "./casoArchivadoConDetalle";
+import ChildFormCasoArchivadoDetalle from "../components/childFormCasoArchivadoDetalle";
 
 const CasoArchivadoDetalle = () => {
   let iUarioActivo: iUsuario = {
@@ -125,7 +125,7 @@ const CasoArchivadoDetalle = () => {
                       <div className="col">
                         {" "}
                         <div></div>
-                        <CasoConDetalle />
+                        <CasoArchivadoConDetalle />
                       </div>
                     </div>
                   </div>
@@ -154,7 +154,7 @@ const CasoArchivadoDetalle = () => {
                             <div></div>
                             <div>
                               {" "}
-                              <ChildFormCasoDetalle
+                              <ChildFormCasoArchivadoDetalle
                                 idAcordion={"Incidente"}
                                 titleAcordion={"Incidentes"}
                                 cardHeader={"ID del Caso : " + caseList[0].id}

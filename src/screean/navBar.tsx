@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 //import "../../node_modules/bootswatch/dist/journal/bootstrapDev.css";
 //import "bootswatch/dist/js/bootstrap";
@@ -14,8 +14,14 @@ import {
   BonitaUsuarioActivo,
 } from "../apis/bonita/ApiBonita";
 import { managenUsuarioState } from "../apis/bonita/persist.data.service";
+import { UsuarioContext } from "../context/usuario/UsuarioContext";
 
 function NavBar() {
+  const SelectorUsuarioActivo = useSelector(
+    (store: AppStore) => store.usuarioActivo
+  );
+  const { user_name, user_id } = { ...SelectorUsuarioActivo };
+  const { isReading, usuario } = useContext(UsuarioContext);
   const localStorageUsuario = window.localStorage.getItem("usuario");
   const userName = localStorageUsuario?.split(",")[5].split(":")[1];
 
@@ -23,8 +29,9 @@ function NavBar() {
   const [serviceLogin, setServiceLogin] = useState("");
   //let [usuario, setUsuario] = useState<iUarioActivo>();
 
-  let [usuario, setUsuario] = useState({});
-
+  let [user, setUser] = useState({});
+  console.log(usuario);
+  console.log(user_name, user_id);
   //#region Login
 
   const fetchLoginService = async () => {
@@ -59,7 +66,7 @@ function NavBar() {
     if (bonitaUsuarioActivo.status === 200) {
       await dispatch(createUser(bonitaUsuarioActivo.data));
       //await managenUsuarioState(bonitaUsuarioActivo.data);
-      setUsuario(bonitaUsuarioActivo.data);
+      setUser(bonitaUsuarioActivo.data);
       setServiceLogin("Login Success " + bonitaUsuarioActivo.data.status);
     } else {
       setServiceLogin("Login No Success");
@@ -261,8 +268,9 @@ function NavBar() {
                   LogOut
                 </a>
               </li>
-
-              <h6 className="text-succes">{userName}</h6>
+              <li className="nav-item">
+                <h6 className="text-succes">{user_name}</h6>
+              </li>
             </ul>
           </div>
         </div>

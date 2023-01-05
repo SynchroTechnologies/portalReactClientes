@@ -64,9 +64,9 @@ const ListaTareas = () => {
   //#endregion
 
   const navigateTo = (taskId: string, taskName: string) => {
-    let url = `/tarea-detalle/?id=${taskId}`;
-    console.log(url, taskName);
     switch (taskName) {
+      case "Archivado":
+        return navigate(`/caso-archivado-detalle/?id=${taskId}`);
       case "Mas Información":
         return navigate(`/tarea-detalle-mas-informacion/?id=${taskId}`);
       case "Aprobación":
@@ -451,7 +451,9 @@ const ListaTareas = () => {
                   <div className="col-1">
                     <div>
                       <button
-                        onClick={() => navigateTo(listc.id, listc.name)}
+                        onClick={() =>
+                          navigateTo(listc.rootCaseId, "Archivado")
+                        }
                         className="btn btn-outline-info btn-sm align-text-bottom"
                       >
                         {" "}

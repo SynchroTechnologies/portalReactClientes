@@ -221,7 +221,7 @@ const TareaMasInformacionDetalle = () => {
                 {" "}
                 <div className="column"></div>
                 <div className="column">
-                  <div className="row"> TareaMasInformacionDetalle</div>
+                  <div className="row"> </div>
 
                   <ChildFormTareaDetalle
                     idAcordion={taskId.description + "s"}

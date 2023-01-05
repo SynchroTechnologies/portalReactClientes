@@ -52,8 +52,9 @@ const Lista = () => {
   //}, [caseList, caseid]);
   const navigate = useNavigate();
 
-  const navigateTo = (routeUrl: string) => {
-    const url = `/caso-detalle/?id=${routeUrl}`;
+  const navigateTo = (routeUrl: string, id: string) => {
+    //const url = `/caso-detalle/?id=${routeUrl}`;
+    const url = `${routeUrl}${id}`;
     navigate(url);
   };
   const obtenerCaseList = async (user_id: string) => {
@@ -285,7 +286,9 @@ const Lista = () => {
             <Modals id={"vemos o no el modal "} isShow={true} />{" "}
           </div>*/}
                         <button
-                          onClick={() => navigateTo(list.id)}
+                          onClick={() =>
+                            navigateTo("/caso-detalle/?id=", list.id)
+                          }
                           className="btn btn-outline-info btn-sm align-text-bottom"
                         >
                           {" "}
@@ -339,7 +342,12 @@ const Lista = () => {
                     <div className="col-1">
                       <div>
                         <button
-                          onClick={() => caseForId(list.id)}
+                          onClick={() =>
+                            navigateTo(
+                              "/caso-archivado-detalle/?id=",
+                              list.rootCaseId
+                            )
+                          }
                           className="btn btn-outline-info btn-sm align-text-bottom"
                         >
                           {" "}

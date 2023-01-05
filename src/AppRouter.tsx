@@ -20,6 +20,7 @@ import TareaDetalleAprobar from "./screean/tarea-detalle-aprobar";
 import TareaDetalleCalificarFinalizar from "./screean/tarea-detalle-calificar-finalizar";
 import TareaDetalleMasInformacion from "./screean/tarea-detalle-mas-informacion";
 import CasoArchivadoDetalle from "./screean/caso-archivado-detalle";
+import { UsuarioProvider } from "./context/usuario/UsuarioProvider";
 
 export const AppContext = React.createContext({});
 
@@ -30,149 +31,150 @@ export default function AppRouter() {
         <Home />
       </AppContext.Provider>
     </Provider>*/
-
-    <Provider store={store}>
-      <AppContext.Provider value={store}>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/home"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/home"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/app"
-            element={
-              <ProtectedRoute>
-                <App />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/tareas"
-            element={
-              <ProtectedRoute>
-                <Tareas />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/caso-id"
-            element={
-              <ProtectedRoute>
-                <CaseById />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/caso-nombre-proceso"
-            element={
-              <ProtectedRoute>
-                <CaseByNameProcess />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/caso-archivado-por-id"
-            element={
-              <ProtectedRoute>
-                <CaseArchivedById />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/caso-archivado-nombre-proceso"
-            element={
-              <ProtectedRoute>
-                <CaseArchivedByNameProcess />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/nuevo-service-request"
-            element={
-              <ProtectedRoute>
-                <NuevoServiceRequest />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/caso-detalle"
-            element={
-              <ProtectedRoute>
-                <CasoDetalle />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/caso-archivado-detalle"
-            element={
-              <ProtectedRoute>
-                <CasoArchivadoDetalle />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/tarea-detalle-mas-informacion"
-            element={
-              <ProtectedRoute>
-                <TareaDetalleMasInformacion />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/tarea-detalle-aprobar"
-            element={
-              <ProtectedRoute>
-                <TareaDetalleAprobar />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/tarea-detalle-calificar-finalizar"
-            element={
-              <ProtectedRoute>
-                <TareaDetalleCalificarFinalizar />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="/caso-detalle-test"
-            element={
-              <ProtectedRoute>
-                <CasoDetalleTest />
-              </ProtectedRoute>
-            }
-            errorElement={<ErrorPage />}
-          />
-        </Routes>
-      </AppContext.Provider>
-    </Provider>
+    <UsuarioProvider>
+      <Provider store={store}>
+        <AppContext.Provider value={store}>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/app"
+              element={
+                <ProtectedRoute>
+                  <App />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/tareas"
+              element={
+                <ProtectedRoute>
+                  <Tareas />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/caso-id"
+              element={
+                <ProtectedRoute>
+                  <CaseById />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/caso-nombre-proceso"
+              element={
+                <ProtectedRoute>
+                  <CaseByNameProcess />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/caso-archivado-por-id"
+              element={
+                <ProtectedRoute>
+                  <CaseArchivedById />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/caso-archivado-nombre-proceso"
+              element={
+                <ProtectedRoute>
+                  <CaseArchivedByNameProcess />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/nuevo-service-request"
+              element={
+                <ProtectedRoute>
+                  <NuevoServiceRequest />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/caso-detalle"
+              element={
+                <ProtectedRoute>
+                  <CasoDetalle />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/caso-archivado-detalle"
+              element={
+                <ProtectedRoute>
+                  <CasoArchivadoDetalle />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/tarea-detalle-mas-informacion"
+              element={
+                <ProtectedRoute>
+                  <TareaDetalleMasInformacion />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/tarea-detalle-aprobar"
+              element={
+                <ProtectedRoute>
+                  <TareaDetalleAprobar />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/tarea-detalle-calificar-finalizar"
+              element={
+                <ProtectedRoute>
+                  <TareaDetalleCalificarFinalizar />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/caso-detalle-test"
+              element={
+                <ProtectedRoute>
+                  <CasoDetalleTest />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+          </Routes>
+        </AppContext.Provider>
+      </Provider>
+    </UsuarioProvider>
   );
 }

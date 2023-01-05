@@ -3,11 +3,14 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { createUser, resetUser } from "../redux/states/usuarioActivo.state";
 import { AppStore } from "../redux/store";
 import { createSessionToken } from "../redux/states/sessionTokenGlpi.state";
-import { useState } from "react";
+import React, { useContext, useLayoutEffect, useRef } from "react";
+import { UsuarioContext } from "../context/usuario/UsuarioContext";
 
 export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+  const { isReading, usuario } = useContext(UsuarioContext);
   const navigate = useNavigate();
   //const [isLogged, setIsLogged] = useState(false);
+  console.log({ isReading }, { usuario });
 
   const navigateTo = (routeUrl: string) => {
     const url = `/${routeUrl}`;

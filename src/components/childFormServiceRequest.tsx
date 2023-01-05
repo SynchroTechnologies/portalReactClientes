@@ -12,6 +12,7 @@ import {
   BonitaPostCaseFetch,
 } from "../apis/bonita/ApiBonita";
 import { iCreateRequest } from "../interfaces/bonita/createRequest";
+import AlertDanger from "../screean/alertDanger";
 const { Cookies: kks } = require("react-cookie");
 const cok = new kks();
 
@@ -106,10 +107,6 @@ const ChildFormServiceRequest: React.FC<Props> = ({
       //const rsp = await createCaseBonitaFechOk(prop);
       setCreado(rsp ? rsp : false);
     }
-    if (creado) {
-      console.log({ creado });
-      showAlert();
-    }
 
     setTimeout(function () {
       navigateTo("/app");
@@ -140,29 +137,6 @@ const ChildFormServiceRequest: React.FC<Props> = ({
     setCreado(creadoes);
     return creadoes;
   };
-  const createCaseBonitaFechOkProp = async (props: iCreateRequest) => {
-    const prop: iCreateRequest = {
-      processId: props.processId,
-      alarma: props.alarma,
-      descripcion: props.descripcion,
-      prioridad: props.prioridad,
-      torre: props.torre,
-      ci: props.ci,
-      fechaEsperada: props.fechaEsperada,
-    };
-    if (prop.processId === "") {
-      console.log("llego vacio el processID : ", processId);
-      return false;
-    }
-    if (processId === "") {
-      console.log("llego vacio el processID : ", processId);
-      return false;
-    }
-    let creadoes = await BonitaPostCaseFetch(prop);
-    console.log({ creadoes });
-    setCreado(creadoes);
-    return creadoes;
-  };
   //const apiglpi = new apiGlpi();
   //const respo = apiglpi.loginGlpi();
 
@@ -173,10 +147,8 @@ const ChildFormServiceRequest: React.FC<Props> = ({
           {/* <Modals id={"vemos o no el modal "} isShow={true} />
           
           <AlertSuccess msj={"Requerimiento creado Numero:" + createCaseId} />*/}
-          <AlertSuccess
-            msj={"Requerimiento creado Numero:" + { createCaseId }}
-          />
-          <div
+          <AlertSuccess msj={"Requerimiento creado con exito"} />
+          {/*<div
             className="toast show"
             role="alert"
             aria-live="assertive"
@@ -198,12 +170,12 @@ const ChildFormServiceRequest: React.FC<Props> = ({
               </button>
             </div>
             <div className="toast-body">Se creo el caso numero :</div>
-          </div>
+          </div>*/}
           {/*JSON.stringify(createCaseId)*/}
         </>
       );
     } else {
-      return <div></div>;
+      return <></>;
     }
   };
   function readCreateCase(body: {}) {
@@ -213,6 +185,7 @@ const ChildFormServiceRequest: React.FC<Props> = ({
   return (
     <div>
       <div className={Style}>
+        {showAlert()}
         <div className="card-header">{cardHeader}</div>
         <div className="card-body">
           <p className="card-title">{cardTitle}</p>
@@ -331,8 +304,9 @@ const ChildFormServiceRequest: React.FC<Props> = ({
             </fieldset>
           </form>
         </div>
-        {showAlert()}
+
         <button
+          disabled={creado}
           onClick={() =>
             createRequerimiento(
               processId,
