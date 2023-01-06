@@ -21,6 +21,8 @@ import TareaDetalleCalificarFinalizar from "./screean/tarea-detalle-calificar-fi
 import TareaDetalleMasInformacion from "./screean/tarea-detalle-mas-informacion";
 import CasoArchivadoDetalle from "./screean/caso-archivado-detalle";
 import { UsuarioProvider } from "./context/usuario/UsuarioProvider";
+import PruebaConceptoParam from "./screean/pruebaConceptoParam";
+import Error from "./screean/error";
 
 export const AppContext = React.createContext({});
 
@@ -164,10 +166,28 @@ export default function AppRouter() {
               errorElement={<ErrorPage />}
             />
             <Route
+              path="/pruebaConceptoParam"
+              element={
+                <ProtectedRoute>
+                  <PruebaConceptoParam />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
               path="/caso-detalle-test"
               element={
                 <ProtectedRoute>
                   <CasoDetalleTest />
+                </ProtectedRoute>
+              }
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path="/*"
+              element={
+                <ProtectedRoute>
+                  <Home />
                 </ProtectedRoute>
               }
               errorElement={<ErrorPage />}

@@ -42,8 +42,6 @@ const CasoArchivadoConDetalle = () => {
   const [inputId, setInputId] = useState<string>("1");
   const [caseList, setCaseList] = useState<listCaseForClient[]>([]);
 
-  const [isTomar, setIsTomar] = React.useState(true);
-  type caseId = iCase;
   let startedBySubstitute: StartedBySubstitute = {
     last_connection: "",
     created_by_user_id: "",
@@ -115,9 +113,6 @@ const CasoArchivadoConDetalle = () => {
     processDefinitionId: processDefinitionId,
   };
 
-  const LimpiarUseState = () => {
-    // const [caseid, setCaseid] = useState<listCaseForClient>();
-  };
   const [caseid, setCaseid] = useState<listCaseForClient>(elcase);
 
   //#region caseForId
@@ -142,7 +137,6 @@ const CasoArchivadoConDetalle = () => {
       })
       .catch((error: any) => {
         console.log(error);
-        //LimpiarUseState();
         setisVisible(false);
         return;
       });

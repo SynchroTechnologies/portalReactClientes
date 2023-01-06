@@ -11,7 +11,7 @@ import { iUsuario } from "../interfaces/bonita/usuario";
 import CasoArchivadoConDetalle from "./casoArchivadoConDetalle";
 import ChildFormCasoArchivadoDetalle from "../components/childFormCasoArchivadoDetalle";
 
-const CasoArchivadoDetalle = () => {
+const PruebaConceptoParam = () => {
   let iUarioActivo: iUsuario = {
     copyright: "",
     is_guest_user: "",
@@ -25,7 +25,7 @@ const CasoArchivadoDetalle = () => {
     version: "",
   };
   const query = new URLSearchParams(useLocation().search);
-  const idCaso = query.get("id");
+  let idCaso = query.get("id") ? query.get("id") : "0";
   type caseId = iCase;
   const [caseid, setCaseid] = useState<caseId>();
   const [usuario, setUsuario] = useState<iUsuario>(iUarioActivo);
@@ -111,7 +111,7 @@ const CasoArchivadoDetalle = () => {
       if (show) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
-          caseById(idCaso);
+          caseById(idCaso ? idCaso : "0");
         }, []);
         return (
           <>
@@ -135,7 +135,7 @@ const CasoArchivadoDetalle = () => {
       } else {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
-          caseById(idCaso);
+          caseById(idCaso ? idCaso : "0");
         }, []);
         //caseForId(idCaso);
         if (show) {
@@ -192,14 +192,131 @@ const CasoArchivadoDetalle = () => {
       }
     }
   };
-
+  const buscarCaso = () => {
+    if (show) {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useEffect(() => {
+        caseById(idCaso ? idCaso : "0");
+      }, []);
+      return (
+        <>
+          <div className="App">
+            <div>
+              <div className="container ">
+                <div className="row shadow p-2 mb-3 bg-white rounded">
+                  <div className="row">
+                    <div className="col">
+                      {" "}
+                      <div></div>
+                      <CasoArchivadoConDetalle />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    } else {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useEffect(() => {
+        caseById(idCaso ? idCaso : "0");
+      }, []);
+      //caseForId(idCaso);
+      if (show) {
+        if (caseList.length >= 0) {
+          return (
+            <>
+              <div className="App">
+                <div>
+                  <div className="container ">
+                    <div className="row shadow p-2 mb-3 bg-white rounded">
+                      <div className="row">
+                        <div className="col">
+                          {" "}
+                          <div></div>
+                          <div>
+                            {" "}
+                            <ChildFormCasoArchivadoDetalle
+                              idAcordion={"Incidente"}
+                              titleAcordion={"Incidentes"}
+                              cardHeader={"ID del Caso : " + caseList[0].id}
+                              cardTitle={""}
+                              textButton={"A"}
+                              body={""}
+                              routeUrl="routeUrl"
+                              style={"danger"}
+                              data={"danger"}
+                              casoId={idCaso ? idCaso : "0"}
+                              caseData={caseList[0]}
+                              cantTask={cantTask}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          );
+        } else {
+          <>
+            <div className="App">
+              <div>
+                <div className="container ">
+                  <div className="row shadow p-2 mb-3 bg-white rounded">
+                    <div className="row">No encontramos el caso buscado</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>;
+        }
+      }
+    }
+  };
+  const leerCasoP = () => {
+    console.log({ idCaso });
+    if (idCaso == null || idCaso.length <= 0) {
+      return (
+        <>
+          <div className="App">
+            <div>
+              <div className="container ">
+                <div className="row shadow p-2 mb-3 bg-white rounded">
+                  <div className="row">No encontramos el caso buscado</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
+    if (idCaso.length > 0) {
+      buscarCaso();
+      return (
+        <>
+          <div className="App">
+            <div>
+              <div className="container ">
+                <div className="row shadow p-2 mb-3 bg-white rounded">
+                  <div className="row">buscar caso</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
+  };
   return (
     <>
       <NavBar />
-      {leerCaso()}
+      {leerCasoP()}
     </>
   );
   //#endregion
 };
 
-export default CasoArchivadoDetalle;
+export default PruebaConceptoParam;

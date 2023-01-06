@@ -235,7 +235,7 @@ const ChildFormCasoArchivadoDetalle: React.FC<Props> = ({
             </p>
           </div>
         </div>
-        {writeCommets}
+        {/*writeCommets*/}
       </fieldset>
     </form>
   );
@@ -252,9 +252,10 @@ const ChildFormCasoArchivadoDetalle: React.FC<Props> = ({
             aria-selected="true"
             role="tab"
             href="#uno"
-            onClick={() => getComments(casoId)}
+            //onClick={() => getComments(casoId)}
           >
-            Refrescar <Icons />
+            <h5 className="form-label mt-1 text-start">Comentarios</h5>
+            {/*Refrescar <Icons />*/}
           </a>
         </li>
       </ul>

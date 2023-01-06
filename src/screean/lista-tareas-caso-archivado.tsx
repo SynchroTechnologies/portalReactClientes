@@ -440,10 +440,10 @@ const ListaTareasCasoArchivado: React.FC<Props> = ({ casoId }) => {
           <div>Caso </div>
           <div> {list.caseId}</div>
         </div>
-        <div className="col-2">
+        {/*        <div className="col-2">
           <div>Nombre Proceso </div>
           <div> {list.rootContainerId.displayName}</div>
-        </div>
+        </div>*/}
         <div className="col-2">
           {" "}
           <div>Creada</div>
@@ -660,7 +660,7 @@ const ListaTareasCasoArchivado: React.FC<Props> = ({ casoId }) => {
       role="tab"
       onClick={() => getTaskHist(usuario.user_id, casoId)}
     >
-      Historico de tareas {listTaskHumanUserId.length}
+      Historico de tareas archivadas {listTaskHumanUserId.length}
       {"  "} <Icons />
     </a>
   );
